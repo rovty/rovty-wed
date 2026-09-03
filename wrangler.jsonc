@@ -4,6 +4,6 @@
   // .output/server/ — this is NOT the file that actually gets deployed,
   // it's just where the Worker's real identity (its name, which Worker in
   // your Cloudflare account this build targets) comes from. Without a
-  // `name` here, Nitro invents one itself ("rovty-rovty-wed") instead.
+  // `name` here, Nitro invents one itself ("rovty-rovty-wed") instead. 
   "name": "rovty-wed"
 }
