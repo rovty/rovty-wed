@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Heart, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -73,10 +73,18 @@ function AuthPage() {
     });
   }, [navigate]);
 
-  const ssoError =
-    typeof window !== "undefined"
-      ? new URLSearchParams(window.location.search).get("sso_error")
-      : null;
+  // Read only after mount, not inline in the render body — this route is
+  // server-rendered, and the server has no `window`/query string to read at
+  // all. Branching the render on `typeof window !== "undefined"` (the
+  // previous approach) makes the very first client render disagree with
+  // what the server sent whenever ?sso_error is actually present, which is
+  // exactly React hydration error #418: the server's HTML has no error
+  // banner, the client's first pass wants one. Starting both at null and
+  // filling it in after hydration via an effect keeps them in sync.
+  const [ssoError, setSsoError] = useState<string | null>(null);
+  useEffect(() => {
+    setSsoError(new URLSearchParams(window.location.search).get("sso_error"));
+  }, []);
 
   return (
     <main className="grid min-h-[100svh] place-items-center px-5 py-10">
