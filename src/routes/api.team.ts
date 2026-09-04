@@ -1,12 +1,17 @@
-// Invite/remove endpoints for wedding_members — kept server-side (rather
-// than direct PostgREST calls from the client) because that table only
-// grants `authenticated` a select policy (see the wedding_members
-// migration's own comment): owner-only invite/remove is enforced here,
-// not by RLS, and inviting needs the service-role key to call Supabase
-// Auth's admin API in the first place.
+// Invite/remove/role-change endpoints for wedding_members — kept
+// server-side (rather than direct PostgREST calls from the client) because
+// that table only grants `authenticated` a select policy (see the
+// wedding_members migration's own comment): owner-only invite/remove/role
+// changes are enforced here, not by RLS, and inviting needs the
+// service-role key to call Supabase Auth's admin API in the first place.
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
+
+type Role = "admin" | "view";
+function isRole(v: unknown): v is Role {
+  return v === "admin" || v === "view";
+}
 
 async function requireOwner(request: Request, weddingId: string) {
   const auth = request.headers.get("Authorization");
@@ -29,7 +34,7 @@ export const Route = createFileRoute("/api/team")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        let body: { wedding_id?: unknown; email?: unknown };
+        let body: { wedding_id?: unknown; email?: unknown; role?: unknown };
         try {
           body = await request.json();
         } catch {
@@ -37,6 +42,7 @@ export const Route = createFileRoute("/api/team")({
         }
         const weddingId = typeof body.wedding_id === "string" ? body.wedding_id : null;
         const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : null;
+        const role: Role = isRole(body.role) ? body.role : "admin";
         if (!weddingId || !email) {
           return Response.json({ error: "Missing wedding_id or email" }, { status: 400 });
         }
@@ -69,6 +75,7 @@ export const Route = createFileRoute("/api/team")({
           wedding_id: weddingId,
           user_id: invited.user.id,
           email,
+          role,
           invited_by: owner.userId,
         });
         if (memberError) {
@@ -77,6 +84,31 @@ export const Route = createFileRoute("/api/team")({
             { status: 400 },
           );
         }
+        return Response.json({ ok: true });
+      },
+      PATCH: async ({ request }) => {
+        let body: { wedding_id?: unknown; member_id?: unknown; role?: unknown };
+        try {
+          body = await request.json();
+        } catch {
+          return Response.json({ error: "Invalid request body" }, { status: 400 });
+        }
+        const weddingId = typeof body.wedding_id === "string" ? body.wedding_id : null;
+        const memberId = typeof body.member_id === "string" ? body.member_id : null;
+        if (!weddingId || !memberId || !isRole(body.role)) {
+          return Response.json({ error: "Missing wedding_id, member_id, or a valid role" }, { status: 400 });
+        }
+
+        const owner = await requireOwner(request, weddingId);
+        if (!owner) return Response.json({ error: "Not authorized" }, { status: 403 });
+
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const { error } = await supabaseAdmin
+          .from("wedding_members")
+          .update({ role: body.role })
+          .eq("id", memberId)
+          .eq("wedding_id", weddingId);
+        if (error) return Response.json({ error: error.message }, { status: 400 });
         return Response.json({ ok: true });
       },
       DELETE: async ({ request }) => {

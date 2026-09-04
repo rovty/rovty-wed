@@ -46,29 +46,38 @@ export function WeddingNotLive() {
   );
 }
 
+// Every template shares this exact tree — Hero, Details, RSVP, seating,
+// calendar links, all identical logic. Only two things vary by template:
+// the CSS custom properties `theme-${template}` redefines (see
+// styles.css), and whether the falling-petals/corner-rose decoration shows
+// at all — "minimal" and "luxe" are meant to read as deliberately
+// unadorned, not just "classic" with different colors.
+const DECORATIVE_TEMPLATES = new Set(["classic", "botanical", "pastel"]);
+
 export function WeddingSite({ wedding }: { wedding: PublicWedding }) {
+  const decorative = DECORATIVE_TEMPLATES.has(wedding.template);
   return (
-    <main className="relative overflow-x-hidden">
-      <RosePetals />
+    <main className={`theme-${wedding.template} relative overflow-x-hidden`}>
+      {decorative && <RosePetals />}
       <MusicPlayer />
       <InvitationOpener wedding={wedding} />
 
-      <Hero wedding={wedding} />
-      <Details wedding={wedding} />
+      <Hero wedding={wedding} decorative={decorative} />
+      <Details wedding={wedding} decorative={decorative} />
       <Gallery />
-      <CalendarSection wedding={wedding} />
+      <CalendarSection wedding={wedding} decorative={decorative} />
       <RsvpCta wedding={wedding} />
       <SeatingCta wedding={wedding} />
       <Location wedding={wedding} />
-      <Footer wedding={wedding} />
+      <Footer wedding={wedding} decorative={decorative} />
     </main>
   );
 }
 
-function Hero({ wedding }: { wedding: PublicWedding }) {
+function Hero({ wedding, decorative }: { wedding: PublicWedding; decorative: boolean }) {
   return (
     <section className="relative px-5 pt-12 pb-6">
-      <RoseCorner position="tl" size={140} opacity={0.2} />
+      {decorative && <RoseCorner position="tl" size={140} opacity={0.2} />}
 
       <div className="relative z-20 mx-auto flex max-w-xl flex-col items-center text-center animate-fade-up">
         <p className="font-script text-lg italic tracking-wide text-rose">
@@ -133,10 +142,10 @@ function DetailCard({
   );
 }
 
-function Details({ wedding }: { wedding: PublicWedding }) {
+function Details({ wedding, decorative }: { wedding: PublicWedding; decorative: boolean }) {
   return (
     <section className="relative px-5 pt-4 pb-10">
-      <RoseCorner position="tr" size={140} opacity={0.25} />
+      {decorative && <RoseCorner position="tr" size={140} opacity={0.25} />}
       <div className="relative z-20 mx-auto max-w-xl text-center">
         <p className="font-script text-base italic text-rose">Save the date</p>
         <h2 className="mt-1 font-display text-4xl text-foreground">Wedding Details</h2>
@@ -220,10 +229,10 @@ function CalButton({
   );
 }
 
-function CalendarSection({ wedding }: { wedding: PublicWedding }) {
+function CalendarSection({ wedding, decorative }: { wedding: PublicWedding; decorative: boolean }) {
   return (
     <section className="relative px-5 py-10">
-      <RoseCorner position="tl" size={140} opacity={0.25} />
+      {decorative && <RoseCorner position="tl" size={140} opacity={0.25} />}
       <div className="relative z-20 mx-auto max-w-xl">
         <div className="text-center">
           <p className="font-script text-base italic text-rose">Save the moment</p>
@@ -338,11 +347,15 @@ function Location({ wedding }: { wedding: PublicWedding }) {
   );
 }
 
-function Footer({ wedding }: { wedding: PublicWedding }) {
+function Footer({ wedding, decorative }: { wedding: PublicWedding; decorative: boolean }) {
   return (
     <footer className="relative px-5 pb-16 pt-8 text-center">
-      <RoseCorner position="bl" size={150} opacity={0.6} />
-      <RoseCorner position="br" size={150} opacity={0.6} />
+      {decorative && (
+        <>
+          <RoseCorner position="bl" size={150} opacity={0.6} />
+          <RoseCorner position="br" size={150} opacity={0.6} />
+        </>
+      )}
       <div className="relative z-20 mx-auto max-w-md">
         <Ornament />
         <h3 className="font-script text-3xl italic text-gradient-gold">

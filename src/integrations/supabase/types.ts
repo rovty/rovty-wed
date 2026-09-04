@@ -35,6 +35,7 @@ export type Database = {
           description: string | null;
           invite_message_before: string | null;
           invite_message_after: string | null;
+          template: string;
           published: boolean;
           created_at: string;
           updated_at: string;
@@ -55,6 +56,7 @@ export type Database = {
           description?: string | null;
           invite_message_before?: string | null;
           invite_message_after?: string | null;
+          template?: string;
           published?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -75,6 +77,7 @@ export type Database = {
           description?: string | null;
           invite_message_before?: string | null;
           invite_message_after?: string | null;
+          template?: string;
           published?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -87,6 +90,7 @@ export type Database = {
           wedding_id: string;
           user_id: string;
           email: string;
+          role: string;
           invited_by: string;
           created_at: string;
         };
@@ -95,6 +99,7 @@ export type Database = {
           wedding_id: string;
           user_id: string;
           email: string;
+          role?: string;
           invited_by: string;
           created_at?: string;
         };
@@ -103,6 +108,7 @@ export type Database = {
           wedding_id?: string;
           user_id?: string;
           email?: string;
+          role?: string;
           invited_by?: string;
           created_at?: string;
         };

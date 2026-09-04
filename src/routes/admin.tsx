@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+import { WEDDING_TEMPLATES } from "@/lib/wedding";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -97,9 +98,19 @@ function AdminPage() {
   const navigate = useNavigate();
   const [ready, setReady] = useState(false);
   const [wedding, setWedding] = useState<Wedding | null>(null);
+  // Distinct from "wedding === null (genuinely no row — first-time owner,
+  // show onboarding)": this is "the query itself failed", e.g. an RLS bug
+  // that should show an error, not silently push someone into "create a
+  // wedding" as if they'd never had access to begin with.
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const loadWedding = useCallback(async () => {
-    const { data } = await supabase.from("weddings").select("*").maybeSingle();
+    const { data, error } = await supabase.from("weddings").select("*").maybeSingle();
+    if (error) {
+      setLoadError(error.message);
+      return;
+    }
+    setLoadError(null);
     setWedding(data);
   }, []);
 
@@ -122,8 +133,29 @@ function AdminPage() {
 
   if (!ready) {
     return (
-      <main className="grid min-h-[100svh] place-items-center text-sm text-muted-foreground">
+      <main className="admin-portal grid min-h-[100svh] place-items-center text-sm text-muted-foreground">
         Loading…
+      </main>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <main className="admin-portal grid min-h-[100svh] place-items-center px-5 text-center">
+        <div className="glass-card max-w-sm rounded-3xl p-8">
+          <h1 className="font-display text-2xl">Couldn't load your account</h1>
+          <p className="mt-3 text-sm text-muted-foreground">{loadError}</p>
+          <button
+            onClick={() => {
+              setReady(false);
+              loadWedding().then(() => setReady(true));
+            }}
+            className="mt-5 rounded-full px-5 py-2 text-sm font-medium text-white shadow-gold"
+            style={{ background: "var(--gradient-gold)" }}
+          >
+            Try again
+          </button>
+        </div>
       </main>
     );
   }
@@ -193,7 +225,7 @@ function CreateWeddingForm({
   };
 
   return (
-    <main className="grid min-h-[100svh] place-items-center px-5 py-10">
+    <main className="admin-portal grid min-h-[100svh] place-items-center px-5 py-10">
       <div className="glass-card w-full max-w-md rounded-3xl p-7">
         <div className="text-center">
           <div
@@ -215,14 +247,14 @@ function CreateWeddingForm({
               value={bride}
               onChange={(e) => setBride(e.target.value)}
               required
-              className="rounded-2xl border border-input bg-white/70 px-4 py-3 text-sm outline-none focus:border-ring focus:ring-2 ring-ring/40"
+              className="rounded-2xl border border-input bg-white px-4 py-3 text-sm outline-none focus:border-ring focus:ring-2 ring-ring/40"
             />
             <input
               placeholder="Groom's name"
               value={groom}
               onChange={(e) => setGroom(e.target.value)}
               required
-              className="rounded-2xl border border-input bg-white/70 px-4 py-3 text-sm outline-none focus:border-ring focus:ring-2 ring-ring/40"
+              className="rounded-2xl border border-input bg-white px-4 py-3 text-sm outline-none focus:border-ring focus:ring-2 ring-ring/40"
             />
           </div>
           <input
@@ -230,10 +262,10 @@ function CreateWeddingForm({
             value={eventDate}
             onChange={(e) => setEventDate(e.target.value)}
             required
-            className="w-full rounded-2xl border border-input bg-white/70 px-4 py-3 text-sm outline-none focus:border-ring focus:ring-2 ring-ring/40"
+            className="w-full rounded-2xl border border-input bg-white px-4 py-3 text-sm outline-none focus:border-ring focus:ring-2 ring-ring/40"
           />
           <div>
-            <div className="flex items-center rounded-2xl border border-input bg-white/70 px-4 py-3 focus-within:border-ring focus-within:ring-2 ring-ring/40">
+            <div className="flex items-center rounded-2xl border border-input bg-white px-4 py-3 focus-within:border-ring focus-within:ring-2 ring-ring/40">
               <span className="shrink-0 text-xs text-muted-foreground">
                 wed.rovty.com/
               </span>
@@ -299,6 +331,7 @@ function WeddingAdmin({
   const [tables, setTables] = useState<SeatingTable[]>([]);
   const [assignments, setAssignments] = useState<SeatingAssignment[]>([]);
   const [seatingPublished, setSeatingPublished] = useState(false);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const inviteUrl = `${origin}/${wedding.slug}`;
 
@@ -387,6 +420,8 @@ function WeddingAdmin({
         ? [before, url, after].filter(Boolean).join("\n\n")
         : defaultInvitationMessage(wedding, url);
     await navigator.clipboard.writeText(message);
+    setCopiedCode(code);
+    setTimeout(() => setCopiedCode((c) => (c === code ? null : c)), 2000);
   };
 
   const guestByCode = (c: string) => guests.find((g) => g.code === c);
@@ -398,9 +433,9 @@ function WeddingAdmin({
   );
 
   return (
-    <div className="flex min-h-screen">
+    <div className="admin-portal flex min-h-screen">
       {/* Sidebar */}
-      <aside className="flex w-60 shrink-0 flex-col border-r border-border bg-white/50 px-4 py-6">
+      <aside className="flex w-60 shrink-0 flex-col border-r border-border bg-white px-4 py-6">
         <div className="px-2">
           <h1 className="truncate font-display text-lg">
             {wedding.bride} &amp; {wedding.groom}
@@ -435,14 +470,14 @@ function WeddingAdmin({
               href={inviteUrl}
               target="_blank"
               rel="noreferrer"
-              className="rounded-full border border-border bg-white/70 px-4 py-2 text-center text-xs hover:bg-white"
+              className="rounded-full border border-border bg-white px-4 py-2 text-center text-xs hover:bg-slate-50"
             >
               View site
             </a>
           )}
           <button
             onClick={onSignOut}
-            className="inline-flex items-center justify-center gap-1.5 rounded-full border border-border bg-white/70 px-4 py-2 text-xs hover:bg-white"
+            className="inline-flex items-center justify-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-xs hover:bg-slate-50"
           >
             <LogOut className="h-3.5 w-3.5" /> Sign out
           </button>
@@ -483,13 +518,13 @@ function WeddingAdmin({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="sm:col-span-2 rounded-xl border border-input bg-white/70 px-3 py-2 text-sm"
+                className="sm:col-span-2 rounded-xl border border-input bg-white px-3 py-2 text-sm"
               />
               <input
                 placeholder="Title (Mr/Ms…)"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="rounded-xl border border-input bg-white/70 px-3 py-2 text-sm"
+                className="rounded-xl border border-input bg-white px-3 py-2 text-sm"
               />
               <input
                 type="number"
@@ -497,20 +532,20 @@ function WeddingAdmin({
                 max={20}
                 value={seats}
                 onChange={(e) => setSeats(parseInt(e.target.value) || 1)}
-                className="rounded-xl border border-input bg-white/70 px-3 py-2 text-sm"
+                className="rounded-xl border border-input bg-white px-3 py-2 text-sm"
                 placeholder="Seats"
               />
               <div className="flex gap-2">
                 <input
                   value={code}
                   onChange={(e) => setCode(e.target.value.toUpperCase())}
-                  className="w-full rounded-xl border border-input bg-white/70 px-3 py-2 text-sm font-mono"
+                  className="w-full rounded-xl border border-input bg-white px-3 py-2 text-sm font-mono"
                   placeholder="Code"
                 />
                 <button
                   type="button"
                   onClick={() => setCode(randCode())}
-                  className="rounded-xl border border-border bg-white/70 px-2 text-xs hover:bg-white"
+                  className="rounded-xl border border-border bg-white px-2 text-xs hover:bg-slate-50"
                   title="Regenerate code"
                 >
                   ↻
@@ -568,14 +603,26 @@ function WeddingAdmin({
                       </div>
                       <button
                         onClick={() => copyInvitation(g.code)}
-                        className="inline-flex items-center gap-1 rounded-full border border-border bg-white/70 px-3 py-1.5 text-xs hover:bg-white"
+                        className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs transition-colors ${
+                          copiedCode === g.code
+                            ? "border-emerald-300 bg-emerald-50 text-emerald-700"
+                            : "border-border bg-white hover:bg-slate-50"
+                        }`}
                         title="Copy invitation message"
                       >
-                        <Copy className="h-3 w-3" /> Message
+                        {copiedCode === g.code ? (
+                          <>
+                            <Check className="h-3 w-3" /> Copied
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="h-3 w-3" /> Message
+                          </>
+                        )}
                       </button>
                       <button
                         onClick={() => removeGuest(g.code)}
-                        className="rounded-full border border-border bg-white/70 p-1.5 text-destructive hover:bg-white"
+                        className="rounded-full border border-border bg-white p-1.5 text-destructive hover:bg-slate-50"
                         title="Delete guest"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -618,7 +665,7 @@ function WeddingAdmin({
                         <StatusPill attending={r.attending} />
                       </div>
                       {r.message && (
-                        <p className="mt-2 rounded-2xl bg-white/60 px-3 py-2 text-xs italic text-muted-foreground">
+                        <p className="mt-2 rounded-2xl bg-white px-3 py-2 text-xs italic text-muted-foreground">
                           "{r.message}"
                         </p>
                       )}
@@ -645,7 +692,7 @@ function WeddingAdmin({
       )}
 
       <p className="mt-8 flex items-center justify-center gap-1 text-center text-xs text-muted-foreground">
-        Made with <Heart className="h-3 w-3 text-rose" /> — Rovty Wed
+        Made with <Heart className="h-3 w-3 text-rose" /> — Rovty
       </p>
         </div>
       </main>
@@ -668,7 +715,7 @@ function NavItem({
     <button
       onClick={onClick}
       className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm font-medium transition-colors ${
-        active ? "text-white shadow-gold" : "text-foreground hover:bg-white/70"
+        active ? "text-white shadow-gold" : "text-foreground hover:bg-slate-50"
       }`}
       style={active ? { background: "var(--gradient-gold)" } : undefined}
     >
@@ -708,6 +755,7 @@ function DetailsAdmin({
     description: wedding.description ?? "",
     invite_message_before: wedding.invite_message_before ?? "",
     invite_message_after: wedding.invite_message_after ?? "",
+    template: wedding.template,
   });
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -728,6 +776,7 @@ function DetailsAdmin({
         description: form.description.trim() || null,
         invite_message_before: form.invite_message_before.trim() || null,
         invite_message_after: form.invite_message_after.trim() || null,
+        template: form.template,
         updated_at: new Date().toISOString(),
       })
       .eq("id", wedding.id)
@@ -826,14 +875,14 @@ function DetailsAdmin({
           value={form[key]}
           onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
           rows={3}
-          className="w-full rounded-xl border border-input bg-white/70 px-3 py-2 text-sm"
+          className="w-full rounded-xl border border-input bg-white px-3 py-2 text-sm"
         />
       ) : (
         <input
           type={opts?.type ?? "text"}
           value={form[key]}
           onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
-          className="w-full rounded-xl border border-input bg-white/70 px-3 py-2 text-sm"
+          className="w-full rounded-xl border border-input bg-white px-3 py-2 text-sm"
         />
       )}
     </div>
@@ -849,7 +898,7 @@ function DetailsAdmin({
             className={`inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-xs font-medium shadow-sm transition-colors ${
               wedding.published
                 ? "bg-emerald-600 text-white hover:bg-emerald-700"
-                : "border border-border bg-white/70 hover:bg-white"
+                : "border border-border bg-white hover:bg-slate-50"
             }`}
           >
             {wedding.published ? (
@@ -864,7 +913,7 @@ function DetailsAdmin({
         </div>
         {editingSlug ? (
           <div>
-            <div className="flex items-center gap-1.5 rounded-xl border border-input bg-white/70 px-3 py-2 text-sm">
+            <div className="flex items-center gap-1.5 rounded-xl border border-input bg-white px-3 py-2 text-sm">
               <span className="text-muted-foreground">wed.rovty.com/</span>
               <input
                 autoFocus
@@ -896,7 +945,7 @@ function DetailsAdmin({
               <button
                 type="button"
                 onClick={() => setEditingSlug(false)}
-                className="rounded-full border border-border bg-white/70 px-4 py-1.5 text-xs hover:bg-white"
+                className="rounded-full border border-border bg-white px-4 py-1.5 text-xs hover:bg-slate-50"
               >
                 Cancel
               </button>
@@ -909,7 +958,7 @@ function DetailsAdmin({
             <button
               type="button"
               onClick={startEditSlug}
-              className="inline-flex items-center gap-1 rounded-full border border-border bg-white/70 px-2 py-0.5 hover:bg-white"
+              className="inline-flex items-center gap-1 rounded-full border border-border bg-white px-2 py-0.5 hover:bg-slate-50"
               title="Change public link"
             >
               <Pencil className="h-3 w-3" /> Edit
@@ -923,6 +972,53 @@ function DetailsAdmin({
         className="glass-card mt-6 space-y-4 rounded-3xl p-5"
       >
         <h2 className="font-display text-lg">Wedding details</h2>
+
+        <div>
+          <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
+            Invitation template
+          </label>
+          <p className="mb-3 text-xs text-muted-foreground">
+            Same RSVP, seating, and calendar links either way — just a
+            different look for your public invitation page.
+          </p>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {WEDDING_TEMPLATES.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setForm((f) => ({ ...f, template: t.id }))}
+                className={`overflow-hidden rounded-2xl border-2 text-left transition-colors ${
+                  form.template === t.id
+                    ? "border-[var(--admin-accent)]"
+                    : "border-border hover:border-[var(--admin-accent)]/50"
+                }`}
+              >
+                <div className={`theme-${t.id} h-14 w-full`}>
+                  <div
+                    className="flex h-full w-full items-center justify-center"
+                    style={{ background: "var(--gradient-gold)" }}
+                  >
+                    <span className="font-display text-[10px] uppercase tracking-[0.2em] text-white/90">
+                      Aa
+                    </span>
+                  </div>
+                </div>
+                <div className="p-2.5">
+                  <p className="flex items-center gap-1.5 text-xs font-semibold">
+                    {t.label}
+                    {form.template === t.id && (
+                      <Check className="h-3 w-3 text-[var(--admin-accent)]" />
+                    )}
+                  </p>
+                  <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">
+                    {t.description}
+                  </p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="grid grid-cols-2 gap-3">
           {field("bride", "Bride's name")}
           {field("groom", "Groom's name")}
@@ -972,9 +1068,11 @@ function DetailsAdmin({
 
 /* ── Team tab ──────────────────────────────────────────────────────── */
 
+type MemberRole = "admin" | "view";
 type WeddingMember = {
   id: string;
   email: string;
+  role: string;
   created_at: string;
 };
 
@@ -982,22 +1080,29 @@ function TeamAdmin({ wedding }: { wedding: Wedding }) {
   const [members, setMembers] = useState<WeddingMember[]>([]);
   const [isOwner, setIsOwner] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [email, setEmail] = useState("");
+  const [role, setRole] = useState<MemberRole>("admin");
   const [inviting, setInviting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [invited, setInvited] = useState(false);
 
   const load = useCallback(async () => {
-    const [{ data: userData }, { data: memberRows }] = await Promise.all([
+    setLoadError(null);
+    const [{ data: userData }, { data: memberRows, error: membersError }] = await Promise.all([
       supabase.auth.getUser(),
       supabase
         .from("wedding_members")
-        .select("id, email, created_at")
+        .select("id, email, role, created_at")
         .eq("wedding_id", wedding.id)
         .order("created_at", { ascending: false }),
     ]);
     setIsOwner(userData.user?.id === wedding.owner_id);
-    setMembers(memberRows ?? []);
+    if (membersError) {
+      setLoadError(membersError.message);
+    } else {
+      setMembers(memberRows ?? []);
+    }
     setLoading(false);
   }, [wedding.id, wedding.owner_id]);
 
@@ -1018,7 +1123,7 @@ function TeamAdmin({ wedding }: { wedding: Wedding }) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${session.session?.access_token}`,
       },
-      body: JSON.stringify({ wedding_id: wedding.id, email: email.trim() }),
+      body: JSON.stringify({ wedding_id: wedding.id, email: email.trim(), role }),
     });
     const body = await res.json();
     setInviting(false);
@@ -1030,6 +1135,21 @@ function TeamAdmin({ wedding }: { wedding: Wedding }) {
     setInvited(true);
     setTimeout(() => setInvited(false), 3000);
     await load();
+  };
+
+  const changeRole = async (member: WeddingMember, nextRole: MemberRole) => {
+    if (nextRole === member.role) return;
+    setMembers((prev) => prev.map((m) => (m.id === member.id ? { ...m, role: nextRole } : m)));
+    const { data: session } = await supabase.auth.getSession();
+    const res = await fetch("/api/team", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.session?.access_token}`,
+      },
+      body: JSON.stringify({ wedding_id: wedding.id, member_id: member.id, role: nextRole }),
+    });
+    if (!res.ok) await load(); // roll back to the real state if it didn't save
   };
 
   const remove = async (member: WeddingMember) => {
@@ -1055,9 +1175,11 @@ function TeamAdmin({ wedding }: { wedding: Wedding }) {
       <section className="glass-card rounded-3xl p-5">
         <h2 className="font-display text-lg">Team</h2>
         <p className="mt-1 text-xs text-muted-foreground">
-          Invite the groom, bride, or your planner to edit this wedding — they
-          sign in with their own email, no shared login needed. They get the
-          same full editing access you do.
+          Invite the groom, bride, or your planner to this wedding — they
+          sign in with their own email, no shared login needed. Choose{" "}
+          <strong>Admin</strong> for full editing access, or{" "}
+          <strong>View</strong> if they should only be able to look, not
+          change anything.
         </p>
 
         {isOwner ? (
@@ -1068,8 +1190,16 @@ function TeamAdmin({ wedding }: { wedding: Wedding }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="their@email.com"
-              className="min-w-0 flex-1 rounded-xl border border-input bg-white/70 px-3 py-2 text-sm"
+              className="min-w-0 flex-1 rounded-xl border border-input bg-white px-3 py-2 text-sm"
             />
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value as MemberRole)}
+              className="rounded-xl border border-input bg-white px-3 py-2 text-sm"
+            >
+              <option value="admin">Admin — can edit</option>
+              <option value="view">View — read only</option>
+            </select>
             <button
               type="submit"
               disabled={inviting}
@@ -1081,7 +1211,7 @@ function TeamAdmin({ wedding }: { wedding: Wedding }) {
           </form>
         ) : (
           <p className="mt-4 text-xs text-muted-foreground">
-            Only the wedding owner can invite or remove team members.
+            Only the wedding owner can invite, remove, or change roles for team members.
           </p>
         )}
         {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
@@ -1092,7 +1222,11 @@ function TeamAdmin({ wedding }: { wedding: Wedding }) {
         <header className="border-b border-border/60 px-5 py-3">
           <h2 className="font-display text-lg">Members ({members.length})</h2>
         </header>
-        {members.length === 0 ? (
+        {loadError ? (
+          <p className="p-6 text-center text-sm text-destructive">
+            Couldn't load your team: {loadError}
+          </p>
+        ) : members.length === 0 ? (
           <p className="p-6 text-center text-sm text-muted-foreground">
             Just you so far — invite someone above to give them access.
           </p>
@@ -1106,14 +1240,28 @@ function TeamAdmin({ wedding }: { wedding: Wedding }) {
                     Added {new Date(m.created_at).toLocaleDateString()}
                   </p>
                 </div>
-                {isOwner && (
-                  <button
-                    onClick={() => remove(m)}
-                    className="rounded-full border border-border bg-white/70 p-1.5 text-destructive hover:bg-white"
-                    title="Remove from team"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
+                {isOwner ? (
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={m.role}
+                      onChange={(e) => changeRole(m, e.target.value as MemberRole)}
+                      className="rounded-full border border-border bg-white px-3 py-1.5 text-xs hover:bg-slate-50"
+                    >
+                      <option value="admin">Admin</option>
+                      <option value="view">View</option>
+                    </select>
+                    <button
+                      onClick={() => remove(m)}
+                      className="rounded-full border border-border bg-white p-1.5 text-destructive hover:bg-slate-50"
+                      title="Remove from team"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <span className="rounded-full border border-border bg-white px-3 py-1 text-xs capitalize">
+                    {m.role}
+                  </span>
                 )}
               </li>
             ))}
@@ -1154,6 +1302,7 @@ function SeatingAdmin({
   const [assignCode, setAssignCode] = useState("");
   const [assignTableId, setAssignTableId] = useState("");
   const [previewCode, setPreviewCode] = useState("");
+  const [copiedSeatingCode, setCopiedSeatingCode] = useState<string | null>(null);
 
   const confirmedGuests = guests.filter((g) =>
     rsvps.some((r) => r.guest_code === g.code && r.attending),
@@ -1291,6 +1440,8 @@ Easily find your table & seating companions:
 Can't wait to celebrate with you! ❤️
 ${wedding.bride} & ${wedding.groom}`;
     await navigator.clipboard.writeText(msg);
+    setCopiedSeatingCode(guestCode);
+    setTimeout(() => setCopiedSeatingCode((c) => (c === guestCode ? null : c)), 2000);
   };
 
   return (
@@ -1321,7 +1472,7 @@ ${wedding.bride} & ${wedding.groom}`;
           className={`inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-xs font-medium shadow-sm transition-colors ${
             published
               ? "bg-emerald-600 text-white hover:bg-emerald-700"
-              : "border border-border bg-white/70 hover:bg-white"
+              : "border border-border bg-white hover:bg-slate-50"
           }`}
         >
           {published ? (
@@ -1339,7 +1490,7 @@ ${wedding.bride} & ${wedding.groom}`;
             placeholder="Code to preview"
             value={previewCode}
             onChange={(e) => setPreviewCode(e.target.value.toUpperCase())}
-            className="w-28 rounded-xl border border-input bg-white/70 px-3 py-1.5 text-xs font-mono"
+            className="w-28 rounded-xl border border-input bg-white px-3 py-1.5 text-xs font-mono"
           />
           <a
             href={
@@ -1347,7 +1498,7 @@ ${wedding.bride} & ${wedding.groom}`;
             }
             target="_blank"
             rel="noreferrer"
-            className={`inline-flex items-center gap-1 rounded-full border border-border bg-white/70 px-3 py-1.5 text-xs hover:bg-white ${!previewCode ? "pointer-events-none opacity-40" : ""}`}
+            className={`inline-flex items-center gap-1 rounded-full border border-border bg-white px-3 py-1.5 text-xs hover:bg-slate-50 ${!previewCode ? "pointer-events-none opacity-40" : ""}`}
           >
             <Eye className="h-3 w-3" /> Preview
           </a>
@@ -1362,7 +1513,7 @@ ${wedding.bride} & ${wedding.groom}`;
           <select
             value={assignCode}
             onChange={(e) => setAssignCode(e.target.value)}
-            className="flex-1 rounded-xl border border-input bg-white/70 px-3 py-2 text-sm"
+            className="flex-1 rounded-xl border border-input bg-white px-3 py-2 text-sm"
           >
             <option value="">Select guest…</option>
             <optgroup label="Confirmed">
@@ -1383,7 +1534,7 @@ ${wedding.bride} & ${wedding.groom}`;
           <select
             value={assignTableId}
             onChange={(e) => setAssignTableId(e.target.value)}
-            className="w-40 rounded-xl border border-input bg-white/70 px-3 py-2 text-sm"
+            className="w-40 rounded-xl border border-input bg-white px-3 py-2 text-sm"
           >
             <option value="">Table…</option>
             {tables
@@ -1410,7 +1561,7 @@ ${wedding.bride} & ${wedding.groom}`;
           <h2 className="font-display text-lg">Tables ({tables.length})</h2>
           <button
             onClick={() => setAddingTable(!addingTable)}
-            className="inline-flex items-center gap-1 rounded-full border border-border bg-white/70 px-3 py-1.5 text-xs hover:bg-white"
+            className="inline-flex items-center gap-1 rounded-full border border-border bg-white px-3 py-1.5 text-xs hover:bg-slate-50"
           >
             <Plus className="h-3 w-3" /> Add table
           </button>
@@ -1429,7 +1580,7 @@ ${wedding.bride} & ${wedding.groom}`;
                 value={tblNum}
                 onChange={(e) => setTblNum(e.target.value)}
                 required
-                className="rounded-xl border border-input bg-white/70 px-3 py-2 text-sm"
+                className="rounded-xl border border-input bg-white px-3 py-2 text-sm"
               />
               <input
                 type="number"
@@ -1438,7 +1589,7 @@ ${wedding.bride} & ${wedding.groom}`;
                 placeholder="Capacity"
                 value={tblCap}
                 onChange={(e) => setTblCap(parseInt(e.target.value) || 10)}
-                className="rounded-xl border border-input bg-white/70 px-3 py-2 text-sm"
+                className="rounded-xl border border-input bg-white px-3 py-2 text-sm"
               />
               <input
                 type="number"
@@ -1448,7 +1599,7 @@ ${wedding.bride} & ${wedding.groom}`;
                 placeholder="Map X %"
                 value={tblX}
                 onChange={(e) => setTblX(parseFloat(e.target.value) || 0)}
-                className="rounded-xl border border-input bg-white/70 px-3 py-2 text-sm"
+                className="rounded-xl border border-input bg-white px-3 py-2 text-sm"
               />
               <input
                 type="number"
@@ -1458,7 +1609,7 @@ ${wedding.bride} & ${wedding.groom}`;
                 placeholder="Map Y %"
                 value={tblY}
                 onChange={(e) => setTblY(parseFloat(e.target.value) || 0)}
-                className="rounded-xl border border-input bg-white/70 px-3 py-2 text-sm"
+                className="rounded-xl border border-input bg-white px-3 py-2 text-sm"
               />
             </div>
             <button
@@ -1506,7 +1657,7 @@ ${wedding.bride} & ${wedding.groom}`;
                     </span>
                     <button
                       onClick={() => removeTable(t.id)}
-                      className="rounded-full border border-border bg-white/70 p-1.5 text-destructive hover:bg-white"
+                      className="rounded-full border border-border bg-white p-1.5 text-destructive hover:bg-slate-50"
                       title="Delete table"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -1520,7 +1671,7 @@ ${wedding.bride} & ${wedding.groom}`;
                         return (
                           <li
                             key={a.id}
-                            className="flex items-center gap-2 rounded-lg bg-white/50 px-3 py-1.5 text-xs"
+                            className="flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-xs"
                           >
                             <span className="min-w-0 flex-1 truncate">
                               {g ? g.name : a.guest_code}
@@ -1530,17 +1681,25 @@ ${wedding.bride} & ${wedding.groom}`;
                             </span>
                             <button
                               onClick={() => copySeatingMessage(a.guest_code)}
-                              className="inline-flex items-center gap-0.5 text-muted-foreground hover:text-foreground"
+                              className={`inline-flex items-center gap-0.5 ${
+                                copiedSeatingCode === a.guest_code
+                                  ? "text-emerald-600"
+                                  : "text-muted-foreground hover:text-foreground"
+                              }`}
                               title="Copy seating WhatsApp message"
                             >
-                              <Copy className="h-3 w-3" />
+                              {copiedSeatingCode === a.guest_code ? (
+                                <Check className="h-3 w-3" />
+                              ) : (
+                                <Copy className="h-3 w-3" />
+                              )}
                             </button>
                             <select
                               value={a.table_id}
                               onChange={(e) =>
                                 moveGuest(a.guest_code, e.target.value)
                               }
-                              className="rounded border border-input bg-white/70 px-1.5 py-0.5 text-[11px]"
+                              className="rounded border border-input bg-white px-1.5 py-0.5 text-[11px]"
                               title="Move to table"
                             >
                               {tables

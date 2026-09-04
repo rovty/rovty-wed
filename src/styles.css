@@ -455,3 +455,115 @@
     animation: none;
   }
 }
+
+/* ───────────────────────────────────────────────────────────────────────
+   Admin portal — deliberately not the invitation's romantic/floral theme.
+   The invitation's components (glass-card, font-display, the gold gradient
+   buttons, etc.) all read from a handful of CSS custom properties rather
+   than hardcoding values — redefining those properties inside .admin-portal
+   re-skins every one of them at once, without touching admin.tsx's classes
+   element by element. Plain (unlayered) rules here beat Tailwind's
+   @utility ones regardless of selector order, since Tailwind's utilities
+   live in a lower-priority cascade layer.
+   ─────────────────────────────────────────────────────────────────────── */
+.admin-portal {
+  --admin-accent: oklch(0.48 0.14 264);
+  --admin-accent-hover: oklch(0.42 0.14 264);
+  --admin-bg: oklch(0.98 0.003 260);
+  --admin-border: oklch(0.9 0.006 260);
+
+  --font-display: var(--font-sans);
+  --font-script: var(--font-sans);
+  --gradient-gold: var(--admin-accent);
+  --rose: var(--admin-accent);
+  --gold: var(--admin-accent);
+  --shadow-gold: 0 1px 2px color-mix(in oklab, black 8%, transparent);
+  --shadow-soft: 0 1px 3px color-mix(in oklab, black 6%, transparent);
+  --border: var(--admin-border);
+  --ring: var(--admin-accent);
+
+  min-height: 100vh;
+  background: var(--admin-bg);
+  color: oklch(0.22 0.01 260);
+}
+.admin-portal h1,
+.admin-portal h2,
+.admin-portal h3,
+.admin-portal h4 {
+  font-family: var(--font-sans);
+  letter-spacing: normal;
+  font-weight: 600;
+}
+.admin-portal .glass-card {
+  background: white;
+  backdrop-filter: none;
+  border: 1px solid var(--admin-border);
+  box-shadow: var(--shadow-soft);
+}
+.admin-portal .shadow-gold {
+  box-shadow: var(--shadow-gold);
+}
+
+/* ───────────────────────────────────────────────────────────────────────
+   Public invitation templates — 5 looks, one component tree (WeddingSite).
+   Same trick as .admin-portal: redefine the tokens the components already
+   read instead of forking the markup. "classic" IS today's look, so it
+   needs no block here at all — it's just whatever :root already says.
+   The one exception to the token trick is body background: WeddingSite's
+   <main> is a *descendant* of <body>, so a custom-property override here
+   can't reach back up to recolor body's own background — each non-classic
+   theme sets `background` on itself directly instead.
+   ─────────────────────────────────────────────────────────────────────── */
+
+.theme-minimal {
+  --font-display: var(--font-sans);
+  --font-script: var(--font-sans);
+  --gradient-gold: oklch(0.22 0 0);
+  --rose: oklch(0.22 0 0);
+  --gold: oklch(0.22 0 0);
+  --foreground: oklch(0.22 0 0);
+  --muted-foreground: oklch(0.5 0 0);
+  --border: oklch(0.88 0 0);
+  --shadow-gold: 0 1px 2px color-mix(in oklab, black 10%, transparent);
+  background: oklch(0.995 0 0);
+}
+.theme-minimal h1,
+.theme-minimal h2,
+.theme-minimal h3 {
+  letter-spacing: -0.01em;
+}
+.theme-minimal .divider-ornament svg {
+  display: none;
+}
+
+.theme-botanical {
+  --gradient-gold: linear-gradient(135deg, oklch(0.62 0.09 145), oklch(0.48 0.08 150));
+  --rose: oklch(0.5 0.09 145);
+  --gold: oklch(0.5 0.09 145);
+  --border: oklch(0.88 0.03 140);
+  background:
+    linear-gradient(180deg, oklch(0.97 0.015 120) 0%, oklch(0.94 0.03 140) 50%, oklch(0.97 0.012 100) 100%);
+}
+
+.theme-luxe {
+  --gradient-gold: linear-gradient(135deg, oklch(0.72 0.13 78), oklch(0.55 0.13 55));
+  --rose: oklch(0.78 0.12 80);
+  --gold: oklch(0.78 0.12 80);
+  --foreground: oklch(0.94 0.015 80);
+  --muted-foreground: oklch(0.72 0.02 70);
+  --border: color-mix(in oklab, oklch(0.78 0.12 80) 25%, transparent);
+  background: linear-gradient(180deg, oklch(0.16 0.012 264) 0%, oklch(0.12 0.01 264) 100%);
+}
+.theme-luxe .glass-card {
+  background: color-mix(in oklab, black 55%, transparent);
+  border: 1px solid color-mix(in oklab, oklch(0.78 0.12 80) 28%, transparent);
+}
+
+.theme-pastel {
+  --gradient-gold: linear-gradient(135deg, oklch(0.84 0.06 320), oklch(0.8 0.07 280));
+  --rose: oklch(0.76 0.08 340);
+  --gold: oklch(0.76 0.08 340);
+  --border: oklch(0.9 0.03 300);
+  background:
+    linear-gradient(180deg, oklch(0.97 0.02 340) 0%, oklch(0.95 0.03 290) 50%, oklch(0.97 0.02 200) 100%);
+}

@@ -11,6 +11,24 @@ import { supabase } from "@/integrations/supabase/client";
 // local equivalent, and so SSR output and client hydration always agree.
 const TZ = "Asia/Colombo";
 
+// Every template renders the exact same WeddingSite component tree with the
+// exact same RSVP/seating/calendar functionality — only the CSS tokens each
+// one sets differ (see styles.css's .theme-* blocks). Keep this list and
+// the `weddings.template` check constraint (migration
+// 20260904050000_wedding_template.sql) in sync.
+export const WEDDING_TEMPLATES = [
+  { id: "classic", label: "Classic", description: "Ivory, gold & rose — soft floral romance." },
+  { id: "minimal", label: "Minimal", description: "Clean monochrome, no florals, quiet confidence." },
+  { id: "botanical", label: "Botanical", description: "Sage green & cream, garden-party warmth." },
+  { id: "luxe", label: "Luxe", description: "Charcoal & gold foil, dramatic evening elegance." },
+  { id: "pastel", label: "Pastel", description: "Blush & lavender, soft and playful." },
+] as const;
+export type WeddingTemplate = (typeof WEDDING_TEMPLATES)[number]["id"];
+const TEMPLATE_IDS = WEDDING_TEMPLATES.map((t) => t.id);
+function isWeddingTemplate(v: string): v is WeddingTemplate {
+  return (TEMPLATE_IDS as string[]).includes(v);
+}
+
 export type PublicWedding = {
   slug: string;
   bride: string;
@@ -24,6 +42,7 @@ export type PublicWedding = {
   hall: string | null;
   address: string | null;
   description: string;
+  template: WeddingTemplate;
 };
 
 function toPublicWedding(row: {
@@ -38,6 +57,7 @@ function toPublicWedding(row: {
   hall: string | null;
   address: string | null;
   description: string | null;
+  template: string;
 }): PublicWedding {
   const title = `${row.groom} & ${row.bride} Wedding`;
   return {
@@ -55,11 +75,12 @@ function toPublicWedding(row: {
     description:
       row.description ??
       `Join us as we celebrate the wedding of ${row.groom} & ${row.bride}.`,
+    template: isWeddingTemplate(row.template) ? row.template : "classic",
   };
 }
 
 const WEDDING_COLUMNS =
-  "slug, bride, groom, event_date, event_end, reception_date, reception_end, venue, hall, address, description";
+  "slug, bride, groom, event_date, event_end, reception_date, reception_end, venue, hall, address, description, template";
 
 // Kept for the root `/` route — a convenience alias to "whichever wedding is
 // published" for this single-tenant deployment. The real, shareable public
