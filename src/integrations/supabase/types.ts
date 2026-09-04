@@ -81,6 +81,41 @@ export type Database = {
         };
         Relationships: [];
       };
+      wedding_members: {
+        Row: {
+          id: string;
+          wedding_id: string;
+          user_id: string;
+          email: string;
+          invited_by: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          wedding_id: string;
+          user_id: string;
+          email: string;
+          invited_by: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          wedding_id?: string;
+          user_id?: string;
+          email?: string;
+          invited_by?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "wedding_members_wedding_id_fkey";
+            columns: ["wedding_id"];
+            isOneToOne: false;
+            referencedRelation: "weddings";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       guests: {
         Row: {
           id: string;

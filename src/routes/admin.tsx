@@ -13,6 +13,8 @@ import {
   Users,
   ArrowRight,
   Settings,
+  Pencil,
+  UserPlus,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
@@ -286,7 +288,7 @@ function WeddingAdmin({
   onSignOut: () => void;
   onWeddingChange: (w: Wedding) => void;
 }) {
-  const [tab, setTab] = useState<"details" | "guests" | "seating">("guests");
+  const [tab, setTab] = useState<"details" | "guests" | "seating" | "team">("guests");
   const [guests, setGuests] = useState<Guest[]>([]);
   const [rsvps, setRsvps] = useState<Rsvp[]>([]);
   const [name, setName] = useState("");
@@ -396,17 +398,34 @@ function WeddingAdmin({
   );
 
   return (
-    <main className="mx-auto max-w-4xl px-5 py-8">
-      <header className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="font-display text-2xl">
+    <div className="flex min-h-screen">
+      {/* Sidebar */}
+      <aside className="flex w-60 shrink-0 flex-col border-r border-border bg-white/50 px-4 py-6">
+        <div className="px-2">
+          <h1 className="truncate font-display text-lg">
             {wedding.bride} &amp; {wedding.groom}
           </h1>
-          <p className="text-xs text-muted-foreground">
+          <p className="truncate text-xs text-muted-foreground">
             wed.rovty.com/{wedding.slug}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+
+        <nav className="mt-6 flex flex-1 flex-col gap-1">
+          <NavItem active={tab === "details"} onClick={() => setTab("details")} icon={Settings}>
+            Details
+          </NavItem>
+          <NavItem active={tab === "guests"} onClick={() => setTab("guests")} icon={Users}>
+            Guests &amp; RSVPs
+          </NavItem>
+          <NavItem active={tab === "seating"} onClick={() => setTab("seating")} icon={Eye}>
+            Seating Plan
+          </NavItem>
+          <NavItem active={tab === "team"} onClick={() => setTab("team")} icon={UserPlus}>
+            Team
+          </NavItem>
+        </nav>
+
+        <div className="flex flex-col gap-1.5 border-t border-border pt-4">
           {wedding.published && (
             // Plain <a>, not <Link>: the public /$slug route is the next
             // phase of this build (see admin.tsx's header comment) and
@@ -416,48 +435,28 @@ function WeddingAdmin({
               href={inviteUrl}
               target="_blank"
               rel="noreferrer"
-              className="rounded-full border border-border bg-white/70 px-4 py-2 text-xs hover:bg-white"
+              className="rounded-full border border-border bg-white/70 px-4 py-2 text-center text-xs hover:bg-white"
             >
               View site
             </a>
           )}
           <button
             onClick={onSignOut}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white/70 px-4 py-2 text-xs hover:bg-white"
+            className="inline-flex items-center justify-center gap-1.5 rounded-full border border-border bg-white/70 px-4 py-2 text-xs hover:bg-white"
           >
             <LogOut className="h-3.5 w-3.5" /> Sign out
           </button>
         </div>
-      </header>
+      </aside>
 
-      {/* Tabs */}
-      <div className="mb-6 flex flex-wrap gap-2">
-        <TabButton
-          active={tab === "details"}
-          onClick={() => setTab("details")}
-          icon={Settings}
-        >
-          Details
-        </TabButton>
-        <TabButton
-          active={tab === "guests"}
-          onClick={() => setTab("guests")}
-          icon={Users}
-        >
-          Guests &amp; RSVPs
-        </TabButton>
-        <TabButton
-          active={tab === "seating"}
-          onClick={() => setTab("seating")}
-          icon={Eye}
-        >
-          Seating Plan
-        </TabButton>
-      </div>
-
+      {/* Content */}
+      <main className="min-w-0 flex-1 px-6 py-8 sm:px-10">
+        <div className="mx-auto max-w-3xl">
       {tab === "details" && (
         <DetailsAdmin wedding={wedding} onChange={onWeddingChange} />
       )}
+
+      {tab === "team" && <TeamAdmin wedding={wedding} />}
 
       {tab === "guests" && (
         <>
@@ -648,11 +647,13 @@ function WeddingAdmin({
       <p className="mt-8 flex items-center justify-center gap-1 text-center text-xs text-muted-foreground">
         Made with <Heart className="h-3 w-3 text-rose" /> — Rovty Wed
       </p>
-    </main>
+        </div>
+      </main>
+    </div>
   );
 }
 
-function TabButton({
+function NavItem({
   active,
   onClick,
   icon: Icon,
@@ -666,10 +667,12 @@ function TabButton({
   return (
     <button
       onClick={onClick}
-      className={`rounded-full px-5 py-2 text-xs font-medium transition-colors ${active ? "text-white shadow-gold" : "border border-border bg-white/70 hover:bg-white"}`}
+      className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm font-medium transition-colors ${
+        active ? "text-white shadow-gold" : "text-foreground hover:bg-white/70"
+      }`}
       style={active ? { background: "var(--gradient-gold)" } : undefined}
     >
-      <Icon className="mr-1.5 inline h-3.5 w-3.5" /> {children}
+      <Icon className="h-4 w-4 shrink-0" /> {children}
     </button>
   );
 }
@@ -757,6 +760,58 @@ function DetailsAdmin({
     onChange(data);
   };
 
+  // The slug is set once at creation (CreateWeddingForm) and never follows
+  // bride/groom edits afterward — this is the one deliberate, explicit way
+  // to change it, separate from editing names, because it's the URL anyone
+  // already sent the invitation to is using.
+  const [editingSlug, setEditingSlug] = useState(false);
+  const [slugInput, setSlugInput] = useState(wedding.slug);
+  const [slugBusy, setSlugBusy] = useState(false);
+  const [slugError, setSlugError] = useState<string | null>(null);
+
+  const startEditSlug = () => {
+    setSlugInput(wedding.slug);
+    setSlugError(null);
+    setEditingSlug(true);
+  };
+
+  const saveSlug = async () => {
+    const next = slugify(slugInput);
+    if (!next) {
+      setSlugError("Enter a link.");
+      return;
+    }
+    if (next === wedding.slug) {
+      setEditingSlug(false);
+      return;
+    }
+    if (
+      wedding.published &&
+      !confirm(
+        `Change your public link to wed.rovty.com/${next}? Anyone using the current link (wed.rovty.com/${wedding.slug}) — including any invitations already sent — will stop being able to open your invitation there.`,
+      )
+    ) {
+      return;
+    }
+    setSlugBusy(true);
+    setSlugError(null);
+    const { data, error } = await supabase
+      .from("weddings")
+      .update({ slug: next, updated_at: new Date().toISOString() })
+      .eq("id", wedding.id)
+      .select("*")
+      .single();
+    setSlugBusy(false);
+    if (error) {
+      setSlugError(
+        error.code === "23505" ? "That link is already taken — try another." : error.message,
+      );
+      return;
+    }
+    onChange(data);
+    setEditingSlug(false);
+  };
+
   const field = (
     key: keyof typeof form,
     label: string,
@@ -807,10 +862,60 @@ function DetailsAdmin({
               : "Unpublished"}
           </button>
         </div>
-        <p className="text-xs text-muted-foreground">
-          Public link:{" "}
-          <span className="font-mono">wed.rovty.com/{wedding.slug}</span>
-        </p>
+        {editingSlug ? (
+          <div>
+            <div className="flex items-center gap-1.5 rounded-xl border border-input bg-white/70 px-3 py-2 text-sm">
+              <span className="text-muted-foreground">wed.rovty.com/</span>
+              <input
+                autoFocus
+                value={slugInput}
+                onChange={(e) => setSlugInput(slugify(e.target.value))}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    saveSlug();
+                  }
+                  if (e.key === "Escape") setEditingSlug(false);
+                }}
+                className="min-w-0 flex-1 bg-transparent font-mono outline-none"
+              />
+            </div>
+            {slugError && (
+              <p className="mt-1.5 text-xs text-destructive">{slugError}</p>
+            )}
+            <div className="mt-2 flex items-center gap-2">
+              <button
+                type="button"
+                onClick={saveSlug}
+                disabled={slugBusy}
+                className="rounded-full px-4 py-1.5 text-xs font-medium text-white shadow-gold disabled:opacity-50"
+                style={{ background: "var(--gradient-gold)" }}
+              >
+                {slugBusy ? "Saving…" : "Save link"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setEditingSlug(false)}
+                className="rounded-full border border-border bg-white/70 px-4 py-1.5 text-xs hover:bg-white"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            Public link:{" "}
+            <span className="font-mono">wed.rovty.com/{wedding.slug}</span>
+            <button
+              type="button"
+              onClick={startEditSlug}
+              className="inline-flex items-center gap-1 rounded-full border border-border bg-white/70 px-2 py-0.5 hover:bg-white"
+              title="Change public link"
+            >
+              <Pencil className="h-3 w-3" /> Edit
+            </button>
+          </p>
+        )}
       </section>
 
       <form
@@ -862,6 +967,160 @@ function DetailsAdmin({
         </div>
       </form>
     </>
+  );
+}
+
+/* ── Team tab ──────────────────────────────────────────────────────── */
+
+type WeddingMember = {
+  id: string;
+  email: string;
+  created_at: string;
+};
+
+function TeamAdmin({ wedding }: { wedding: Wedding }) {
+  const [members, setMembers] = useState<WeddingMember[]>([]);
+  const [isOwner, setIsOwner] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [email, setEmail] = useState("");
+  const [inviting, setInviting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [invited, setInvited] = useState(false);
+
+  const load = useCallback(async () => {
+    const [{ data: userData }, { data: memberRows }] = await Promise.all([
+      supabase.auth.getUser(),
+      supabase
+        .from("wedding_members")
+        .select("id, email, created_at")
+        .eq("wedding_id", wedding.id)
+        .order("created_at", { ascending: false }),
+    ]);
+    setIsOwner(userData.user?.id === wedding.owner_id);
+    setMembers(memberRows ?? []);
+    setLoading(false);
+  }, [wedding.id, wedding.owner_id]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const invite = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setInviting(true);
+    setError(null);
+    setInvited(false);
+    const { data: session } = await supabase.auth.getSession();
+    const res = await fetch("/api/team", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.session?.access_token}`,
+      },
+      body: JSON.stringify({ wedding_id: wedding.id, email: email.trim() }),
+    });
+    const body = await res.json();
+    setInviting(false);
+    if (!res.ok) {
+      setError(body.error ?? "Could not send invite.");
+      return;
+    }
+    setEmail("");
+    setInvited(true);
+    setTimeout(() => setInvited(false), 3000);
+    await load();
+  };
+
+  const remove = async (member: WeddingMember) => {
+    if (!confirm(`Remove ${member.email} from your team? They'll lose access immediately.`)) return;
+    const { data: session } = await supabase.auth.getSession();
+    await fetch("/api/team", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.session?.access_token}`,
+      },
+      body: JSON.stringify({ wedding_id: wedding.id, member_id: member.id }),
+    });
+    await load();
+  };
+
+  if (loading) {
+    return <p className="text-sm text-muted-foreground">Loading…</p>;
+  }
+
+  return (
+    <div className="space-y-6">
+      <section className="glass-card rounded-3xl p-5">
+        <h2 className="font-display text-lg">Team</h2>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Invite the groom, bride, or your planner to edit this wedding — they
+          sign in with their own email, no shared login needed. They get the
+          same full editing access you do.
+        </p>
+
+        {isOwner ? (
+          <form onSubmit={invite} className="mt-4 flex flex-col gap-2 sm:flex-row">
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="their@email.com"
+              className="min-w-0 flex-1 rounded-xl border border-input bg-white/70 px-3 py-2 text-sm"
+            />
+            <button
+              type="submit"
+              disabled={inviting}
+              className="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-5 py-2 text-xs font-medium text-white shadow-gold disabled:opacity-50"
+              style={{ background: "var(--gradient-gold)" }}
+            >
+              <UserPlus className="h-3.5 w-3.5" /> {inviting ? "Sending…" : "Send invite"}
+            </button>
+          </form>
+        ) : (
+          <p className="mt-4 text-xs text-muted-foreground">
+            Only the wedding owner can invite or remove team members.
+          </p>
+        )}
+        {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
+        {invited && <p className="mt-2 text-xs text-emerald-600">Invite sent.</p>}
+      </section>
+
+      <section className="glass-card overflow-hidden rounded-3xl">
+        <header className="border-b border-border/60 px-5 py-3">
+          <h2 className="font-display text-lg">Members ({members.length})</h2>
+        </header>
+        {members.length === 0 ? (
+          <p className="p-6 text-center text-sm text-muted-foreground">
+            Just you so far — invite someone above to give them access.
+          </p>
+        ) : (
+          <ul className="divide-y divide-border/60">
+            {members.map((m) => (
+              <li key={m.id} className="flex items-center justify-between gap-3 px-5 py-3">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium">{m.email}</p>
+                  <p className="text-xs text-muted-foreground">
+                    Added {new Date(m.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+                {isOwner && (
+                  <button
+                    onClick={() => remove(m)}
+                    className="rounded-full border border-border bg-white/70 p-1.5 text-destructive hover:bg-white"
+                    title="Remove from team"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </div>
   );
 }
 

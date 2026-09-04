@@ -21,6 +21,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SsoRouteImport } from './routes/sso'
 import { Route as ThankYouRouteImport } from './routes/thank-you'
 import { Route as ThankyouRouteImport } from './routes/thankyou'
+import { Route as ApiTeamRouteImport } from './routes/api.team'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -82,6 +83,11 @@ const ThankyouRoute = ThankyouRouteImport.update({
   path: '/thankyou',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiTeamRoute = ApiTeamRouteImport.update({
+  id: '/api/team',
+  path: '/api/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -96,6 +102,7 @@ export interface FileRoutesByFullPath {
   '/sso': typeof SsoRoute
   '/thank-you': typeof ThankYouRoute
   '/thankyou': typeof ThankyouRoute
+  '/api/team': typeof ApiTeamRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/sso': typeof SsoRoute
   '/thank-you': typeof ThankYouRoute
   '/thankyou': typeof ThankyouRoute
+  '/api/team': typeof ApiTeamRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/sso': typeof SsoRoute
   '/thank-you': typeof ThankYouRoute
   '/thankyou': typeof ThankyouRoute
+  '/api/team': typeof ApiTeamRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/sso'
     | '/thank-you'
     | '/thankyou'
+    | '/api/team'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -155,6 +165,7 @@ export interface FileRouteTypes {
     | '/sso'
     | '/thank-you'
     | '/thankyou'
+    | '/api/team'
   id:
     | '__root__'
     | '/'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
     | '/sso'
     | '/thank-you'
     | '/thankyou'
+    | '/api/team'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -184,6 +196,7 @@ export interface RootRouteChildren {
   SsoRoute: typeof SsoRoute
   ThankYouRoute: typeof ThankYouRoute
   ThankyouRoute: typeof ThankyouRoute
+  ApiTeamRoute: typeof ApiTeamRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -272,6 +285,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ThankyouRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/team': {
+      id: '/api/team'
+      path: '/api/team'
+      fullPath: '/api/team'
+      preLoaderRoute: typeof ApiTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -288,6 +308,7 @@ const rootRouteChildren: RootRouteChildren = {
   SsoRoute: SsoRoute,
   ThankYouRoute: ThankYouRoute,
   ThankyouRoute: ThankyouRoute,
+  ApiTeamRoute: ApiTeamRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
