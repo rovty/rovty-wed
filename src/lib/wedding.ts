@@ -58,19 +58,31 @@ function toPublicWedding(row: {
   };
 }
 
-// There's no slug in the URL anywhere on the public site yet (only the
-// admin side is per-owner) — this deployment only ever serves one published
-// wedding today, so "the published one" is an unambiguous lookup. Once
-// there's real multi-tenant public routing (a slug segment in the URL) this
-// is the function to change to take that slug instead of guessing.
+const WEDDING_COLUMNS =
+  "slug, bride, groom, event_date, event_end, reception_date, reception_end, venue, hall, address, description";
+
+// Kept for the root `/` route — a convenience alias to "whichever wedding is
+// published" for this single-tenant deployment. The real, shareable public
+// URL is /$slug (fetchWeddingBySlug below), which is what the admin's own
+// "Public link" points guests at and what actually scales to more than one
+// customer sharing this Worker.
 export async function fetchPublishedWedding(): Promise<PublicWedding | null> {
   const { data, error } = await supabase
     .from("weddings")
-    .select(
-      "slug, bride, groom, event_date, event_end, reception_date, reception_end, venue, hall, address, description",
-    )
+    .select(WEDDING_COLUMNS)
     .eq("published", true)
     .limit(1)
+    .maybeSingle();
+  if (error || !data) return null;
+  return toPublicWedding(data);
+}
+
+export async function fetchWeddingBySlug(slug: string): Promise<PublicWedding | null> {
+  const { data, error } = await supabase
+    .from("weddings")
+    .select(WEDDING_COLUMNS)
+    .eq("slug", slug)
+    .eq("published", true)
     .maybeSingle();
   if (error || !data) return null;
   return toPublicWedding(data);
