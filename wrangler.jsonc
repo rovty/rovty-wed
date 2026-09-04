@@ -4,6 +4,18 @@
   // .output/server/ — this is NOT the file that actually gets deployed,
   // it's just where the Worker's real identity (its name, which Worker in
   // your Cloudflare account this build targets) comes from. Without a
-  // `name` here, Nitro invents one itself ("rovty-rovty-wed") instead. 
-  "name": "rovty-wed"
+  // `name` here, Nitro invents one itself ("rovty-rovty-wed") instead.
+  "name": "rovty-wed",
+  // Non-secret — same value as .env's SUPABASE_URL / VITE_SUPABASE_URL, just
+  // also readable by server routes (client.server.ts's supabaseAdmin reads
+  // process.env directly, it doesn't see Vite's import.meta.env). Was
+  // missing here entirely, which is why /sso threw "Missing Supabase
+  // environment variable(s): SUPABASE_URL" on every resolve — see
+  // rovty-dashboard/wrangler.jsonc for the same pattern.
+  // SUPABASE_SERVICE_ROLE_KEY is deliberately NOT here: set it with
+  // `wrangler secret put SUPABASE_SERVICE_ROLE_KEY` for production, and in
+  // `.dev.vars` (gitignored) for local `wrangler dev`.
+  "vars": {
+    "SUPABASE_URL": "https://bewmgfluzrypdcgnlxvg.supabase.co"
+  }
 }
