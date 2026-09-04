@@ -36,6 +36,10 @@ export type Database = {
           invite_message_before: string | null;
           invite_message_after: string | null;
           template: string;
+          couple_photo_url: string | null;
+          venue_photo_url: string | null;
+          maps_url: string | null;
+          music_url: string | null;
           published: boolean;
           created_at: string;
           updated_at: string;
@@ -57,6 +61,10 @@ export type Database = {
           invite_message_before?: string | null;
           invite_message_after?: string | null;
           template?: string;
+          couple_photo_url?: string | null;
+          venue_photo_url?: string | null;
+          maps_url?: string | null;
+          music_url?: string | null;
           published?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -78,6 +86,10 @@ export type Database = {
           invite_message_before?: string | null;
           invite_message_after?: string | null;
           template?: string;
+          couple_photo_url?: string | null;
+          venue_photo_url?: string | null;
+          maps_url?: string | null;
+          music_url?: string | null;
           published?: boolean;
           created_at?: string;
           updated_at?: string;

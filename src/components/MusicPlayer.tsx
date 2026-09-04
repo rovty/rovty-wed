@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { Music2, VolumeX } from "lucide-react";
 
-const MUSIC_SRC =
+// Default track, used until a wedding uploads its own (Details tab).
+const DEFAULT_MUSIC_SRC =
   "https://raw.githubusercontent.com/emiresh/wedrsvp/main/music.mp3";
 
-export function MusicPlayer() {
+export function MusicPlayer({ src }: { src?: string | null } = {}) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState(false);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const a = new Audio(MUSIC_SRC);
+    const a = new Audio(src || DEFAULT_MUSIC_SRC);
     a.loop = true;
     a.volume = 0.2;
     a.preload = "auto";
@@ -45,7 +46,7 @@ export function MusicPlayer() {
       a.pause();
       audioRef.current = null;
     };
-  }, []);
+  }, [src]);
 
   const toggle = () => {
     const a = audioRef.current;

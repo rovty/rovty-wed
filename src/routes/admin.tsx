@@ -15,10 +15,12 @@ import {
   Settings,
   Pencil,
   UserPlus,
+  Music2,
+  Image as ImageIcon,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
-import { WEDDING_TEMPLATES } from "@/lib/wedding";
+import { WEDDING_TEMPLATES, uploadWeddingMedia, type WeddingMediaKind } from "@/lib/wedding";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -758,9 +760,61 @@ function DetailsAdmin({
     invite_message_before: wedding.invite_message_before ?? "",
     invite_message_after: wedding.invite_message_after ?? "",
     template: wedding.template,
+    maps_url: wedding.maps_url ?? "",
   });
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [uploading, setUploading] = useState<WeddingMediaKind | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  // Supabase's typed .update() rejects a computed `{ [column]: value }` key
+  // (it can't verify it against the row type) — this builds the same
+  // {column: value} shape through a switch instead, so each branch assigns
+  // a literal, statically-known column name.
+  const mediaUpdate = (kind: WeddingMediaKind, value: string | null) => {
+    switch (kind) {
+      case "couple":
+        return { couple_photo_url: value };
+      case "venue":
+        return { venue_photo_url: value };
+      case "music":
+        return { music_url: value };
+    }
+  };
+
+  const upload = async (kind: WeddingMediaKind, file: File) => {
+    setUploading(kind);
+    setUploadError(null);
+    try {
+      const url = await uploadWeddingMedia(wedding.id, kind, file);
+      const { data, error } = await supabase
+        .from("weddings")
+        .update({ ...mediaUpdate(kind, url), updated_at: new Date().toISOString() })
+        .eq("id", wedding.id)
+        .select("*")
+        .single();
+      if (error) throw error;
+      onChange(data);
+    } catch (e) {
+      setUploadError(e instanceof Error ? e.message : "Upload failed.");
+    } finally {
+      setUploading(null);
+    }
+  };
+
+  const removeMedia = async (kind: WeddingMediaKind) => {
+    const { data, error } = await supabase
+      .from("weddings")
+      .update({ ...mediaUpdate(kind, null), updated_at: new Date().toISOString() })
+      .eq("id", wedding.id)
+      .select("*")
+      .single();
+    if (error) {
+      setUploadError(error.message);
+      return;
+    }
+    onChange(data);
+  };
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -779,6 +833,7 @@ function DetailsAdmin({
         invite_message_before: form.invite_message_before.trim() || null,
         invite_message_after: form.invite_message_after.trim() || null,
         template: form.template,
+        maps_url: form.maps_url.trim() || null,
         updated_at: new Date().toISOString(),
       })
       .eq("id", wedding.id)
@@ -1057,7 +1112,49 @@ function DetailsAdmin({
           {field("hall", "Hall / room")}
         </div>
         {field("address", "Address")}
+        {field("maps_url", "Google Maps link (optional)")}
+        <p className="-mt-2.5 text-[11px] text-muted-foreground">
+          Paste a link from Google Maps (Share → Copy link). Leave blank to
+          search by address/venue instead.
+        </p>
         {field("description", "Description", { textarea: true })}
+
+        <div className="border-t border-border pt-4">
+          <h3 className="font-display text-base">Photos &amp; music</h3>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Uploads save immediately — no need to hit "Save changes" for these.
+          </p>
+          <div className="mt-3 space-y-3">
+            <MediaUpload
+              label="Couple photo"
+              accept="image/*"
+              kind="couple"
+              url={wedding.couple_photo_url}
+              uploading={uploading === "couple"}
+              onUpload={(f) => upload("couple", f)}
+              onRemove={() => removeMedia("couple")}
+            />
+            <MediaUpload
+              label="Venue photo"
+              accept="image/*"
+              kind="venue"
+              url={wedding.venue_photo_url}
+              uploading={uploading === "venue"}
+              onUpload={(f) => upload("venue", f)}
+              onRemove={() => removeMedia("venue")}
+            />
+            <MediaUpload
+              label="Background music"
+              accept="audio/*"
+              kind="music"
+              url={wedding.music_url}
+              uploading={uploading === "music"}
+              onUpload={(f) => upload("music", f)}
+              onRemove={() => removeMedia("music")}
+            />
+          </div>
+          {uploadError && <p className="mt-2 text-xs text-destructive">{uploadError}</p>}
+        </div>
 
         <div className="border-t border-border pt-4">
           <h3 className="font-display text-base">WhatsApp invitation message</h3>
@@ -1091,6 +1188,82 @@ function DetailsAdmin({
         </div>
       </form>
     </>
+  );
+}
+
+function MediaUpload({
+  label,
+  accept,
+  kind,
+  url,
+  uploading,
+  onUpload,
+  onRemove,
+}: {
+  label: string;
+  accept: string;
+  kind: WeddingMediaKind;
+  url: string | null;
+  uploading: boolean;
+  onUpload: (file: File) => void;
+  onRemove: () => void;
+}) {
+  const inputId = `media-upload-${kind}`;
+  return (
+    <div className="flex items-center gap-3 rounded-xl border border-input bg-white p-2.5">
+      {kind === "music" ? (
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-muted text-muted-foreground">
+          <Music2 className="h-4 w-4" />
+        </div>
+      ) : url ? (
+        <img src={url} alt="" className="h-10 w-10 shrink-0 rounded-lg object-cover" />
+      ) : (
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-muted text-muted-foreground">
+          <ImageIcon className="h-4 w-4" />
+        </div>
+      )}
+
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-medium">{label}</p>
+        <p className="truncate text-xs text-muted-foreground">
+          {uploading ? "Uploading…" : url ? "Uploaded — using your own" : "Using the default"}
+        </p>
+        {kind === "music" && url && !uploading && (
+          <audio controls src={url} className="mt-1.5 h-8 w-full max-w-[220px]" />
+        )}
+      </div>
+
+      <div className="flex shrink-0 items-center gap-1.5">
+        <label
+          htmlFor={inputId}
+          className="cursor-pointer rounded-full border border-border bg-white px-3 py-1.5 text-xs hover:bg-slate-50"
+        >
+          {url ? "Change" : "Upload"}
+        </label>
+        <input
+          id={inputId}
+          type="file"
+          accept={accept}
+          className="hidden"
+          disabled={uploading}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            e.target.value = "";
+            if (file) onUpload(file);
+          }}
+        />
+        {url && (
+          <button
+            type="button"
+            onClick={onRemove}
+            className="rounded-full border border-border bg-white p-1.5 text-destructive hover:bg-slate-50"
+            title={`Remove ${label.toLowerCase()}`}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        )}
+      </div>
+    </div>
   );
 }
 

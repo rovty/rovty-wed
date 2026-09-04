@@ -59,12 +59,12 @@ export function WeddingSite({ wedding }: { wedding: PublicWedding }) {
   return (
     <main className={`theme-${wedding.template} relative overflow-x-hidden`}>
       {decorative && <RosePetals />}
-      <MusicPlayer />
+      <MusicPlayer src={wedding.musicUrl} />
       <InvitationOpener wedding={wedding} />
 
       <Hero wedding={wedding} decorative={decorative} />
       <Details wedding={wedding} decorative={decorative} />
-      <Gallery />
+      <Gallery wedding={wedding} />
       <CalendarSection wedding={wedding} decorative={decorative} />
       <RsvpCta wedding={wedding} />
       <SeatingCta wedding={wedding} />
@@ -166,12 +166,12 @@ function Details({ wedding, decorative }: { wedding: PublicWedding; decorative: 
   );
 }
 
-function Gallery() {
+function Gallery({ wedding }: { wedding: PublicWedding }) {
   return (
     <section className="relative px-5 py-4">
       <div className="relative z-20 mx-auto max-w-xl">
         <img
-          src={coupleImg}
+          src={wedding.couplePhotoUrl ?? coupleImg}
           alt="The couple"
           loading="lazy"
           className="mx-auto w-full max-w-md object-contain drop-shadow-[0_16px_32px_rgba(0,0,0,0.12)]"
@@ -306,8 +306,13 @@ function SeatingCta({ wedding }: { wedding: PublicWedding }) {
 }
 
 function Location({ wedding }: { wedding: PublicWedding }) {
-  if (!wedding.venue && !wedding.address) return null;
-  const q = encodeURIComponent(wedding.address ?? wedding.venue ?? "");
+  if (!wedding.venue && !wedding.address && !wedding.mapsUrl && !wedding.venuePhotoUrl) return null;
+  // A custom maps link (Details tab) always wins — it's a real link to the
+  // actual place, not a guess. The search-query fallback only exists for
+  // weddings that haven't set one.
+  const mapsHref =
+    wedding.mapsUrl ||
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(wedding.address ?? wedding.venue ?? "")}`;
   return (
     <section className="relative px-5 py-10">
       <div className="relative z-20 mx-auto max-w-xl">
@@ -321,13 +326,13 @@ function Location({ wedding }: { wedding: PublicWedding }) {
         </div>
 
         <a
-          href={`https://www.google.com/maps/search/?api=1&query=${q}`}
+          href={mapsHref}
           target="_blank"
           rel="noreferrer"
           className="mt-6 block overflow-hidden rounded-3xl shadow-soft glass-card p-1.5"
         >
           <img
-            src={venueImg}
+            src={wedding.venuePhotoUrl ?? venueImg}
             alt={wedding.venue ?? "The venue"}
             loading="lazy"
             className="h-72 w-full rounded-2xl object-cover"
@@ -335,7 +340,7 @@ function Location({ wedding }: { wedding: PublicWedding }) {
         </a>
 
         <a
-          href={`https://www.google.com/maps/search/?api=1&query=${q}`}
+          href={mapsHref}
           target="_blank"
           rel="noreferrer"
           className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border border-border bg-white/60 px-5 py-3 text-sm font-medium text-foreground backdrop-blur hover:bg-white"

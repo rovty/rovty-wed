@@ -43,6 +43,10 @@ export type PublicWedding = {
   address: string | null;
   description: string;
   template: WeddingTemplate;
+  couplePhotoUrl: string | null;
+  venuePhotoUrl: string | null;
+  mapsUrl: string | null;
+  musicUrl: string | null;
 };
 
 function toPublicWedding(row: {
@@ -58,6 +62,10 @@ function toPublicWedding(row: {
   address: string | null;
   description: string | null;
   template: string;
+  couple_photo_url: string | null;
+  venue_photo_url: string | null;
+  maps_url: string | null;
+  music_url: string | null;
 }): PublicWedding {
   const title = `${row.groom} & ${row.bride} Wedding`;
   return {
@@ -76,11 +84,44 @@ function toPublicWedding(row: {
       row.description ??
       `Join us as we celebrate the wedding of ${row.groom} & ${row.bride}.`,
     template: isWeddingTemplate(row.template) ? row.template : "classic",
+    couplePhotoUrl: row.couple_photo_url,
+    venuePhotoUrl: row.venue_photo_url,
+    mapsUrl: row.maps_url,
+    musicUrl: row.music_url,
   };
 }
 
 const WEDDING_COLUMNS =
-  "slug, bride, groom, event_date, event_end, reception_date, reception_end, venue, hall, address, description, template";
+  "slug, bride, groom, event_date, event_end, reception_date, reception_end, venue, hall, address, description, template, couple_photo_url, venue_photo_url, maps_url, music_url";
+
+// Couple photo, venue photo, and background music, uploaded from the
+// Details tab. Storage RLS (20260904070000_wedding_media.sql) keys off the
+// object path's first folder segment being the wedding's id — that's the
+// whole access-control story, so the path shape here isn't cosmetic.
+export type WeddingMediaKind = "couple" | "venue" | "music";
+const MEDIA_EXT_FALLBACK: Record<WeddingMediaKind, string> = {
+  couple: "jpg",
+  venue: "jpg",
+  music: "mp3",
+};
+
+export async function uploadWeddingMedia(
+  weddingId: string,
+  kind: WeddingMediaKind,
+  file: File,
+): Promise<string> {
+  const ext = file.name.split(".").pop()?.toLowerCase() || MEDIA_EXT_FALLBACK[kind];
+  const path = `${weddingId}/${kind}.${ext}`;
+  const { error } = await supabase.storage
+    .from("wedding-media")
+    .upload(path, file, { upsert: true, contentType: file.type || undefined });
+  if (error) throw error;
+  const { data } = supabase.storage.from("wedding-media").getPublicUrl(path);
+  // Upsert keeps the same URL across re-uploads — cache-bust with a query
+  // param so a replaced photo/track actually shows up instead of the
+  // browser (or a CDN) serving the old cached response for that URL.
+  return `${data.publicUrl}?v=${Date.now()}`;
+}
 
 // Kept for the root `/` route — a convenience alias to "whichever wedding is
 // published" for this single-tenant deployment. The real, shareable public
