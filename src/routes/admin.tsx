@@ -488,7 +488,7 @@ function WeddingAdmin({
       <main className="min-w-0 flex-1 px-6 py-8 sm:px-10">
         <div className="mx-auto max-w-3xl">
       {tab === "details" && (
-        <DetailsAdmin wedding={wedding} onChange={onWeddingChange} />
+        <DetailsAdmin wedding={wedding} onChange={onWeddingChange} inviteUrl={inviteUrl} />
       )}
 
       {tab === "team" && <TeamAdmin wedding={wedding} />}
@@ -741,9 +741,11 @@ function toDatetimeLocalValue(iso: string) {
 function DetailsAdmin({
   wedding,
   onChange,
+  inviteUrl,
 }: {
   wedding: Wedding;
   onChange: (w: Wedding) => void;
+  inviteUrl: string;
 }) {
   const [form, setForm] = useState({
     bride: wedding.bride,
@@ -893,23 +895,39 @@ function DetailsAdmin({
       <section className="glass-card rounded-3xl p-5">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-display text-lg">Publish</h2>
-          <button
-            onClick={togglePublish}
-            className={`inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-xs font-medium shadow-sm transition-colors ${
-              wedding.published
-                ? "bg-emerald-600 text-white hover:bg-emerald-700"
-                : "border border-border bg-white hover:bg-slate-50"
-            }`}
-          >
-            {wedding.published ? (
-              <Eye className="h-3.5 w-3.5" />
-            ) : (
-              <EyeOff className="h-3.5 w-3.5" />
+          <div className="flex items-center gap-2">
+            {wedding.published && (
+              // Plain <a>, not <Link>: the public /$slug route is type-safe
+              // now, but this stays a plain anchor so it always opens
+              // whatever's actually live rather than a client-side route
+              // match that could disagree with it.
+              <a
+                href={inviteUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-xs font-medium hover:bg-slate-50"
+              >
+                <ArrowRight className="h-3.5 w-3.5" /> View site
+              </a>
             )}
-            {wedding.published
-              ? "Published — guests can see it"
-              : "Unpublished"}
-          </button>
+            <button
+              onClick={togglePublish}
+              className={`inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-xs font-medium shadow-sm transition-colors ${
+                wedding.published
+                  ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                  : "border border-border bg-white hover:bg-slate-50"
+              }`}
+            >
+              {wedding.published ? (
+                <Eye className="h-3.5 w-3.5" />
+              ) : (
+                <EyeOff className="h-3.5 w-3.5" />
+              )}
+              {wedding.published
+                ? "Published — guests can see it"
+                : "Unpublished"}
+            </button>
+          </div>
         </div>
         {editingSlug ? (
           <div>
@@ -993,15 +1011,25 @@ function DetailsAdmin({
                     : "border-border hover:border-[var(--admin-accent)]/50"
                 }`}
               >
-                <div className={`theme-${t.id} h-14 w-full`}>
-                  <div
-                    className="flex h-full w-full items-center justify-center"
-                    style={{ background: "var(--gradient-gold)" }}
-                  >
-                    <span className="font-display text-[10px] uppercase tracking-[0.2em] text-white/90">
-                      Aa
-                    </span>
-                  </div>
+                <div className={`theme-${t.id} flex h-24 w-full flex-col items-center justify-center gap-1`}>
+                  <span className="font-script text-[10px] italic text-rose">
+                    Together forever
+                  </span>
+                  <span className="font-display text-base text-foreground">
+                    A{" "}
+                    <span
+                      style={{
+                        background: "var(--gradient-gold)",
+                        WebkitBackgroundClip: "text",
+                        backgroundClip: "text",
+                        color: "transparent",
+                      }}
+                    >
+                      &amp;
+                    </span>{" "}
+                    B
+                  </span>
+                  <span className="h-px w-8" style={{ background: "var(--gradient-gold)" }} />
                 </div>
                 <div className="p-2.5">
                   <p className="flex items-center gap-1.5 text-xs font-semibold">

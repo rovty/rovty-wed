@@ -457,7 +457,11 @@
 }
 
 /* ───────────────────────────────────────────────────────────────────────
-   Admin portal — deliberately not the invitation's romantic/floral theme.
+   Admin portal — its own elegant rose-and-gold dashboard, distinct from
+   any one invitation template but still unmistakably a wedding product:
+   solid cards (no glassmorphism blur, so it reads as a real dashboard,
+   not a floating decoration) with warm ivory backgrounds, a rose-gold
+   accent, and the same display serif the invitations use for headings.
    The invitation's components (glass-card, font-display, the gold gradient
    buttons, etc.) all read from a handful of CSS custom properties rather
    than hardcoding values — redefining those properties inside .admin-portal
@@ -467,32 +471,29 @@
    live in a lower-priority cascade layer.
    ─────────────────────────────────────────────────────────────────────── */
 .admin-portal {
-  --admin-accent: oklch(0.48 0.14 264);
-  --admin-accent-hover: oklch(0.42 0.14 264);
-  --admin-bg: oklch(0.98 0.003 260);
-  --admin-border: oklch(0.9 0.006 260);
+  --admin-accent: oklch(0.62 0.13 30);
+  --admin-accent-deep: oklch(0.52 0.12 35);
+  --admin-bg: oklch(0.98 0.008 60);
+  --admin-border: oklch(0.9 0.02 45);
 
-  --font-display: var(--font-sans);
   --font-script: var(--font-sans);
-  --gradient-gold: var(--admin-accent);
+  --gradient-gold: linear-gradient(135deg, oklch(0.78 0.1 55), var(--admin-accent));
   --rose: var(--admin-accent);
   --gold: var(--admin-accent);
-  --shadow-gold: 0 1px 2px color-mix(in oklab, black 8%, transparent);
-  --shadow-soft: 0 1px 3px color-mix(in oklab, black 6%, transparent);
+  --shadow-gold: 0 8px 20px -8px color-mix(in oklab, var(--admin-accent) 45%, transparent);
+  --shadow-soft: 0 2px 12px -4px color-mix(in oklab, var(--admin-accent) 12%, transparent);
   --border: var(--admin-border);
   --ring: var(--admin-accent);
 
   min-height: 100vh;
   background: var(--admin-bg);
-  color: oklch(0.22 0.01 260);
+  color: oklch(0.3 0.02 40);
 }
 .admin-portal h1,
 .admin-portal h2,
 .admin-portal h3,
 .admin-portal h4 {
-  font-family: var(--font-sans);
-  letter-spacing: normal;
-  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 .admin-portal .glass-card {
   background: white;
