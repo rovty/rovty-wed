@@ -26,11 +26,28 @@ export const Route = createFileRoute("/auth")({
 // no product_access check at all — this page exists only to send people
 // back to the dashboard, and to explain why if they arrived via a failed
 // /sso redirect.
+
+// Keyed by every reason string /sso's failure() can be called with — both
+// its own local checks (missing_token, resolve_unreachable,
+// session_creation_failed) and whatever /api/sso/resolve returns verbatim
+// (e.g. "Token already used", "Invalid or expired token"). Deliberately not
+// shown to the person as-is: those are backend/implementation language
+// ("token", "nonce", "resolve") that means nothing to someone signing in to
+// look at their wedding site, so every known reason gets mapped to plain
+// copy here, and the fallback below is generic rather than an echo.
 const SSO_ERROR_MESSAGES: Record<string, string> = {
   missing_token:
-    "That link is missing its access token — try opening Rovty Wed from your dashboard again.",
-  invalid_token:
-    "That link is invalid — try opening Rovty Wed from your dashboard again.",
+    "That link looks incomplete — try opening Rovty Wed from your dashboard again.",
+  "Invalid or expired token":
+    "That link has expired — go back to your dashboard and open Rovty Wed again.",
+  "Token already used":
+    "That link has already been used — go back to your dashboard and open Rovty Wed again.",
+  "Not active for this product":
+    "Your account doesn't currently have Rovty Wed access. Check your dashboard, or contact us if that looks wrong.",
+  "User not found":
+    "We couldn't find your account. Try signing in again from your dashboard.",
+  "Account has no email":
+    "We couldn't find your account. Try signing in again from your dashboard.",
   resolve_unreachable:
     "Couldn't reach Rovty to verify your access. Try again in a moment.",
   session_creation_failed:
@@ -40,11 +57,7 @@ const SSO_ERROR_MESSAGES: Record<string, string> = {
 function describeSsoError(reason: string): string {
   return (
     SSO_ERROR_MESSAGES[reason] ??
-    // Anything else is a reason string echoed straight from
-    // /api/sso/resolve (e.g. "Not active for this product", "Token already
-    // used", "Invalid or expired token") — already written to be shown to
-    // the person it happened to.
-    reason.replace(/_/g, " ")
+    "Something went wrong signing you in. Go back to your dashboard and open Rovty Wed again."
   );
 }
 
