@@ -14,7 +14,7 @@ function Ornament() {
   );
 }
 
-export function InlineRsvp() {
+export function InlineRsvp({ slug, coupleNames }: { slug: string; coupleNames: string }) {
   const [guest, setGuest] = useState<Guest | null>(null);
   const [checked, setChecked] = useState(false);
   const [attending, setAttending] = useState<"yes" | "no" | null>(null);
@@ -30,13 +30,13 @@ export function InlineRsvp() {
       return;
     }
     (async () => {
-      const { data, error } = await supabase.rpc("get_guest_by_code", { _code: code });
+      const { data, error } = await supabase.rpc("get_guest_by_code", { _slug: slug, _code: code });
       if (!error && data && (data as Guest[]).length > 0) {
         setGuest((data as Guest[])[0]);
       }
       setChecked(true);
     })();
-  }, []);
+  }, [slug]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,6 +44,7 @@ export function InlineRsvp() {
     setSubmitting(true);
     setError(null);
     const { error } = await supabase.rpc("submit_rsvp", {
+      _slug: slug,
       _code: guest.code,
       _attending: attending === "yes",
       _message: message || "",
@@ -96,7 +97,7 @@ export function InlineRsvp() {
             : "We'll miss you dearly. Thank you for letting us know."}
         </p>
         <p className="mt-5 font-script text-lg italic text-rose">
-          With love, Iresh & Asha
+          With love, {coupleNames}
         </p>
       </div>
     );

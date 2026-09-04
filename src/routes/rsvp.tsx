@@ -1,13 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Heart, Check, X, Sparkles, ChevronLeft } from "lucide-react";
 import { RosePetals } from "@/components/RosePetals";
 import { RoseCorner } from "@/components/RoseCorner";
 import { MusicPlayer } from "@/components/MusicPlayer";
-import { findGuest } from "@/lib/guests";
-import { WEDDING } from "@/lib/wedding";
+import { supabase } from "@/integrations/supabase/client";
+import { fetchPublishedWedding, formatLongDate, type PublicWedding } from "@/lib/wedding";
+
+type Guest = { code: string; name: string; title: string | null; seats: number };
 
 const searchSchema = z.object({
   code: fallback(z.string().optional(), undefined),
@@ -15,13 +17,21 @@ const searchSchema = z.object({
 
 export const Route = createFileRoute("/rsvp")({
   validateSearch: zodValidator(searchSchema),
-  head: () => ({
-    meta: [
-      { title: "RSVP - Iresh & Asha" },
-      { name: "description", content: "RSVP to the wedding of Iresh & Asha on 26 August 2026." },
-      { name: "robots", content: "noindex" },
-    ],
-  }),
+  loader: () => fetchPublishedWedding(),
+  head: ({ loaderData }) => {
+    const wedding = loaderData as PublicWedding | null;
+    const names = wedding ? `${wedding.groom} & ${wedding.bride}` : "the couple";
+    return {
+      meta: [
+        { title: `RSVP - ${names}` },
+        {
+          name: "description",
+          content: wedding ? `RSVP to the wedding of ${names} on ${formatLongDate(wedding.date)}.` : "RSVP to the wedding.",
+        },
+        { name: "robots", content: "noindex" },
+      ],
+    };
+  },
   component: RsvpPage,
 });
 
@@ -36,8 +46,24 @@ function Ornament() {
 }
 
 function RsvpPage() {
+  const wedding = Route.useLoaderData();
   const { code } = Route.useSearch();
-  const guest = findGuest(code);
+  const [guest, setGuest] = useState<Guest | null>(null);
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    if (!wedding || !code) {
+      setChecked(true);
+      return;
+    }
+    setChecked(false);
+    supabase
+      .rpc("get_guest_by_code", { _slug: wedding.slug, _code: code })
+      .then(({ data, error }) => {
+        setGuest(!error && data && (data as Guest[]).length > 0 ? (data as Guest[])[0] : null);
+        setChecked(true);
+      });
+  }, [wedding, code]);
 
   return (
     <main className="relative min-h-[100svh] overflow-x-hidden px-5 py-10">
@@ -55,7 +81,15 @@ function RsvpPage() {
           <ChevronLeft className="h-3.5 w-3.5" /> Back to invitation
         </Link>
 
-        {!guest ? <InvalidCode /> : <RsvpForm guest={guest} />}
+        {!wedding || !checked ? (
+          <div className="glass-card mt-10 rounded-3xl p-8 text-center text-sm text-muted-foreground">
+            Loading…
+          </div>
+        ) : !guest ? (
+          <InvalidCode />
+        ) : (
+          <RsvpForm wedding={wedding} guest={guest} />
+        )}
       </div>
     </main>
   );
@@ -70,34 +104,33 @@ function InvalidCode() {
         Please use the personal invitation link sent to you. Each guest has a
         unique code that lets us greet you by name.
       </p>
-      <Link
-        to="/rsvp"
-        search={{ code: "DEMO" }}
-        className="mt-6 inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-medium text-white shadow-gold"
-        style={{ background: "var(--gradient-gold)" }}
-      >
-        Try a demo invitation
-      </Link>
     </div>
   );
 }
 
-function RsvpForm({ guest }: { guest: ReturnType<typeof findGuest> & {} }) {
+function RsvpForm({ wedding, guest }: { wedding: PublicWedding; guest: Guest }) {
   const [attending, setAttending] = useState<"yes" | "no" | null>(null);
-  
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!attending) return;
-    // In a real app we'd POST to a server fn. For now, persist locally.
-    try {
-      localStorage.setItem(
-        "rsvp:last",
-        JSON.stringify({ name: guest.name, attending, message, at: Date.now() }),
-      );
-    } catch {}
+    setSubmitting(true);
+    setError(null);
+    const { error } = await supabase.rpc("submit_rsvp", {
+      _slug: wedding.slug,
+      _code: guest.code,
+      _attending: attending === "yes",
+      _message: message || "",
+    });
+    setSubmitting(false);
+    if (error) {
+      setError("Could not send your response. Please try again.");
+      return;
+    }
     setSubmitted(true);
   };
 
@@ -118,7 +151,7 @@ function RsvpForm({ guest }: { guest: ReturnType<typeof findGuest> & {} }) {
             : "We'll miss you dearly. Thank you for letting us know."}
         </p>
         <p className="mt-6 font-script text-xl italic text-rose">
-          With love, Iresh & Asha
+          With love, {wedding.groom} & {wedding.bride}
         </p>
       </div>
     );
@@ -137,9 +170,9 @@ function RsvpForm({ guest }: { guest: ReturnType<typeof findGuest> & {} }) {
           {guest.name}
         </h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          {WEDDING.groom} & {WEDDING.bride} request the pleasure of your company
+          {wedding.groom} & {wedding.bride} request the pleasure of your company
         </p>
-        <p className="mt-1 font-script text-lg italic">26 August 2026</p>
+        <p className="mt-1 font-script text-lg italic">{formatLongDate(wedding.date)}</p>
       </div>
 
       <div className="mt-7">
@@ -178,13 +211,17 @@ function RsvpForm({ guest }: { guest: ReturnType<typeof findGuest> & {} }) {
         </div>
       )}
 
+      {error && (
+        <p className="mt-3 text-center text-xs text-destructive">{error}</p>
+      )}
+
       <button
         type="submit"
-        disabled={!attending}
+        disabled={!attending || submitting}
         className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-medium text-white shadow-gold transition-transform hover:scale-[1.01] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
         style={{ background: "var(--gradient-gold)" }}
       >
-        <Heart className="h-4 w-4" /> Send Response
+        <Heart className="h-4 w-4" /> {submitting ? "Sending…" : "Send Response"}
       </button>
     </form>
   );

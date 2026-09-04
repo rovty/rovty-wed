@@ -71,6 +71,26 @@ function slugify(input: string) {
     .slice(0, 63);
 }
 
+// Used by copyInvitation() only until the owner writes their own wording in
+// the Details tab (invite_message_before/after) — keeps the copy button
+// useful before anyone's customized anything.
+function defaultInvitationMessage(wedding: Wedding, url: string) {
+  const eventDate = new Date(wedding.event_date);
+  return `*We're getting married!* 💍
+
+With joyful hearts, we invite you to celebrate our wedding.
+
+🗓️ *${eventDate.toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}*
+🕘 *${eventDate.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })} onwards*
+${wedding.venue ? `📍 *${wedding.venue}*\n` : ""}
+💌 *View your invitation & RSVP:*
+${url}
+
+We can't wait to celebrate with you!
+
+*${wedding.bride} & ${wedding.groom}* 💕`;
+}
+
 function AdminPage() {
   const navigate = useNavigate();
   const [ready, setReady] = useState(false);
@@ -354,20 +374,16 @@ function WeddingAdmin({
 
   const copyInvitation = async (code: string) => {
     const url = `${inviteUrl}?code=${code}`;
-    const eventDate = new Date(wedding.event_date);
-    const message = `*We're getting married!* 💍
-
-With joyful hearts, we invite you to celebrate our wedding.
-
-🗓️ *${eventDate.toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}*
-🕘 *${eventDate.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })} onwards*
-${wedding.venue ? `📍 *${wedding.venue}*\n` : ""}
-💌 *View your invitation & RSVP:*
-${url}
-
-We can't wait to celebrate with you!
-
-*${wedding.bride} & ${wedding.groom}* 💕`;
+    const before = wedding.invite_message_before?.trim();
+    const after = wedding.invite_message_after?.trim();
+    // The link is always spliced in here, never part of either saved field —
+    // that's what makes it a fixed placeholder rather than editable text.
+    // Until the owner sets their own wording (Details tab), fall back to the
+    // built-in template so this button keeps working out of the box.
+    const message =
+      before || after
+        ? [before, url, after].filter(Boolean).join("\n\n")
+        : defaultInvitationMessage(wedding, url);
     await navigator.clipboard.writeText(message);
   };
 
@@ -687,6 +703,8 @@ function DetailsAdmin({
     hall: wedding.hall ?? "",
     address: wedding.address ?? "",
     description: wedding.description ?? "",
+    invite_message_before: wedding.invite_message_before ?? "",
+    invite_message_after: wedding.invite_message_after ?? "",
   });
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -705,6 +723,8 @@ function DetailsAdmin({
         hall: form.hall.trim() || null,
         address: form.address.trim() || null,
         description: form.description.trim() || null,
+        invite_message_before: form.invite_message_before.trim() || null,
+        invite_message_after: form.invite_message_after.trim() || null,
         updated_at: new Date().toISOString(),
       })
       .eq("id", wedding.id)
@@ -809,6 +829,26 @@ function DetailsAdmin({
         </div>
         {field("address", "Address")}
         {field("description", "Description", { textarea: true })}
+
+        <div className="border-t border-border pt-4">
+          <h3 className="font-display text-base">WhatsApp invitation message</h3>
+          <p className="mt-1 text-xs text-muted-foreground">
+            What the "Message" button on a guest copies to your clipboard.
+            Their personal invitation link is always inserted between these
+            two — it isn't part of either box and can't be edited here.
+          </p>
+          <div className="mt-3 space-y-2">
+            {field("invite_message_before", "Message before the link", { textarea: true })}
+            <div className="rounded-xl border border-dashed border-border bg-muted/40 px-3 py-2 text-center text-xs text-muted-foreground">
+              🔗 Guest's personal invitation link (added automatically)
+            </div>
+            {field("invite_message_after", "Message after the link", { textarea: true })}
+          </div>
+          <p className="mt-2 text-[11px] text-muted-foreground">
+            Leave both blank to use our default WhatsApp message instead.
+          </p>
+        </div>
+
         <div className="flex items-center gap-3">
           <button
             type="submit"

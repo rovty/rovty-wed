@@ -1,28 +1,33 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { weddingPhoto, weddingDate, coupleNames } from "@/lib/wedding-config";
+import { weddingPhoto } from "@/lib/wedding-config";
+import { fetchPublishedWedding, formatLongDate, type PublicWedding } from "@/lib/wedding";
 import { Reveal } from "@/components/wedding/Reveal";
 import { FloralDivider, FloralCorner, RoseBud } from "@/components/wedding/Floral";
 
 export const Route = createFileRoute("/thankyou")({
-  head: () => ({
-    meta: [
-      { title: "Thank You — Iresh & Asha ♡ 26 August 2026" },
-      {
-        name: "description",
-        content:
-          "A heartfelt thank you from Iresh & Asha for being part of our wedding day, 26 August 2026.",
-      },
-      { property: "og:title", content: "Thank You — Iresh & Asha" },
-      {
-        property: "og:description",
-        content:
-          "Thank you for being part of our special day. With love, Iresh & Asha — 26 August 2026.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  loader: () => fetchPublishedWedding(),
+  head: ({ loaderData }) => {
+    const wedding = loaderData as PublicWedding | null;
+    const names = wedding ? `${wedding.groom} & ${wedding.bride}` : "us";
+    const when = wedding ? formatLongDate(wedding.date) : "";
+    return {
+      meta: [
+        { title: `Thank You — ${names} ♡ ${when}` },
+        {
+          name: "description",
+          content: `A heartfelt thank you from ${names} for being part of our wedding day, ${when}.`,
+        },
+        { property: "og:title", content: `Thank You — ${names}` },
+        {
+          property: "og:description",
+          content: `Thank you for being part of our special day. With love, ${names} — ${when}.`,
+        },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+    };
+  },
   component: ThankYouPage,
 });
 
@@ -31,6 +36,11 @@ function ThankYouPage() {
   useEffect(() => {
     document.documentElement.classList.remove("dark");
   }, []);
+
+  const wedding = Route.useLoaderData();
+  if (!wedding) return null;
+  const weddingDate = formatLongDate(wedding.date);
+  const coupleNames = `${wedding.groom} & ${wedding.bride}`;
 
   return (
     <main className="wedding-bg min-h-[100svh] w-full overflow-x-hidden font-serif text-ink">
@@ -56,11 +66,11 @@ function ThankYouPage() {
         {/* Names */}
         <Reveal>
           <h1 className="wedding-names text-center text-[2.75rem] leading-[1.05] sm:text-5xl">
-            <span className="text-ink">Iresh</span>
+            <span className="text-ink">{wedding.groom}</span>
             <span className="mx-3 text-champagne-deep" aria-hidden="true">
               ♡
             </span>
-            <span className="text-ink">Asha</span>
+            <span className="text-ink">{wedding.bride}</span>
           </h1>
         </Reveal>
 
@@ -91,7 +101,7 @@ function ThankYouPage() {
               <div className="overflow-hidden rounded-[1px] border border-champagne/40">
                 <img
                   src={weddingPhoto}
-                  alt="Iresh and Asha's wedding photograph"
+                  alt={`${coupleNames}'s wedding photograph`}
                   width={1024}
                   height={1536}
                   loading="eager"

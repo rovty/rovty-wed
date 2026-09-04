@@ -7,6 +7,7 @@ import { FloralDivider, FloralCorner } from "@/components/wedding/Floral";
 import { z } from "zod";
 import { fallback } from "@tanstack/zod-adapter";
 import seatingPlanImg from "@/assets/seating.png";
+import { fetchPublishedWedding, formatLongDate, type PublicWedding } from "@/lib/wedding";
 
 type SeatingData = {
   guest_name: string;
@@ -22,32 +23,21 @@ export const Route = createFileRoute("/seating")({
   validateSearch: z.object({
     code: fallback(z.string().optional(), undefined),
   }),
-  head: () => ({
-    meta: [
-      { title: "Your Table is Ready — Iresh & Asha ♡ 26 August 2026" },
-      {
-        name: "description",
-        content: "Find your table at Iresh & Asha's wedding reception at The Epitome Hotel, Crown Ballroom.",
-      },
-      { name: "robots", content: "noindex" },
-      { property: "og:title", content: "Your Table is Ready 🪑" },
-      {
-        property: "og:description",
-        content: "See your seating details for Iresh & Asha's wedding reception — 26 August 2026 ♡",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:image", content: "https://asha.iresh.xyz/seat.png" },
-      { property: "og:image:secure_url", content: "https://asha.iresh.xyz/seat.png" },
-      { property: "og:image:type", content: "image/png" },
-      { property: "og:image:width", content: "1536" },
-      { property: "og:image:height", content: "1024" },
-      { property: "og:image:alt", content: "Iresh & Asha Wedding Seating" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Your Table is Ready 🪑" },
-      { name: "twitter:description", content: "See your seating details for Iresh & Asha's wedding reception — 26 August 2026 ♡" },
-      { name: "twitter:image", content: "https://asha.iresh.xyz/seat.png" },
-    ],
-  }),
+  loader: () => fetchPublishedWedding(),
+  head: ({ loaderData }) => {
+    const wedding = loaderData as PublicWedding | null;
+    const names = wedding ? `${wedding.groom} & ${wedding.bride}` : "the couple";
+    return {
+      meta: [
+        { title: `Your Table is Ready — ${names} 🪑` },
+        {
+          name: "description",
+          content: `Find your table at ${names}'s wedding reception${wedding?.venue ? ` at ${wedding.venue}` : ""}.`,
+        },
+        { name: "robots", content: "noindex" },
+      ],
+    };
+  },
   component: SeatingPage,
 });
 
@@ -62,19 +52,21 @@ function Ornament() {
 }
 
 function SeatingPage() {
+  const wedding = Route.useLoaderData();
   const { code } = Route.useSearch();
   const [seating, setSeating] = useState<SeatingData | null>(null);
   const [loading, setLoading] = useState(true);
   const [noCode, setNoCode] = useState(false);
 
   useEffect(() => {
-    if (!code) {
+    if (!code || !wedding) {
       setNoCode(true);
       setLoading(false);
       return;
     }
     (async () => {
       const { data, error } = await supabase.rpc("get_seating_by_code", {
+        _slug: wedding.slug,
         _code: code,
       });
       if (!error && data) {
@@ -82,7 +74,7 @@ function SeatingPage() {
       }
       setLoading(false);
     })();
-  }, [code]);
+  }, [wedding, code]);
 
   if (loading) {
     return (
@@ -134,6 +126,10 @@ function SeatingPage() {
     );
   }
 
+  // Reachable only once `seating` is set, which only happens after a
+  // successful lookup that itself required `wedding` — safe to assert here
+  // rather than thread another null check through the rest of the render.
+  const w = wedding!;
   const tableNum = String(seating.table_number).padStart(2, "0");
 
   return (
@@ -152,17 +148,17 @@ function SeatingPage() {
         {/* Header */}
         <Reveal>
           <h1 className="text-center font-display text-4xl leading-[1.05] sm:text-5xl">
-            <span>Iresh</span>
+            <span>{w.groom}</span>
             <span className="mx-2 font-script italic text-gradient-gold">
               &
             </span>
-            <span>Asha</span>
+            <span>{w.bride}</span>
           </h1>
         </Reveal>
 
         <Reveal delay={150}>
           <p className="mt-3 text-center text-[0.65rem] font-medium uppercase tracking-[0.4em] text-muted-foreground sm:text-xs">
-            26 August 2026
+            {formatLongDate(w.date)}
           </p>
         </Reveal>
 
@@ -195,10 +191,12 @@ function SeatingPage() {
             >
               {tableNum}
             </p>
-            <p className="mt-2 flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
-              <MapPin className="h-3.5 w-3.5" />
-              Crown Ballroom
-            </p>
+            {(w.venue || w.hall) && (
+              <p className="mt-2 flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
+                <MapPin className="h-3.5 w-3.5" />
+                {[w.venue, w.hall].filter(Boolean).join(" · ")}
+              </p>
+            )}
           </div>
         </Reveal>
 
@@ -247,7 +245,7 @@ function SeatingPage() {
             <div className="relative">
               <img
                 src={seatingPlanImg}
-                alt="Crown Ballroom seating plan"
+                alt={`${w.hall ?? w.venue ?? "Reception"} seating plan`}
                 className="block h-auto w-full select-none rounded-2xl"
                 loading="eager"
                 draggable={false}
@@ -274,28 +272,30 @@ function SeatingPage() {
         </Reveal>
 
         {/* Venue directions */}
-        <Reveal delay={750} className="mt-6 w-full">
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("The Epitome Hotel Kurunegala")}`}
-            target="_blank"
-            rel="noreferrer"
-            className="glass-card flex items-center gap-3 rounded-2xl p-4 transition-transform hover:-translate-y-0.5 active:scale-[0.98]"
-          >
-            <div
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-white"
-              style={{ background: "var(--gradient-gold)" }}
+        {(w.venue || w.address) && (
+          <Reveal delay={750} className="mt-6 w-full">
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(w.address ?? w.venue ?? "")}`}
+              target="_blank"
+              rel="noreferrer"
+              className="glass-card flex items-center gap-3 rounded-2xl p-4 transition-transform hover:-translate-y-0.5 active:scale-[0.98]"
             >
-              <MapPin className="h-5 w-5" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium">The Epitome Hotel</p>
-              <p className="text-[11px] text-muted-foreground">
-                Crown Ballroom · Kurunegala
-              </p>
-            </div>
-            <span className="text-xs text-muted-foreground">Directions →</span>
-          </a>
-        </Reveal>
+              <div
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-white"
+                style={{ background: "var(--gradient-gold)" }}
+              >
+                <MapPin className="h-5 w-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium">{w.venue}</p>
+                {w.hall && (
+                  <p className="text-[11px] text-muted-foreground">{w.hall}</p>
+                )}
+              </div>
+              <span className="text-xs text-muted-foreground">Directions →</span>
+            </a>
+          </Reveal>
+        )}
 
         {/* Closing */}
         <Reveal delay={850}>

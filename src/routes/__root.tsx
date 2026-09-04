@@ -65,27 +65,19 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  // Site-wide defaults — each page overrides title/description/og:* with its
+  // own wedding's data (see index.tsx, rsvp.tsx, seating.tsx loaders); this
+  // is only what shows before that resolves, or on a page that doesn't set
+  // its own. Deliberately generic, not any one customer's names/domain/photo.
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Iresh & Asha - Wedding Invitation" },
-      { name: "description", content: "Join Iresh & Asha on 26 August 2026 at The Epitome Hotel as they celebrate their wedding." },
+      { title: "Wedding Invitation" },
+      { name: "description", content: "You're invited — RSVP and find everything you need for the big day." },
       { name: "theme-color", content: "#f7e9d7" },
-      { property: "og:title", content: "Iresh & Asha - Wedding Invitation" },
-      { property: "og:description", content: "Join Iresh & Asha on 26 August 2026 at The Epitome Hotel as they celebrate their wedding." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://asha.iresh.xyz/" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Iresh & Asha - Wedding Invitation" },
-      { name: "twitter:description", content: "Join Iresh & Asha on 26 August 2026 at The Epitome Hotel as they celebrate their wedding." },
-      { property: "og:image", content: "https://asha.iresh.xyz/invite.jpg" },
-      { property: "og:image:secure_url", content: "https://asha.iresh.xyz/invite.jpg" },
-      { property: "og:image:type", content: "image/jpeg" },
-      { property: "og:image:width", content: "800" },
-      { property: "og:image:height", content: "1202" },
-      { property: "og:image:alt", content: "Iresh & Asha Wedding" },
-      { name: "twitter:image", content: "https://asha.iresh.xyz/invite.jpg" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

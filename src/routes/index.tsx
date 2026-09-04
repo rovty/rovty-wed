@@ -7,23 +7,49 @@ import { Countdown } from "@/components/Countdown";
 import { MusicPlayer } from "@/components/MusicPlayer";
 import { InlineRsvp } from "@/components/InlineRsvp";
 import { InvitationOpener } from "@/components/InvitationOpener";
-import { WEDDING, googleCalendarUrl } from "@/lib/wedding";
+import {
+  fetchPublishedWedding,
+  formatDayMonth,
+  formatWeekdayYear,
+  formatTime,
+  formatScriptDate,
+  googleCalendarUrl,
+  type PublicWedding,
+} from "@/lib/wedding";
 import { supabase } from "@/integrations/supabase/client";
 import coupleImg from "@/assets/couple.png";
 import venueImg from "@/assets/venue.jpg";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Iresh & Asha - Wedding Invitation" },
-      { name: "description", content: "Together with their families. Join Iresh & Asha on 26 August 2026 at The Epitome Hotel, Crown Ballroom." },
-      { property: "og:title", content: "Iresh & Asha - Wedding Invitation" },
-      { property: "og:description", content: "26 August 2026 · The Epitome Hotel · Crown Ballroom" },
-      { property: "og:image", content: "https://asha.iresh.xyz/invite.jpg" },
-    ],
-  }),
+  loader: () => fetchPublishedWedding(),
+  head: ({ loaderData }) => {
+    const wedding = loaderData as PublicWedding | null;
+    const names = wedding ? `${wedding.groom} & ${wedding.bride}` : "Wedding Invitation";
+    const when = wedding
+      ? `${formatLongDateSafe(wedding.date)} · ${wedding.venue ?? ""}${wedding.hall ? ` · ${wedding.hall}` : ""}`
+      : "";
+    return {
+      meta: [
+        { title: `${names} - Wedding Invitation` },
+        { name: "description", content: wedding?.description ?? "You're invited." },
+        { property: "og:title", content: `${names} - Wedding Invitation` },
+        { property: "og:description", content: when },
+      ],
+    };
+  },
   component: Home,
 });
+
+// head() runs on the server, where Intl's default locale data is available
+// but this keeps it defensive against a null loaderData (no published
+// wedding yet) without throwing during a redirect-less 200 render.
+function formatLongDateSafe(d: Date) {
+  try {
+    return d.toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Colombo" });
+  } catch {
+    return d.toDateString();
+  }
+}
 
 function Ornament() {
   return (
@@ -36,25 +62,40 @@ function Ornament() {
 }
 
 function Home() {
+  const wedding = Route.useLoaderData();
+
+  if (!wedding) {
+    return (
+      <main className="grid min-h-[100svh] place-items-center px-5 text-center">
+        <div className="glass-card max-w-sm rounded-3xl p-8">
+          <h1 className="font-display text-2xl">This invitation isn't live yet</h1>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Check back soon, or ask the couple for their latest link.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="relative overflow-x-hidden">
       <RosePetals />
       <MusicPlayer />
-      <InvitationOpener />
+      <InvitationOpener wedding={wedding} />
 
-      <Hero />
-      <Details />
+      <Hero wedding={wedding} />
+      <Details wedding={wedding} />
       <Gallery />
-      <CalendarSection />
-      <RsvpCta />
-      <SeatingCta />
-      <Location />
-      <Footer />
+      <CalendarSection wedding={wedding} />
+      <RsvpCta wedding={wedding} />
+      <SeatingCta wedding={wedding} />
+      <Location wedding={wedding} />
+      <Footer wedding={wedding} />
     </main>
   );
 }
 
-function Hero() {
+function Hero({ wedding }: { wedding: PublicWedding }) {
   return (
     <section className="relative px-5 pt-12 pb-6">
       <RoseCorner position="tl" size={140} opacity={0.2} />
@@ -65,9 +106,9 @@ function Hero() {
         </p>
         <Ornament />
         <h1 className="font-display text-6xl leading-[0.95] text-foreground sm:text-7xl md:text-8xl" style={{ textShadow: "0 2px 16px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
-          Iresh
+          {wedding.groom}
           <span className="mx-2 font-script italic text-gradient-gold">&</span>
-          Asha
+          {wedding.bride}
         </h1>
         <Ornament />
         <p className="max-w-md text-balance text-sm leading-relaxed text-muted-foreground sm:text-base">
@@ -75,11 +116,11 @@ function Hero() {
         </p>
 
         <p className="mt-6 font-script text-xl italic text-foreground/80">
-          The 26th of August, 2026
+          {formatScriptDate(wedding.date)}
         </p>
 
         <div className="mt-5 w-full">
-          <Countdown target={WEDDING.date} />
+          <Countdown target={wedding.date} />
         </div>
 
         <a
@@ -122,7 +163,7 @@ function DetailCard({
   );
 }
 
-function Details() {
+function Details({ wedding }: { wedding: PublicWedding }) {
   return (
     <section className="relative px-5 pt-4 pb-10">
       <RoseCorner position="tr" size={140} opacity={0.25} />
@@ -132,10 +173,14 @@ function Details() {
         <Ornament />
 
         <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4">
-          <DetailCard icon={Calendar} label="Date" value="26 Aug" sub="Wednesday, 2026" />
-          <DetailCard icon={Clock} label="Poruwa" value="09:07 AM" sub="Auspicious time" />
-          <DetailCard icon={Sparkles} label="Reception" value="9:00 AM" sub="Onwards" />
-          <DetailCard icon={MapPin} label="Venue" value="The Epitome" sub="Crown Ballroom" />
+          <DetailCard icon={Calendar} label="Date" value={formatDayMonth(wedding.date)} sub={formatWeekdayYear(wedding.date)} />
+          <DetailCard icon={Clock} label="Ceremony" value={formatTime(wedding.date)} sub="Auspicious time" />
+          {wedding.receptionDate && (
+            <DetailCard icon={Sparkles} label="Reception" value={formatTime(wedding.receptionDate)} sub="Onwards" />
+          )}
+          {wedding.venue && (
+            <DetailCard icon={MapPin} label="Venue" value={wedding.venue} sub={wedding.hall ?? undefined} />
+          )}
         </div>
       </div>
     </section>
@@ -148,7 +193,7 @@ function Gallery() {
       <div className="relative z-20 mx-auto max-w-xl">
         <img
           src={coupleImg}
-          alt="Iresh and Asha"
+          alt="The couple"
           loading="lazy"
           className="mx-auto w-full max-w-md object-contain drop-shadow-[0_16px_32px_rgba(0,0,0,0.12)]"
         />
@@ -205,7 +250,7 @@ function CalButton({
   );
 }
 
-function CalendarSection() {
+function CalendarSection({ wedding }: { wedding: PublicWedding }) {
   return (
     <section className="relative px-5 py-10">
       <RoseCorner position="tl" size={140} opacity={0.25} />
@@ -218,14 +263,14 @@ function CalendarSection() {
 
         <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <CalButton icon={Apple} label="Apple Calendar" href="/calendar.ics" sameTab />
-          <CalButton icon={Calendar} label="Google Calendar" href={googleCalendarUrl()} />
+          <CalButton icon={Calendar} label="Google Calendar" href={googleCalendarUrl(wedding)} />
         </div>
       </div>
     </section>
   );
 }
 
-function RsvpCta() {
+function RsvpCta({ wedding }: { wedding: PublicWedding }) {
   return (
     <section id="rsvp" className="relative px-5 py-10">
       <div className="relative z-20 mx-auto max-w-xl">
@@ -235,14 +280,14 @@ function RsvpCta() {
           <Ornament />
         </div>
         <div className="mt-6">
-          <InlineRsvp />
+          <InlineRsvp slug={wedding.slug} coupleNames={`${wedding.groom} & ${wedding.bride}`} />
         </div>
       </div>
     </section>
   );
 }
 
-function SeatingCta() {
+function SeatingCta({ wedding }: { wedding: PublicWedding }) {
   const [hasSeating, setHasSeating] = useState(false);
   const [code, setCode] = useState<string | null>(null);
 
@@ -251,11 +296,11 @@ function SeatingCta() {
     if (!c) return;
     setCode(c);
     supabase
-      .rpc("get_seating_by_code", { _code: c })
+      .rpc("get_seating_by_code", { _slug: wedding.slug, _code: c })
       .then(({ data }) => {
         if (data) setHasSeating(true);
       });
-  }, []);
+  }, [wedding.slug]);
 
   if (!hasSeating || !code) return null;
 
@@ -281,8 +326,9 @@ function SeatingCta() {
   );
 }
 
-function Location() {
-  const q = encodeURIComponent("The Epitome Hotel Kurunegala");
+function Location({ wedding }: { wedding: PublicWedding }) {
+  if (!wedding.venue && !wedding.address) return null;
+  const q = encodeURIComponent(wedding.address ?? wedding.venue ?? "");
   return (
     <section className="relative px-5 py-10">
       <div className="relative z-20 mx-auto max-w-xl">
@@ -291,7 +337,7 @@ function Location() {
           <h2 className="mt-1 font-display text-4xl">Location</h2>
           <Ornament />
           <p className="text-sm text-muted-foreground">
-            The Epitome Hotel · Crown Ballroom
+            {[wedding.venue, wedding.hall].filter(Boolean).join(" · ")}
           </p>
         </div>
 
@@ -303,7 +349,7 @@ function Location() {
         >
           <img
             src={venueImg}
-            alt="The Epitome Hotel venue"
+            alt={wedding.venue ?? "The venue"}
             loading="lazy"
             className="h-72 w-full rounded-2xl object-cover"
           />
@@ -322,7 +368,7 @@ function Location() {
   );
 }
 
-function Footer() {
+function Footer({ wedding }: { wedding: PublicWedding }) {
   return (
     <footer className="relative px-5 pb-16 pt-8 text-center">
       <RoseCorner position="bl" size={150} opacity={0.6} />
@@ -335,8 +381,8 @@ function Footer() {
         <p className="mt-3 text-sm text-muted-foreground">
           Thank you for being part of our story. We can't wait to celebrate with you.
         </p>
-        <p className="mt-6 font-display text-xl">Iresh <span className="font-script italic text-rose">&</span> Asha</p>
-        <p className="mt-2 text-xs text-muted-foreground">26 · 08 · 2026</p>
+        <p className="mt-6 font-display text-xl">{wedding.groom} <span className="font-script italic text-rose">&</span> {wedding.bride}</p>
+        <p className="mt-2 text-xs text-muted-foreground">{formatLongDateSafe(wedding.date)}</p>
       </div>
     </footer>
   );

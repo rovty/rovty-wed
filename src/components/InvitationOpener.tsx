@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Heart, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { WEDDING } from "@/lib/wedding";
+import type { PublicWedding } from "@/lib/wedding";
 import { RosePetals } from "@/components/RosePetals";
 import { RoseCorner } from "@/components/RoseCorner";
 
@@ -12,7 +12,7 @@ type Guest = { code: string; name: string; title: string | null; seats: number }
  * If the visitor arrives via a personal link (?code=...), we greet them by name.
  * Clicking the wax seal plays an envelope-opening animation and unveils the site.
  */
-export function InvitationOpener() {
+export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
   const [guest, setGuest] = useState<Guest | null>(null);
   const [opening, setOpening] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -25,7 +25,7 @@ export function InvitationOpener() {
     const code = new URLSearchParams(window.location.search).get("code");
     if (code) {
       supabase
-        .rpc("get_guest_by_code", { _code: code })
+        .rpc("get_guest_by_code", { _slug: wedding.slug, _code: code })
         .then(({ data, error }) => {
           if (!error && data && (data as Guest[]).length > 0) {
             setGuest((data as Guest[])[0]);
@@ -36,7 +36,7 @@ export function InvitationOpener() {
     return () => {
       document.body.style.overflow = prev;
     };
-  }, []);
+  }, [wedding.slug]);
 
   const open = () => {
     if (opening) return;
@@ -93,9 +93,9 @@ export function InvitationOpener() {
               <span className="divider-line" />
             </div>
             <h2 className="font-display leading-[0.95] text-foreground">
-              {WEDDING.groom}
+              {wedding.groom}
               <span className="mx-2 font-script italic text-gradient-gold">&</span>
-              {WEDDING.bride}
+              {wedding.bride}
             </h2>
             <p className="mt-4 font-script text-lg italic text-rose">Dear {greeting},</p>
             <p className="mt-1 text-balance text-sm leading-relaxed text-muted-foreground">

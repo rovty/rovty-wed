@@ -33,6 +33,8 @@ export type Database = {
           hall: string | null;
           address: string | null;
           description: string | null;
+          invite_message_before: string | null;
+          invite_message_after: string | null;
           published: boolean;
           created_at: string;
           updated_at: string;
@@ -51,6 +53,8 @@ export type Database = {
           hall?: string | null;
           address?: string | null;
           description?: string | null;
+          invite_message_before?: string | null;
+          invite_message_after?: string | null;
           published?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -69,6 +73,8 @@ export type Database = {
           hall?: string | null;
           address?: string | null;
           description?: string | null;
+          invite_message_before?: string | null;
+          invite_message_after?: string | null;
           published?: boolean;
           created_at?: string;
           updated_at?: string;
