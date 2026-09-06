@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useRef,
   useState,
   type PointerEvent as ReactPointerEvent,
@@ -9,10 +10,46 @@ import { uploadWeddingMedia } from "@/lib/wedding";
 import type { Guest, SeatingTable, Wedding } from "./types";
 import { AButton, AInput, ALabel } from "./ui";
 
-// Tables are stored as map_x/map_y percentages of the plan image's own
-// box, so the layout still lines up after the browser resizes — dragging
-// just writes new percentages back to seating_tables on pointer-up rather
-// than keeping any pixel math around.
+type Rect = { width: number; height: number; offsetX: number; offsetY: number };
+
+// The floor plan photo is shown in full (object-fit: contain, never
+// cropped) rather than as a cropped `background-size: cover` fill — so on
+// a container whose aspect ratio doesn't match the photo's, there's
+// letterboxing on two sides. table_number/map_x/map_y are stored as a
+// percentage *of the photo's own content*, not of the surrounding
+// container box: computing that content rectangle here (and converting
+// every pointer position through it) is what keeps a table's position
+// anchored to the same physical point on the floor plan regardless of
+// how wide or tall the browser showing it happens to be — which is
+// exactly what broke before (positions were percentages of the
+// container, so the same table landed somewhere else on a phone than on
+// a desktop, since the two containers crop/frame the photo differently).
+function containedImageRect(
+  containerW: number,
+  containerH: number,
+  naturalW: number,
+  naturalH: number,
+): Rect | null {
+  if (!containerW || !containerH || !naturalW || !naturalH) return null;
+  const containerRatio = containerW / containerH;
+  const imageRatio = naturalW / naturalH;
+  let width: number;
+  let height: number;
+  if (containerRatio > imageRatio) {
+    height = containerH;
+    width = height * imageRatio;
+  } else {
+    width = containerW;
+    height = width / imageRatio;
+  }
+  return {
+    width,
+    height,
+    offsetX: (containerW - width) / 2,
+    offsetY: (containerH - height) / 2,
+  };
+}
+
 export function HallPlan({
   wedding,
   guests,
@@ -31,6 +68,11 @@ export function HallPlan({
   seatsUsed: (tableId: string) => number;
 }) {
   const mapRef = useRef<HTMLDivElement>(null);
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const [naturalSize, setNaturalSize] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
   const [dragId, setDragId] = useState<string | null>(null);
   const [positions, setPositions] = useState<
     Record<string, { x: number; y: number }>
@@ -40,6 +82,67 @@ export function HallPlan({
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const movedRef = useRef(false);
+
+  // Re-measured on every resize (window resize, sidebar showing/hiding at
+  // the `md` breakpoint, device rotation) so the image-rect math below is
+  // always working off the container's *current* box, not a stale one.
+  useEffect(() => {
+    const el = mapRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      setContainerSize({ width, height });
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Reset so a freshly-uploaded photo doesn't briefly render markers
+  // against the previous one's aspect ratio before it loads.
+  useEffect(() => {
+    setNaturalSize(null);
+  }, [wedding.floor_plan_url]);
+
+  const imageRect =
+    wedding.floor_plan_url && naturalSize
+      ? containedImageRect(
+          containerSize.width,
+          containerSize.height,
+          naturalSize.width,
+          naturalSize.height,
+        )
+      : null;
+
+  // map_x/map_y (0–100) → container-relative pixels, for rendering.
+  const toPx = (xPct: number, yPct: number) => {
+    if (imageRect) {
+      return {
+        x: imageRect.offsetX + (xPct / 100) * imageRect.width,
+        y: imageRect.offsetY + (yPct / 100) * imageRect.height,
+      };
+    }
+    return {
+      x: (xPct / 100) * containerSize.width,
+      y: (yPct / 100) * containerSize.height,
+    };
+  };
+
+  // Container-relative pixels → map_x/map_y (0–100), for saving a drag.
+  // Clamped to the photo's own content box (or the container, without a
+  // photo) so a table can never be dropped out in the letterboxed margin.
+  const fromPx = (px: number, py: number) => {
+    if (imageRect) {
+      const x = ((px - imageRect.offsetX) / imageRect.width) * 100;
+      const y = ((py - imageRect.offsetY) / imageRect.height) * 100;
+      return {
+        x: Math.min(98, Math.max(2, x)),
+        y: Math.min(98, Math.max(2, y)),
+      };
+    }
+    const x = (px / containerSize.width) * 100;
+    const y = (py / containerSize.height) * 100;
+    return { x: Math.min(96, Math.max(4, x)), y: Math.min(96, Math.max(4, y)) };
+  };
 
   const posFor = (t: SeatingTable) =>
     positions[t.id] ?? { x: t.map_x, y: t.map_y };
@@ -74,15 +177,8 @@ export function HallPlan({
     if (!dragId || !mapRef.current) return;
     movedRef.current = true;
     const rect = mapRef.current.getBoundingClientRect();
-    const x = Math.min(
-      96,
-      Math.max(4, ((e.clientX - rect.left) / rect.width) * 100),
-    );
-    const y = Math.min(
-      96,
-      Math.max(4, ((e.clientY - rect.top) / rect.height) * 100),
-    );
-    setPositions((prev) => ({ ...prev, [dragId]: { x, y } }));
+    const pos = fromPx(e.clientX - rect.left, e.clientY - rect.top);
+    setPositions((prev) => ({ ...prev, [dragId]: pos }));
   };
 
   const onPointerUp = (t: SeatingTable) => async (e: ReactPointerEvent) => {
@@ -195,26 +291,43 @@ export function HallPlan({
         className="relative mx-5 mt-3 flex-1 touch-none overflow-hidden border-2 border-[var(--admin-ink)]"
         style={
           wedding.floor_plan_url
-            ? {
-                backgroundImage: `url(${wedding.floor_plan_url})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }
+            ? undefined
             : {
                 background:
                   "linear-gradient(to right, var(--admin-line-soft) 1px, transparent 1px) 0 0/24px 24px, linear-gradient(to bottom, var(--admin-line-soft) 1px, transparent 1px) 0 0/24px 24px, var(--admin-surface)",
               }
         }
       >
+        {wedding.floor_plan_url && (
+          // Plain <img> with object-contain (not a CSS background-image
+          // with background-size: cover) so the whole photo is always
+          // visible — cover was silently cropping whichever edges didn't
+          // match the container's aspect ratio.
+          <img
+            key={wedding.floor_plan_url}
+            src={wedding.floor_plan_url}
+            alt="Venue floor plan"
+            draggable={false}
+            onLoad={(e) => {
+              const img = e.currentTarget;
+              setNaturalSize({
+                width: img.naturalWidth,
+                height: img.naturalHeight,
+              });
+            }}
+            className="absolute inset-0 h-full w-full select-none bg-[var(--admin-surface)] object-contain"
+          />
+        )}
         {tables.map((t) => {
           const pos = posFor(t);
+          const { x, y } = toPx(pos.x, pos.y);
           return (
             <div
               key={t.id}
               onPointerDown={onPointerDown(t)}
               onPointerUp={onPointerUp(t)}
               className="absolute grid h-11 w-11 -translate-x-1/2 -translate-y-1/2 cursor-grab place-items-center rounded-full border-2 text-center shadow-[0_1px_2px_rgba(0,0,0,0.14)] active:cursor-grabbing"
-              style={{ left: `${pos.x}%`, top: `${pos.y}%`, ...markerStyle(t) }}
+              style={{ left: x, top: y, ...markerStyle(t) }}
             >
               <span className="text-[13px] font-extrabold leading-none">
                 {t.table_number}

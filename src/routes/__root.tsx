@@ -17,7 +17,9 @@ function NotFoundComponent() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="font-display text-7xl text-gradient-gold">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">
+          Page not found
+        </h2>
         <p className="mt-2 text-sm text-muted-foreground">
           The page you're looking for doesn't exist.
         </p>
@@ -64,53 +66,68 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  // Site-wide defaults — each page overrides title/description/og:* with its
-  // own wedding's data (see index.tsx, rsvp.tsx, seating.tsx loaders); this
-  // is only what shows before that resolves, or on a page that doesn't set
-  // its own. Deliberately generic, not any one customer's names/domain/photo.
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Wedding Invitation" },
-      { name: "description", content: "You're invited — RSVP and find everything you need for the big day." },
-      { name: "theme-color", content: "#f7e9d7" },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        // Playfair/Cormorant/Inter: "classic" template + site-wide default.
-        // The rest are one distinct display+accent pairing per template
-        // (see styles.css's .theme-* blocks) — not just a recolor of
-        // Playfair, an actual different typographic personality each.
-        rel: "stylesheet",
-        href:
-          "https://fonts.googleapis.com/css2?" +
-          [
-            "family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400",
-            "family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300",
-            "family=Inter:wght@300;400;500;600;700",
-            "family=Manrope:wght@400;500;600;700;800", // minimal
-            "family=Fraunces:ital,wght@0,400;0,500;0,600;1,400", // botanical
-            "family=Marcellus", // luxe
-            "family=Quicksand:wght@500;600;700", // pastel display
-            "family=Caveat:wght@600;700", // pastel script
-            "family=Archivo:wght@400;500;600;700;800", // admin portal
-          ].join("&") +
-          "&display=swap",
-      },
-    ],
-  }),
-  shellComponent: RootShell,
-  component: RootComponent,
-  notFoundComponent: NotFoundComponent,
-  errorComponent: ErrorComponent,
-});
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
+  {
+    // Site-wide defaults — each page overrides title/description/og:* with its
+    // own wedding's data (see index.tsx, rsvp.tsx, seating.tsx loaders); this
+    // is only what shows before that resolves, or on a page that doesn't set
+    // its own. Deliberately generic, not any one customer's names/domain/photo.
+    head: () => ({
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { title: "Wedding Invitation" },
+        {
+          name: "description",
+          content:
+            "You're invited — RSVP and find everything you need for the big day.",
+        },
+        { name: "theme-color", content: "#f7e9d7" },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [
+        // Same mark as rovty.com and dash.rovty.com — this is a Rovty
+        // product, not a one-off brand, so the tab icon should read as part
+        // of that same suite rather than something wedding-specific.
+        { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+        { rel: "shortcut icon", href: "/favicon.ico" },
+        { rel: "stylesheet", href: appCss },
+        { rel: "preconnect", href: "https://fonts.googleapis.com" },
+        {
+          rel: "preconnect",
+          href: "https://fonts.gstatic.com",
+          crossOrigin: "anonymous",
+        },
+        {
+          // Playfair/Cormorant/Inter: "classic" template + site-wide default.
+          // The rest are one distinct display+accent pairing per template
+          // (see styles.css's .theme-* blocks) — not just a recolor of
+          // Playfair, an actual different typographic personality each.
+          rel: "stylesheet",
+          href:
+            "https://fonts.googleapis.com/css2?" +
+            [
+              "family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400",
+              "family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300",
+              "family=Inter:wght@300;400;500;600;700",
+              "family=Manrope:wght@400;500;600;700;800", // minimal
+              "family=Fraunces:ital,wght@0,400;0,500;0,600;1,400", // botanical
+              "family=Marcellus", // luxe
+              "family=Quicksand:wght@500;600;700", // pastel display
+              "family=Caveat:wght@600;700", // pastel script
+              "family=Archivo:wght@400;500;600;700;800", // admin portal
+            ].join("&") +
+            "&display=swap",
+        },
+      ],
+    }),
+    shellComponent: RootShell,
+    component: RootComponent,
+    notFoundComponent: NotFoundComponent,
+    errorComponent: ErrorComponent,
+  },
+);
 
 function RootShell({ children }: { children: ReactNode }) {
   return (

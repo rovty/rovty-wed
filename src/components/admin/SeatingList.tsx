@@ -98,7 +98,17 @@ export function SeatingList({
 
   const copySeatingMessage = async (guestCode: string) => {
     const url = `${inviteUrl}/seating?code=${guestCode}`;
-    await navigator.clipboard.writeText(defaultSeatingMessage(wedding, url));
+    // Same pattern as Guests' "Copy message" (invite_message_before/after):
+    // the owner's own wording around the link if they've set any, else the
+    // built-in default — never a mix of one custom side and the default
+    // other side.
+    const before = wedding.seating_message_before?.trim();
+    const after = wedding.seating_message_after?.trim();
+    const message =
+      before || after
+        ? [before, url, after].filter(Boolean).join("\n\n")
+        : defaultSeatingMessage(wedding, url);
+    await navigator.clipboard.writeText(message);
     setCopiedCode(guestCode);
     setTimeout(() => setCopiedCode((c) => (c === guestCode ? null : c)), 2000);
   };

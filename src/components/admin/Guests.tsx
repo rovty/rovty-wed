@@ -17,6 +17,12 @@ import { AButton, AInput, ALabel, EmptyState, Tag } from "./ui";
 export type GuestFilter = "all" | "pending" | "yes" | "no";
 type Filter = GuestFilter;
 
+// The three titles that cover the vast majority of a guest list — quick
+// tap-to-select instead of typing. Not exhaustive (no "Dr.", no "Mr. &
+// Mrs.") on purpose: title is optional, so anyone who doesn't fit one of
+// these three just leaves it blank rather than typing a one-off value.
+const GUEST_TITLES = ["Mr.", "Mrs.", "Ms."] as const;
+
 export function Guests({
   wedding,
   guests,
@@ -305,15 +311,27 @@ function AddGuestSheet({
             autoFocus
           />
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <ALabel>Title</ALabel>
-            <AInput
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Mr / Mrs / Dr"
-            />
+        <div>
+          <ALabel>Title</ALabel>
+          <div className="grid grid-cols-3 gap-2">
+            {GUEST_TITLES.map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTitle((cur) => (cur === t ? "" : t))}
+                className="h-[46px] border-2 border-[var(--admin-ink)] text-sm font-bold"
+                style={
+                  title === t
+                    ? { background: "var(--admin-ink)", color: "#fff" }
+                    : undefined
+                }
+              >
+                {t}
+              </button>
+            ))}
           </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
           <div>
             <ALabel>Seats</ALabel>
             <AInput
@@ -324,14 +342,14 @@ function AddGuestSheet({
               onChange={(e) => setSeats(parseInt(e.target.value) || 1)}
             />
           </div>
-        </div>
-        <div>
-          <ALabel>WhatsApp number</ALabel>
-          <AInput
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="+94 77 000 0000"
-          />
+          <div>
+            <ALabel>WhatsApp (optional)</ALabel>
+            <AInput
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+94 77 000 0000"
+            />
+          </div>
         </div>
         <div>
           <ALabel>Code</ALabel>

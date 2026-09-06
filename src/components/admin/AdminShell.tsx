@@ -109,11 +109,12 @@ export function AdminShell({
       />
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        {/* Desktop gets a comfortable, centered dashboard column instead of
-            the mobile screens stretching edge-to-edge across a wide
-            viewport — mobile (below `md`) is untouched, this only takes
-            effect once the Sidebar is also showing. */}
-        <div className="flex min-h-0 flex-1 flex-col md:mx-auto md:w-full md:max-w-3xl xl:max-w-4xl">
+        {/* Fills the full remaining width next to the Sidebar — no capped
+            reading column, so desktop uses the whole viewport instead of
+            leaving empty margins either side. Mobile (below `md`, no
+            Sidebar) is unaffected either way, since it was already full
+            width. */}
+        <div className="flex min-h-0 flex-1 flex-col">
           {section === "home" && (
             <Dashboard
               wedding={wedding}

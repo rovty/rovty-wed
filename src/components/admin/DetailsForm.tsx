@@ -30,6 +30,8 @@ export function DetailsForm({
     description: wedding.description ?? "",
     invite_message_before: wedding.invite_message_before ?? "",
     invite_message_after: wedding.invite_message_after ?? "",
+    seating_message_before: wedding.seating_message_before ?? "",
+    seating_message_after: wedding.seating_message_after ?? "",
     maps_url: wedding.maps_url ?? "",
   });
   const [busy, setBusy] = useState(false);
@@ -118,6 +120,8 @@ export function DetailsForm({
         description: form.description.trim() || null,
         invite_message_before: form.invite_message_before.trim() || null,
         invite_message_after: form.invite_message_after.trim() || null,
+        seating_message_before: form.seating_message_before.trim() || null,
+        seating_message_after: form.seating_message_after.trim() || null,
         maps_url: form.maps_url.trim() || null,
         updated_at: new Date().toISOString(),
       })
@@ -265,6 +269,39 @@ export function DetailsForm({
             value={form.invite_message_after}
             onChange={(e) =>
               setForm((f) => ({ ...f, invite_message_after: e.target.value }))
+            }
+            placeholder="Message after the link"
+          />
+        </div>
+      </section>
+
+      <section>
+        <Kicker>WhatsApp seating message</Kicker>
+        <p className="mt-1 text-[11px] leading-relaxed text-[var(--admin-muted)]">
+          What "Copy seating message" (Seating → a guest's table) sends. The
+          guest's personal seating link is always inserted between these two —
+          leave both blank to use the default message.
+        </p>
+        <div className="mt-2.5 flex flex-col gap-2">
+          <ATextarea
+            rows={2}
+            value={form.seating_message_before}
+            onChange={(e) =>
+              setForm((f) => ({
+                ...f,
+                seating_message_before: e.target.value,
+              }))
+            }
+            placeholder="Message before the link"
+          />
+          <div className="border border-dashed border-[var(--admin-line)] px-3 py-2 text-center text-xs text-[var(--admin-muted)]">
+            🔗 Guest's personal seating link (added automatically)
+          </div>
+          <ATextarea
+            rows={2}
+            value={form.seating_message_after}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, seating_message_after: e.target.value }))
             }
             placeholder="Message after the link"
           />
