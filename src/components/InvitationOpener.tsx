@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Heart, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import type { PublicWedding } from "@/lib/wedding";
+import { isDecorativeTemplate, type PublicWedding } from "@/lib/wedding";
 import { RosePetals } from "@/components/RosePetals";
 import { RoseCorner } from "@/components/RoseCorner";
 
@@ -13,6 +13,7 @@ type Guest = { code: string; name: string; title: string | null; seats: number }
  * Clicking the wax seal plays an envelope-opening animation and unveils the site.
  */
 export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
+  const decorative = isDecorativeTemplate(wedding.template);
   const [guest, setGuest] = useState<Guest | null>(null);
   const [opening, setOpening] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -62,12 +63,17 @@ export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
       role="dialog"
       aria-label="Wedding invitation"
     >
-      {/* Falling rose petals + corner bouquets, matching the main page */}
-      <div className="invite-opener__petals">
-        <RosePetals count={14} prefill />
-      </div>
-      <RoseCorner position="tl" size={150} opacity={0.4} />
-      <RoseCorner position="br" size={150} opacity={0.4} />
+      {/* Falling rose petals + corner bouquets, matching the main page —
+          only for templates that use floral decoration at all. */}
+      {decorative && (
+        <>
+          <div className="invite-opener__petals">
+            <RosePetals count={14} prefill />
+          </div>
+          <RoseCorner position="tl" size={150} opacity={0.4} />
+          <RoseCorner position="br" size={150} opacity={0.4} />
+        </>
+      )}
 
       <div className="invite-opener__scene">
         {/* Envelope */}

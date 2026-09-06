@@ -17,6 +17,7 @@ import {
   formatScriptDate,
   formatLongDate,
   googleCalendarUrl,
+  isDecorativeTemplate,
   type PublicWedding,
 } from "@/lib/wedding";
 import { supabase } from "@/integrations/supabase/client";
@@ -50,12 +51,9 @@ export function WeddingNotLive() {
 // calendar links, all identical logic. Only two things vary by template:
 // the CSS custom properties `theme-${template}` redefines (see
 // styles.css), and whether the falling-petals/corner-rose decoration shows
-// at all — "minimal" and "luxe" are meant to read as deliberately
-// unadorned, not just "classic" with different colors.
-const DECORATIVE_TEMPLATES = new Set(["classic", "botanical", "pastel"]);
-
+// at all (isDecorativeTemplate, in @/lib/wedding).
 export function WeddingSite({ wedding }: { wedding: PublicWedding }) {
-  const decorative = DECORATIVE_TEMPLATES.has(wedding.template);
+  const decorative = isDecorativeTemplate(wedding.template);
   return (
     <main className={`theme-${wedding.template} relative overflow-x-hidden`}>
       {decorative && <RosePetals />}

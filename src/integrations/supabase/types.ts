@@ -40,6 +40,7 @@ export type Database = {
           venue_photo_url: string | null;
           maps_url: string | null;
           music_url: string | null;
+          floor_plan_url: string | null;
           published: boolean;
           created_at: string;
           updated_at: string;
@@ -65,6 +66,7 @@ export type Database = {
           venue_photo_url?: string | null;
           maps_url?: string | null;
           music_url?: string | null;
+          floor_plan_url?: string | null;
           published?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -90,6 +92,7 @@ export type Database = {
           venue_photo_url?: string | null;
           maps_url?: string | null;
           music_url?: string | null;
+          floor_plan_url?: string | null;
           published?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -143,6 +146,8 @@ export type Database = {
           name: string;
           seats: number;
           title: string | null;
+          phone: string | null;
+          invited_at: string | null;
         };
         Insert: {
           id?: string;
@@ -152,6 +157,8 @@ export type Database = {
           name: string;
           seats?: number;
           title?: string | null;
+          phone?: string | null;
+          invited_at?: string | null;
         };
         Update: {
           id?: string;
@@ -161,6 +168,8 @@ export type Database = {
           name?: string;
           seats?: number;
           title?: string | null;
+          phone?: string | null;
+          invited_at?: string | null;
         };
         Relationships: [
           {

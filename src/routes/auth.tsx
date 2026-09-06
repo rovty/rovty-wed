@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Heart, ArrowRight } from "lucide-react";
+import { ArrowRight, KeyRound } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/auth")({
@@ -25,7 +25,9 @@ export const Route = createFileRoute("/auth")({
 // A local signup/sign-in form here would let anyone create an account with
 // no product_access check at all — this page exists only to send people
 // back to the dashboard, and to explain why if they arrived via a failed
-// /sso redirect.
+// /sso redirect. The admin-portal redesign's sign-in mock (an email input,
+// "email me a sign-in link") was deliberately not carried over for that
+// reason — same SSO-only flow, just restyled to match.
 
 // Keyed by every reason string /sso's failure() can be called with — both
 // its own local checks (missing_token, resolve_unreachable,
@@ -87,36 +89,49 @@ function AuthPage() {
   }, []);
 
   return (
-    <main className="grid min-h-[100svh] place-items-center px-5 py-10">
-      <div className="glass-card w-full max-w-sm rounded-3xl p-7 text-center">
-        <div
-          className="mx-auto grid h-12 w-12 place-items-center rounded-full text-white"
-          style={{ background: "var(--gradient-gold)" }}
-        >
-          <Heart className="h-5 w-5" />
-        </div>
-        <h1 className="mt-3 font-display text-2xl">Sign in via Rovty</h1>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Rovty Wed accounts are managed through your Rovty dashboard — there's
-          no separate sign-up here.
-        </p>
+    <main className="admin-portal grid min-h-[100dvh] place-items-center px-5 py-10">
+      <div className="w-full max-w-sm border-2 border-[var(--admin-ink)] bg-[var(--admin-surface)] shadow-[var(--admin-shadow-lg)]">
+        <div className="p-7">
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-xl font-extrabold tracking-tight">ROVTY</span>
+            <span className="text-xl font-extrabold tracking-tight text-[var(--admin-accent)]">
+              WED
+            </span>
+          </div>
+          <div className="my-4 h-0.5 bg-[var(--admin-ink)]" />
 
-        {ssoError && (
-          <p className="mt-4 rounded-2xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-xs text-destructive">
-            {describeSsoError(ssoError)}
+          <h1 className="text-[28px] font-extrabold leading-[1.05] tracking-tight">
+            Sign in to your wedding
+          </h1>
+          <p className="mt-3 text-sm leading-relaxed text-[var(--admin-muted)]">
+            Rovty Wed accounts are managed through your Rovty dashboard —
+            there's no separate sign-up here. Sign in there, then open Rovty Wed
+            from your Products list.
           </p>
-        )}
 
-        <a
-          href="https://dash.rovty.com"
-          className="mt-6 inline-flex w-full items-center justify-center gap-1.5 rounded-full py-3 text-sm font-medium text-white shadow-gold"
-          style={{ background: "var(--gradient-gold)" }}
-        >
-          Go to Rovty Dashboard <ArrowRight className="h-3.5 w-3.5" />
-        </a>
-        <p className="mt-3 text-xs text-muted-foreground">
-          Sign in there, then open Rovty Wed from your Products list.
-        </p>
+          {ssoError && (
+            <p className="mt-4 border-2 border-[var(--admin-accent-active)] bg-[var(--admin-accent-softer)] px-4 py-3 text-xs text-[var(--admin-accent-active)]">
+              {describeSsoError(ssoError)}
+            </p>
+          )}
+
+          <a
+            href="https://dash.rovty.com"
+            className="a-btn-primary mt-6 flex h-[52px] w-full items-center justify-between px-4 text-[15px] font-bold"
+          >
+            <span>Go to Rovty Dashboard</span>
+            <ArrowRight className="h-[18px] w-[18px]" />
+          </a>
+
+          <div className="mt-6 border-t-2 border-[var(--admin-ink)] pt-3.5">
+            <p className="flex items-start gap-2 text-xs leading-relaxed text-[var(--admin-muted)]">
+              <KeyRound className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              Invited by the couple as a planner or family member? Sign in with
+              the same email your invite was sent to — your access is already
+              waiting.
+            </p>
+          </div>
+        </div>
       </div>
     </main>
   );

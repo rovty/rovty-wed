@@ -84,8 +84,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
+        // Playfair/Cormorant/Inter: "classic" template + site-wide default.
+        // The rest are one distinct display+accent pairing per template
+        // (see styles.css's .theme-* blocks) — not just a recolor of
+        // Playfair, an actual different typographic personality each.
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400;500;600&display=swap",
+        href:
+          "https://fonts.googleapis.com/css2?" +
+          [
+            "family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400",
+            "family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300",
+            "family=Inter:wght@300;400;500;600;700",
+            "family=Manrope:wght@400;500;600;700;800", // minimal
+            "family=Fraunces:ital,wght@0,400;0,500;0,600;1,400", // botanical
+            "family=Marcellus", // luxe
+            "family=Quicksand:wght@500;600;700", // pastel display
+            "family=Caveat:wght@600;700", // pastel script
+            "family=Archivo:wght@400;500;600;700;800", // admin portal
+          ].join("&") +
+          "&display=swap",
       },
     ],
   }),

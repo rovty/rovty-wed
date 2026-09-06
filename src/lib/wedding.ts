@@ -25,6 +25,15 @@ export const WEDDING_TEMPLATES = [
 ] as const;
 export type WeddingTemplate = (typeof WEDDING_TEMPLATES)[number]["id"];
 const TEMPLATE_IDS = WEDDING_TEMPLATES.map((t) => t.id);
+
+// "minimal" and "luxe" are meant to read as deliberately unadorned/dramatic,
+// not "classic" with different colors — every falling-petal/corner-rose
+// decoration across the site (WeddingSite, InvitationOpener) checks this
+// rather than each maintaining its own copy of the same three-item list.
+const DECORATIVE_TEMPLATE_IDS = new Set<WeddingTemplate>(["classic", "botanical", "pastel"]);
+export function isDecorativeTemplate(template: WeddingTemplate): boolean {
+  return DECORATIVE_TEMPLATE_IDS.has(template);
+}
 function isWeddingTemplate(v: string): v is WeddingTemplate {
   return (TEMPLATE_IDS as string[]).includes(v);
 }
@@ -94,15 +103,19 @@ function toPublicWedding(row: {
 const WEDDING_COLUMNS =
   "slug, bride, groom, event_date, event_end, reception_date, reception_end, venue, hall, address, description, template, couple_photo_url, venue_photo_url, maps_url, music_url";
 
-// Couple photo, venue photo, and background music, uploaded from the
-// Details tab. Storage RLS (20260904070000_wedding_media.sql) keys off the
-// object path's first folder segment being the wedding's id — that's the
-// whole access-control story, so the path shape here isn't cosmetic.
-export type WeddingMediaKind = "couple" | "venue" | "music";
+// Couple photo, venue photo, background music, and the hall's floor-plan
+// photo, all uploaded from the admin's Design/Details screen. Storage RLS
+// (20260904070000_wedding_media.sql) keys off the object path's first
+// folder segment being the wedding's id — that's the whole access-control
+// story, so the path shape here isn't cosmetic. floor_plan reuses the same
+// bucket/policies (image/jpeg|png|webp is already allowed) rather than
+// needing a bucket of its own.
+export type WeddingMediaKind = "couple" | "venue" | "music" | "floor_plan";
 const MEDIA_EXT_FALLBACK: Record<WeddingMediaKind, string> = {
   couple: "jpg",
   venue: "jpg",
   music: "mp3",
+  floor_plan: "jpg",
 };
 
 export async function uploadWeddingMedia(
