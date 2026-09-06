@@ -25,7 +25,9 @@ export function Sidebar({
       <div className="border-b-2 border-[var(--admin-ink)] px-5 py-5">
         <div className="flex items-baseline gap-1.5">
           <span className="text-lg font-extrabold tracking-tight">ROVTY</span>
-          <span className="text-lg font-extrabold tracking-tight text-[var(--admin-accent)]">
+          {/* -accent itself is too pale to read as text on white — this
+              wordmark needs the darker step of the same pink. */}
+          <span className="text-lg font-extrabold tracking-tight text-[var(--admin-accent-hover)]">
             WED
           </span>
         </div>

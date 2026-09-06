@@ -94,7 +94,9 @@ function AuthPage() {
         <div className="p-7">
           <div className="flex items-baseline gap-1.5">
             <span className="text-xl font-extrabold tracking-tight">ROVTY</span>
-            <span className="text-xl font-extrabold tracking-tight text-[var(--admin-accent)]">
+            {/* -accent itself is too pale to read as text on white — this
+                wordmark needs the darker step of the same pink. */}
+            <span className="text-xl font-extrabold tracking-tight text-[var(--admin-accent-hover)]">
               WED
             </span>
           </div>

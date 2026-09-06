@@ -165,8 +165,10 @@ export function Send({
                   style={
                     selected.has(g.code)
                       ? {
-                          background: "var(--admin-accent)",
-                          borderColor: "var(--admin-accent)",
+                          // -active, not the pale base -accent — the
+                          // white checkmark on top needs the contrast.
+                          background: "var(--admin-accent-active)",
+                          borderColor: "var(--admin-accent-active)",
                         }
                       : undefined
                   }

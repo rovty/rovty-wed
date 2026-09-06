@@ -134,7 +134,7 @@ export function Dashboard({
         </div>
       </div>
 
-      <div className="bg-[var(--admin-accent)] px-5 py-5 text-white">
+      <div className="bg-[var(--admin-accent)] px-5 py-5 text-[var(--admin-ink)]">
         <div className="text-[10px] font-semibold uppercase tracking-[0.22em] opacity-85">
           {eventDate.toLocaleDateString(undefined, {
             day: "numeric",
@@ -155,7 +155,7 @@ export function Dashboard({
             {days > 0 ? "days to go" : days === 0 ? "today!" : "has passed"}
           </span>
         </div>
-        <div className="mt-3.5 h-0.5 bg-white/40" />
+        <div className="mt-3.5 h-0.5 bg-[var(--admin-ink)]/20" />
         <div className="mt-3 flex items-center justify-between text-xs font-semibold">
           <span>
             {wedding.published ? "Invitation published" : "Not published yet"}

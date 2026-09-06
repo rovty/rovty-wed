@@ -158,11 +158,11 @@ export function SeatingList({
                     className="grid h-[38px] w-[38px] shrink-0 place-items-center border-2 border-[var(--admin-ink)] text-sm font-extrabold"
                     style={{
                       background: over
-                        ? "var(--admin-accent)"
+                        ? "var(--admin-accent-active)"
                         : "var(--admin-ink)",
                       color: "#fff",
                       borderColor: over
-                        ? "var(--admin-accent)"
+                        ? "var(--admin-accent-active)"
                         : "var(--admin-ink)",
                     }}
                   >
@@ -179,7 +179,7 @@ export function SeatingList({
                           style={{
                             width: `${Math.min(100, (used / (t.capacity || 1)) * 100)}%`,
                             background: over
-                              ? "var(--admin-accent)"
+                              ? "var(--admin-accent-active)"
                               : "var(--admin-ink)",
                           }}
                         />

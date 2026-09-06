@@ -233,9 +233,12 @@ export function HallPlan({
     const over = used > t.capacity;
     const full = used >= t.capacity && !over;
     if (over)
+      // -active, not the (now pale) base -accent — over-capacity is a
+      // warning and needs to read as one, plus white text on top of it
+      // actually needs the darker shade to stay legible.
       return {
-        background: "var(--admin-accent)",
-        borderColor: "var(--admin-accent)",
+        background: "var(--admin-accent-active)",
+        borderColor: "var(--admin-accent-active)",
         color: "#fff",
       };
     if (full)
@@ -353,7 +356,7 @@ export function HallPlan({
           label="Space left"
         />
         <Legend
-          swatch={{ background: "var(--admin-accent)" }}
+          swatch={{ background: "var(--admin-accent-active)" }}
           label="Over"
           accent
         />

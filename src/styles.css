@@ -476,17 +476,21 @@
   --admin-line-soft: color-mix(in srgb, #201e1d 14%, transparent);
   --admin-muted: #605d5d;
   --admin-faint: #9b9797;
-  /* Pink, not the red-orange this used to be (#ec3013 read as "orange") —
-     rose (#e11d48) was tried first and came back too intense/saturated,
-     so this sits a step softer/lighter. Same five-step structure
-     (base/hover/active/soft/softer), so every button, active nav state,
-     and status color in the admin just follows along since nothing
-     hardcodes the old hex anywhere. */
-  --admin-accent: #ec4899;
-  --admin-accent-hover: #db2777;
-  --admin-accent-active: #9d174d;
-  --admin-accent-soft: #fce7f3;
-  --admin-accent-softer: #fdf2f8;
+  /* Light pink, not the red-orange this used to be (#ec3013 read as
+     "orange") — rose (#e11d48) and a medium pink (#ec4899/#f472b6) were
+     all tried first and came back too intense; #F1CFE1 is the exact
+     shade asked for. It's too pale to put white text on directly, so
+     -accent itself now pairs with dark ink text at rest (see
+     .a-btn-primary, the countdown banner) — -hover and -active step up
+     through medium and dark pink for interaction states and for the
+     handful of spots (delete icons, "over capacity" warnings, the ROVTY
+     WED wordmark on a white background) that still need a color dark
+     enough to read as text on white or to carry white text on top. */
+  --admin-accent: #f1cfe1;
+  --admin-accent-hover: #ec4899;
+  --admin-accent-active: #be185d;
+  --admin-accent-soft: #fdf2f8;
+  --admin-accent-softer: #fefafc;
   --admin-shadow-lg: 0 12px 32px color-mix(in srgb, #2d2b2b 22%, transparent);
 
   min-height: 100dvh;
@@ -510,14 +514,19 @@
   background: color-mix(in srgb, var(--admin-accent) 30%, transparent);
 }
 .admin-portal .a-btn-primary {
+  /* -accent is pale on purpose — white text on it would be close to
+     invisible, so this pairs it with dark ink instead. Hover/active step
+     into darker pinks, at which point white reads better than ink does. */
   background: var(--admin-accent);
-  color: #fff;
+  color: var(--admin-ink);
 }
 .admin-portal .a-btn-primary:hover {
   background: var(--admin-accent-hover);
+  color: #fff;
 }
 .admin-portal .a-btn-primary:active {
   background: var(--admin-accent-active);
+  color: #fff;
 }
 .admin-portal .a-btn-secondary:hover {
   background: color-mix(in srgb, var(--admin-ink) 7%, transparent);
