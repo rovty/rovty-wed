@@ -26,7 +26,6 @@ export function DetailsForm({
     reception_end: toOptionalDatetimeLocalValue(wedding.reception_end),
     venue: wedding.venue ?? "",
     hall: wedding.hall ?? "",
-    address: wedding.address ?? "",
     description: wedding.description ?? "",
     invite_message_before: wedding.invite_message_before ?? "",
     invite_message_after: wedding.invite_message_after ?? "",
@@ -116,7 +115,6 @@ export function DetailsForm({
           : null,
         venue: form.venue.trim() || null,
         hall: form.hall.trim() || null,
-        address: form.address.trim() || null,
         description: form.description.trim() || null,
         invite_message_before: form.invite_message_before.trim() || null,
         invite_message_after: form.invite_message_after.trim() || null,
@@ -160,8 +158,8 @@ export function DetailsForm({
       <section>
         <Kicker>Couple</Kicker>
         <div className="mt-2.5 grid grid-cols-2 gap-2.5">
-          {field("bride", "Bride")}
           {field("groom", "Groom")}
+          {field("bride", "Bride")}
         </div>
       </section>
 
@@ -178,7 +176,6 @@ export function DetailsForm({
             placeholder: "Paste a Google Maps link",
           })}
         </div>
-        <div className="mt-2.5">{field("address", "Address")}</div>
       </section>
 
       <section>
