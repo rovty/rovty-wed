@@ -4,9 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { WEDDING_TEMPLATES, type WeddingTemplate } from "@/lib/wedding";
 import type { Wedding } from "./types";
 import { slugify } from "./utils";
-import { AButton, AInput, ALabel } from "./ui";
-
-const STEP_LABELS = ["Names", "Date & venue", "Design"];
+import { AButton, AInput, ALabel, AppFrame } from "./ui";
 
 // First-time setup, three steps: who's getting married (+ their public
 // link), when/where, and which invitation design to start with — mirrors
@@ -77,7 +75,7 @@ export function Onboarding({
   };
 
   return (
-    <main className="admin-portal flex min-h-[100dvh] flex-col">
+    <AppFrame>
       <div className="border-b-2 border-[var(--admin-ink)] px-5 pb-3.5 pt-4">
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--admin-muted)]">
@@ -289,6 +287,6 @@ export function Onboarding({
           </div>
         </div>
       </form>
-    </main>
+    </AppFrame>
   );
 }

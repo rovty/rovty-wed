@@ -5,6 +5,25 @@ import type {
   TextareaHTMLAttributes,
 } from "react";
 
+// The mobile screens (Dashboard/Guests/Seating/Design/More, Onboarding)
+// are built edge-to-edge on purpose — that's the actual product, run from
+// a phone. Left to stretch across a desktop browser, that same markup
+// just reads as "a phone screen blown up too wide", not a desktop app.
+// Rather than build a second desktop layout, this frames the exact same
+// screen the way the original designs themselves were presented: a
+// fixed-width bordered panel on a neutral canvas — so desktop gets an
+// intentional-looking app window instead of a stretched phone. Mobile
+// (below `md`) is untouched: the inner panel just fills the viewport.
+export function AppFrame({ children }: { children: ReactNode }) {
+  return (
+    <div className="admin-portal min-h-[100dvh] md:flex md:min-h-[100dvh] md:items-center md:justify-center md:bg-[var(--admin-canvas)] md:p-8">
+      <div className="flex h-[100dvh] flex-col overflow-hidden bg-[var(--admin-paper)] md:h-[min(880px,calc(100dvh-4rem))] md:w-[440px] md:border-2 md:border-[var(--admin-ink)] md:shadow-[var(--admin-shadow-lg)]">
+        {children}
+      </div>
+    </div>
+  );
+}
+
 // Shared building blocks for the admin portal's "Modernist" look: hard 2px
 // ink borders, zero radius, uppercase Archivo labels, one warm-red accent.
 // Kept deliberately plain (no variants explosion) — every admin screen

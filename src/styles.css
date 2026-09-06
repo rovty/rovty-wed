@@ -470,6 +470,7 @@
 .admin-portal {
   --admin-ink: #201e1d;
   --admin-paper: #f3f2f2;
+  --admin-canvas: #dcdad8;
   --admin-surface: #ffffff;
   --admin-line: color-mix(in srgb, #201e1d 40%, transparent);
   --admin-line-soft: color-mix(in srgb, #201e1d 14%, transparent);

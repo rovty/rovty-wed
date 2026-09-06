@@ -16,7 +16,7 @@ import { Send } from "./Send";
 import { SeatingSection } from "./SeatingSection";
 import { DesignSection } from "./DesignSection";
 import { MoreSection } from "./MoreSection";
-import { ScreenHeader } from "./ui";
+import { AppFrame, ScreenHeader } from "./ui";
 
 export function AdminShell({
   wedding,
@@ -98,7 +98,7 @@ export function AdminShell({
   };
 
   return (
-    <div className="admin-portal flex h-[100dvh] flex-col overflow-hidden">
+    <AppFrame>
       {section === "home" && (
         <Dashboard
           wedding={wedding}
@@ -169,6 +169,6 @@ export function AdminShell({
       )}
 
       <BottomNav active={section} onChange={setSection} />
-    </div>
+    </AppFrame>
   );
 }
