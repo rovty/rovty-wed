@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageCircle, Pencil, Check } from "lucide-react";
+import { MessageCircle, Pencil, Check, Copy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Guest, Wedding } from "./types";
 import { defaultInvitationMessage, whatsappHref } from "./utils";
@@ -27,6 +27,7 @@ export function Send({
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   const sent = guests.filter((g) => g.invited_at);
   const notSent = guests.filter((g) => !g.invited_at);
@@ -54,6 +55,17 @@ export function Send({
   const sendOne = async (g: Guest) => {
     if (!g.phone) return;
     window.open(whatsappHref(g.phone, messageFor(g)), "_blank", "noopener");
+    await markSent([g.code]);
+  };
+
+  // For a guest with no number on file — copying here counts as sending,
+  // same as Guests.tsx's own "Copy" action, since it's the only way this
+  // screen can hand them an invitation at all without a phone to open
+  // WhatsApp with.
+  const copyOne = async (g: Guest) => {
+    await navigator.clipboard.writeText(messageFor(g));
+    setCopiedCode(g.code);
+    setTimeout(() => setCopiedCode((c) => (c === g.code ? null : c)), 2000);
     await markSent([g.code]);
   };
 
@@ -168,17 +180,32 @@ export function Send({
                     {g.title ? `${g.title} ` : ""}
                     {g.name}
                   </div>
-                  <div className="mt-0.5 text-[11px] text-[var(--admin-muted)]">
-                    {g.phone ?? "No number on file"}
-                  </div>
+                  {g.phone && (
+                    <div className="mt-0.5 text-[11px] text-[var(--admin-muted)]">
+                      {g.phone}
+                    </div>
+                  )}
                 </div>
-                <AButton
-                  onClick={() => sendOne(g)}
-                  disabled={!g.phone}
-                  className="h-[34px] shrink-0 px-2.5 text-[10px]"
-                >
-                  <MessageCircle className="h-3.5 w-3.5" /> Send
-                </AButton>
+                {g.phone ? (
+                  <AButton
+                    onClick={() => sendOne(g)}
+                    className="h-[34px] shrink-0 px-2.5 text-[10px]"
+                  >
+                    <MessageCircle className="h-3.5 w-3.5" /> Send
+                  </AButton>
+                ) : (
+                  <AButton
+                    onClick={() => copyOne(g)}
+                    className="h-[34px] shrink-0 px-2.5 text-[10px]"
+                  >
+                    {copiedCode === g.code ? (
+                      <Check className="h-3.5 w-3.5" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5" />
+                    )}
+                    {copiedCode === g.code ? "Copied" : "Copy message"}
+                  </AButton>
+                )}
               </div>
             ))
           )}

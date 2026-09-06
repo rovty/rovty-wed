@@ -476,11 +476,17 @@
   --admin-line-soft: color-mix(in srgb, #201e1d 14%, transparent);
   --admin-muted: #605d5d;
   --admin-faint: #9b9797;
-  --admin-accent: #ec3013;
-  --admin-accent-hover: #dd2b0f;
-  --admin-accent-active: #ae1800;
-  --admin-accent-soft: #ffe0d9;
-  --admin-accent-softer: #fff2ef;
+  /* Pink, not the red-orange this used to be (#ec3013 read as "orange") —
+     rose (#e11d48) was tried first and came back too intense/saturated,
+     so this sits a step softer/lighter. Same five-step structure
+     (base/hover/active/soft/softer), so every button, active nav state,
+     and status color in the admin just follows along since nothing
+     hardcodes the old hex anywhere. */
+  --admin-accent: #ec4899;
+  --admin-accent-hover: #db2777;
+  --admin-accent-active: #9d174d;
+  --admin-accent-soft: #fce7f3;
+  --admin-accent-softer: #fdf2f8;
   --admin-shadow-lg: 0 12px 32px color-mix(in srgb, #2d2b2b 22%, transparent);
 
   min-height: 100dvh;

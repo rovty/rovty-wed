@@ -4,18 +4,16 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Guest, Rsvp, Wedding } from "./types";
 import { randCode, defaultInvitationMessage } from "./utils";
 import { AButton, AInput, ALabel, EmptyState } from "./ui";
+import { RSVP_COLOR, RSVP_TINT } from "./rsvp-colors";
 
 export type GuestFilter = "all" | "pending" | "yes" | "no";
 type Filter = GuestFilter;
 
-// Same traffic-light colors as the filter chips below, so a guest's RSVP
-// status reads from the chip you tapped to see them rather than needing
-// its own repeated badge on every row (which is what used to sit here).
+// Same traffic-light colors as the guest rows below (RSVP_COLOR), plus
+// ink for "all" since that isn't a status.
 const FILTER_COLOR: Record<Filter, string> = {
   all: "var(--admin-ink)",
-  pending: "#b45309",
-  yes: "#1a7f37",
-  no: "var(--admin-accent-active)",
+  ...RSVP_COLOR,
 };
 
 // The three titles that cover the vast majority of a guest list — quick
@@ -99,6 +97,28 @@ export function Guests({
     await navigator.clipboard.writeText(message);
     setCopiedCode(code);
     setTimeout(() => setCopiedCode((c) => (c === code ? null : c)), 2000);
+    // Copying here is this screen's version of "send" (Send.tsx's WhatsApp
+    // flow is the other one, and already does this) — marking it lets the
+    // row pick up the "waiting for a reply" tint instead of staying
+    // colorless as if the guest had never been contacted.
+    await supabase
+      .from("guests")
+      .update({ invited_at: new Date().toISOString() })
+      .eq("wedding_id", wedding.id)
+      .eq("code", code);
+    await reload();
+  };
+
+  // Row tint: colorless until something's happened, amber once the
+  // invitation's gone out (copied here or sent from Send.tsx) but no
+  // reply yet, then green/red once they've actually answered — RSVP
+  // status always wins over "sent", since a reply is the more current
+  // fact about the guest.
+  const rowTint = (g: Guest) => {
+    const latest = latestRsvp(g.code);
+    if (latest) return latest.attending ? RSVP_TINT.yes : RSVP_TINT.no;
+    if (g.invited_at) return RSVP_TINT.pending;
+    return undefined;
   };
 
   return (
@@ -162,6 +182,7 @@ export function Guests({
             <div
               key={g.code}
               className="flex items-center gap-3 border-b border-[var(--admin-line-soft)] px-5 py-3.5"
+              style={{ background: rowTint(g) }}
             >
               <div className="min-w-0 flex-1">
                 <div className="truncate text-sm font-bold">

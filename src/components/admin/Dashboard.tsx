@@ -8,7 +8,7 @@ import type {
   Wedding,
 } from "./types";
 import { daysUntil, shortRelativeTime } from "./utils";
-import { Tag } from "./ui";
+import { RSVP_COLOR, RSVP_TINT } from "./rsvp-colors";
 
 export function Dashboard({
   wedding,
@@ -266,9 +266,15 @@ export function Dashboard({
                     ? `${guest.title ? guest.title + " " : ""}${guest.name}`
                     : r.guest_code}
                 </span>
-                <Tag tone={r.attending ? "accent" : "neutral"}>
+                <span
+                  className="inline-flex items-center px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em]"
+                  style={{
+                    background: r.attending ? RSVP_TINT.yes : RSVP_TINT.no,
+                    color: r.attending ? RSVP_COLOR.yes : RSVP_COLOR.no,
+                  }}
+                >
                   {r.attending ? `+${guest?.seats ?? "?"} seats` : "Declined"}
-                </Tag>
+                </span>
                 <span className="shrink-0 text-[11px] text-[var(--admin-faint)]">
                   {shortRelativeTime(r.created_at)}
                 </span>
