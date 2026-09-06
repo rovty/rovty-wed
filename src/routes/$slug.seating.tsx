@@ -1,3 +1,10 @@
+// Nested under /$slug (not a standalone /seating route) so it can look up
+// *this* wedding by slug — same fix $slug.tsx itself needed (see that
+// file's header comment): a top-level /seating route can't know which
+// wedding it's for in a multi-tenant app, and "Copy seating message"
+// (SeatingList.tsx) has always linked to `${slug}/seating?code=...`, so
+// the old top-level /seating route 404'd on every real link sent to a
+// guest.
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Heart, Sparkles, MapPin } from "lucide-react";
@@ -7,7 +14,12 @@ import { FloralDivider, FloralCorner } from "@/components/wedding/Floral";
 import { z } from "zod";
 import { fallback } from "@tanstack/zod-adapter";
 import seatingPlanImg from "@/assets/seating.png";
-import { fetchPublishedWedding, formatLongDate, type PublicWedding } from "@/lib/wedding";
+import {
+  fetchWeddingBySlug,
+  formatLongDate,
+  isDecorativeTemplate,
+  type PublicWedding,
+} from "@/lib/wedding";
 
 type SeatingData = {
   guest_name: string;
@@ -19,14 +31,16 @@ type SeatingData = {
   tablemates: { name: string; is_current: boolean }[];
 };
 
-export const Route = createFileRoute("/seating")({
+export const Route = createFileRoute("/$slug/seating")({
   validateSearch: z.object({
     code: fallback(z.string().optional(), undefined),
   }),
-  loader: () => fetchPublishedWedding(),
+  loader: ({ params }) => fetchWeddingBySlug(params.slug),
   head: ({ loaderData }) => {
     const wedding = loaderData as PublicWedding | null;
-    const names = wedding ? `${wedding.groom} & ${wedding.bride}` : "the couple";
+    const names = wedding
+      ? `${wedding.groom} & ${wedding.bride}`
+      : "the couple";
     return {
       meta: [
         { title: `Your Table is Ready — ${names} 🪑` },
@@ -76,9 +90,31 @@ function SeatingPage() {
     })();
   }, [wedding, code]);
 
+  // Not just "wedding not found" — the slug also 404s if this specific
+  // wedding hasn't been published yet, same gate the public invitation
+  // itself uses (get_seating_by_code additionally requires the seating
+  // plan's own publish toggle, checked server-side).
+  if (!wedding) {
+    return (
+      <main className="grid min-h-[100svh] place-items-center px-5 text-center">
+        <div>
+          <h1 className="font-display text-2xl">Page not found</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            This link isn't live yet — check back once the invitation is
+            published.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  const decorative = isDecorativeTemplate(wedding.template);
+
   if (loading) {
     return (
-      <main className="grid min-h-[100svh] place-items-center text-sm text-muted-foreground">
+      <main
+        className={`theme-${wedding.template} grid min-h-[100svh] place-items-center text-sm text-muted-foreground`}
+      >
         Loading…
       </main>
     );
@@ -86,7 +122,9 @@ function SeatingPage() {
 
   if (noCode) {
     return (
-      <main className="grid min-h-[100svh] place-items-center px-5">
+      <main
+        className={`theme-${wedding.template} grid min-h-[100svh] place-items-center px-5`}
+      >
         <div className="glass-card max-w-sm rounded-3xl p-8 text-center">
           <Ornament />
           <h2 className="font-display text-2xl">Invitation Required</h2>
@@ -101,16 +139,22 @@ function SeatingPage() {
 
   if (!seating) {
     return (
-      <main className="grid min-h-[100svh] place-items-center px-5">
-        <div className="glass-card max-w-sm rounded-3xl p-8 text-center">
-          <FloralCorner
-            className="pointer-events-none absolute left-4 top-4 h-20 w-20 opacity-60"
-            style={{ transform: "none" }}
-          />
-          <FloralCorner
-            className="pointer-events-none absolute right-4 top-4 h-20 w-20 opacity-60"
-            style={{ transform: "scaleX(-1)" }}
-          />
+      <main
+        className={`theme-${wedding.template} grid min-h-[100svh] place-items-center px-5`}
+      >
+        <div className="glass-card relative max-w-sm rounded-3xl p-8 text-center">
+          {decorative && (
+            <>
+              <FloralCorner
+                className="pointer-events-none absolute left-4 top-4 h-20 w-20 opacity-60"
+                style={{ transform: "none" }}
+              />
+              <FloralCorner
+                className="pointer-events-none absolute right-4 top-4 h-20 w-20 opacity-60"
+                style={{ transform: "scaleX(-1)" }}
+              />
+            </>
+          )}
           <Ornament />
           <p className="font-script text-lg italic text-rose">Stay tuned</p>
           <h2 className="mt-2 font-display text-2xl">
@@ -126,23 +170,26 @@ function SeatingPage() {
     );
   }
 
-  // Reachable only once `seating` is set, which only happens after a
-  // successful lookup that itself required `wedding` — safe to assert here
-  // rather than thread another null check through the rest of the render.
-  const w = wedding!;
+  const w = wedding;
   const tableNum = String(seating.table_number).padStart(2, "0");
 
   return (
-    <main className="relative min-h-[100svh] overflow-x-hidden">
+    <main
+      className={`theme-${wedding.template} relative min-h-[100svh] overflow-x-hidden`}
+    >
       {/* Corner ornaments */}
-      <FloralCorner
-        className="pointer-events-none absolute left-3 top-3 h-20 w-20 opacity-50 sm:h-24 sm:w-24"
-        style={{ transform: "none" }}
-      />
-      <FloralCorner
-        className="pointer-events-none absolute right-3 top-3 h-20 w-20 opacity-50 sm:h-24 sm:w-24"
-        style={{ transform: "scaleX(-1)" }}
-      />
+      {decorative && (
+        <>
+          <FloralCorner
+            className="pointer-events-none absolute left-3 top-3 h-20 w-20 opacity-50 sm:h-24 sm:w-24"
+            style={{ transform: "none" }}
+          />
+          <FloralCorner
+            className="pointer-events-none absolute right-3 top-3 h-20 w-20 opacity-50 sm:h-24 sm:w-24"
+            style={{ transform: "scaleX(-1)" }}
+          />
+        </>
+      )}
 
       <div className="mx-auto flex max-w-md flex-col items-center px-5 py-14 sm:py-20">
         {/* Header */}
@@ -219,9 +266,7 @@ function SeatingPage() {
                 >
                   <span
                     className={`inline-block h-2 w-2 shrink-0 rounded-full ${
-                      mate.is_current
-                        ? "bg-gold"
-                        : "bg-champagne"
+                      mate.is_current ? "bg-gold" : "bg-champagne"
                     }`}
                   />
                   {mate.name}
@@ -292,7 +337,9 @@ function SeatingPage() {
                   <p className="text-[11px] text-muted-foreground">{w.hall}</p>
                 )}
               </div>
-              <span className="text-xs text-muted-foreground">Directions →</span>
+              <span className="text-xs text-muted-foreground">
+                Directions →
+              </span>
             </a>
           </Reveal>
         )}

@@ -1,0 +1,95 @@
+name: Nightly database backup
+
+# Full pg_dump of the Supabase Postgres database, uploaded to a Cloudflare
+# R2 bucket every night. This exists because Supabase's own automatic
+# backups (Pro plan+) live inside your Supabase account — a problem with
+# that account (billing lapse, accidental deletion, a support mistake)
+# takes the backups down with it. A copy in a completely separate place
+# (R2, under your Cloudflare account) survives that.
+#
+# Required repository secrets (Settings → Secrets and variables → Actions
+# → Secrets):
+#   SUPABASE_DB_URL     Direct connection string (NOT the pooler) from
+#                       Supabase dashboard → Project Settings → Database →
+#                       Connection string → URI, "Direct connection" tab.
+#                       Looks like:
+#                       postgresql://postgres:[password]@db.<ref>.supabase.co:5432/postgres
+#   R2_ACCOUNT_ID       Cloudflare dashboard → R2 → Overview (right side).
+#   R2_ACCESS_KEY_ID    R2 → Manage API tokens → create a token scoped to
+#   R2_SECRET_ACCESS_KEY just the backup bucket, "Object Read & Write".
+#
+# Required repository variable (Settings → Secrets and variables → Actions
+# → Variables — not secret, just avoids hardcoding it below):
+#   R2_BACKUP_BUCKET    Name of the R2 bucket backups go to.
+#
+# Restoring a backup:
+#   pg_restore --clean --if-exists -d "<target DATABASE_URL>" rovty-wed-<timestamp>.dump
+#
+# Retention: this workflow uploads and keeps every backup forever — set an
+# R2 lifecycle rule (R2 → your bucket → Settings → Object lifecycle rules)
+# to auto-expire objects older than however long you want to keep, rather
+# than scripting deletion here.
+
+on:
+  schedule:
+    # 02:15 UTC daily — Actions' scheduler can run a few minutes late at
+    # busy times, which is fine for a nightly job like this.
+    - cron: "15 2 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      # ubuntu-latest's default postgresql-client can trail Supabase's own
+      # Postgres version; pg_dump needs to be >= the server's version, so
+      # this pulls the latest client from PostgreSQL's own apt repo rather
+      # than trusting whatever Ubuntu ships.
+      - name: Install PostgreSQL client
+        run: |
+          set -euo pipefail
+          sudo install -d /usr/share/postgresql-common/pgdg
+          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+            | sudo gpg --dearmor -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
+            | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client-17
+
+      - name: Dump database
+        env:
+          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "${DATABASE_URL:-}" ]; then
+            echo "::error::SUPABASE_DB_URL secret is not set" >&2
+            exit 1
+          fi
+          STAMP="$(date -u +%Y-%m-%dT%H-%M-%SZ)"
+          FILENAME="rovty-wed-${STAMP}.dump"
+          echo "FILENAME=${FILENAME}" >> "$GITHUB_ENV"
+          # -F c: pg_dump's compressed "custom" format — smaller than plain
+          # SQL and restorable with pg_restore (including selective /
+          # parallel restore), unlike a plain .sql file.
+          pg_dump "$DATABASE_URL" -F c -f "${FILENAME}"
+
+      - name: Upload to Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_ENDPOINT: https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
+        run: |
+          set -euo pipefail
+          aws s3 cp "${{ env.FILENAME }}" \
+            "s3://${{ vars.R2_BACKUP_BUCKET }}/${{ env.FILENAME }}" \
+            --endpoint-url "$R2_ENDPOINT"
+          # Confirms the object actually landed rather than the job just
+          # exiting 0 on a silently-empty upload.
+          aws s3api head-object \
+            --bucket "${{ vars.R2_BACKUP_BUCKET }}" \
+            --key "${{ env.FILENAME }}" \
+            --endpoint-url "$R2_ENDPOINT"

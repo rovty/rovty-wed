@@ -4,30 +4,18 @@
 // matched it, so it always rendered __root.tsx's generic NotFoundComponent
 // regardless of what was saved in Details — editing bride/groom never had
 // anywhere to show up.
-import { createFileRoute } from "@tanstack/react-router";
-import { WeddingSite, WeddingNotLive } from "@/components/WeddingSite";
-import { fetchWeddingBySlug, formatLongDate, type PublicWedding } from "@/lib/wedding";
+//
+// This is a pure layout now — $slug.index.tsx has the actual invitation
+// page. Adding $slug.seating.tsx (the guest seating-lookup page) made
+// $slug.tsx a parent route whether it liked it or not: TanStack Router
+// only ever shows a child route's component through this file's
+// `<Outlet />`, so a component here that renders its own leaf content
+// instead (which is what used to live in this file) silently swallows
+// every child route — /$slug/seating matched fine, its loader ran fine,
+// but nothing of it ever reached the screen, because there was no Outlet
+// for it to render into.
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/$slug")({
-  loader: ({ params }) => fetchWeddingBySlug(params.slug),
-  head: ({ loaderData }) => {
-    const wedding = loaderData as PublicWedding | null;
-    if (!wedding) return { meta: [{ title: "Wedding Invitation" }] };
-    const names = `${wedding.groom} & ${wedding.bride}`;
-    const when = `${formatLongDate(wedding.date)} · ${wedding.venue ?? ""}${wedding.hall ? ` · ${wedding.hall}` : ""}`;
-    return {
-      meta: [
-        { title: `${names} - Wedding Invitation` },
-        { name: "description", content: wedding.description },
-        { property: "og:title", content: `${names} - Wedding Invitation` },
-        { property: "og:description", content: when },
-      ],
-    };
-  },
-  component: SlugPage,
+  component: () => <Outlet />,
 });
-
-function SlugPage() {
-  const wedding = Route.useLoaderData();
-  return wedding ? <WeddingSite wedding={wedding} /> : <WeddingNotLive />;
-}

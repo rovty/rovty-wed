@@ -1,21 +1,22 @@
 import { useState, type FormEvent } from "react";
-import {
-  Search,
-  UserPlus,
-  MoreHorizontal,
-  Copy,
-  Check,
-  Trash2,
-  X,
-  Send,
-} from "lucide-react";
+import { Search, UserPlus, Copy, Check, Trash2, X, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Guest, Rsvp, Wedding } from "./types";
 import { randCode, defaultInvitationMessage } from "./utils";
-import { AButton, AInput, ALabel, EmptyState, Tag } from "./ui";
+import { AButton, AInput, ALabel, EmptyState } from "./ui";
 
 export type GuestFilter = "all" | "pending" | "yes" | "no";
 type Filter = GuestFilter;
+
+// Same traffic-light colors as the filter chips below, so a guest's RSVP
+// status reads from the chip you tapped to see them rather than needing
+// its own repeated badge on every row (which is what used to sit here).
+const FILTER_COLOR: Record<Filter, string> = {
+  all: "var(--admin-ink)",
+  pending: "#b45309",
+  yes: "#1a7f37",
+  no: "var(--admin-accent-active)",
+};
 
 // The three titles that cover the vast majority of a guest list — quick
 // tap-to-select instead of typing. Not exhaustive (no "Dr.", no "Mr. &
@@ -44,7 +45,6 @@ export function Guests({
   const [search, setSearch] = useState("");
   const [adding, setAdding] = useState(false);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
-  const [openMenu, setOpenMenu] = useState<string | null>(null);
 
   const latestRsvp = (code: string) =>
     [...rsvps]
@@ -75,7 +75,9 @@ export function Guests({
     : byFilter;
 
   const removeGuest = async (code: string) => {
-    setOpenMenu(null);
+    // Native confirm() rather than deleting on the first tap — a guest row
+    // sits right next to Copy, and one accidental tap should never be able
+    // to silently remove someone from the list.
     if (!confirm(`Delete guest ${code}? Their RSVPs will also be removed.`))
       return;
     await supabase
@@ -87,7 +89,6 @@ export function Guests({
   };
 
   const copyInvitation = async (code: string) => {
-    setOpenMenu(null);
     const url = `${inviteUrl}?code=${code}`;
     const before = wedding.invite_message_before?.trim();
     const after = wedding.invite_message_after?.trim();
@@ -128,20 +129,24 @@ export function Guests({
               ["yes", `Yes ${yes.length}`],
               ["no", `No ${no.length}`],
             ] as [Filter, string][]
-          ).map(([id, label]) => (
-            <button
-              key={id}
-              onClick={() => setFilter(id)}
-              className="h-[34px] shrink-0 whitespace-nowrap border-2 border-[var(--admin-ink)] px-3 text-[11px] font-semibold uppercase tracking-[0.08em]"
-              style={
-                filter === id
-                  ? { background: "var(--admin-ink)", color: "#fff" }
-                  : undefined
-              }
-            >
-              {label}
-            </button>
-          ))}
+          ).map(([id, label]) => {
+            const color = FILTER_COLOR[id];
+            const active = filter === id;
+            return (
+              <button
+                key={id}
+                onClick={() => setFilter(id)}
+                className="h-[34px] shrink-0 whitespace-nowrap border-2 px-3 text-[11px] font-semibold uppercase tracking-[0.08em]"
+                style={{
+                  borderColor: color,
+                  background: active ? color : "transparent",
+                  color: active ? "#fff" : color,
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -153,65 +158,42 @@ export function Guests({
               : "No guests match."}
           </EmptyState>
         ) : (
-          visible.map((g) => {
-            const latest = latestRsvp(g.code);
-            return (
-              <div
-                key={g.code}
-                className="flex items-center gap-3 border-b border-[var(--admin-line-soft)] px-5 py-3.5"
-              >
-                <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-bold">
-                    {g.title ? `${g.title} ` : ""}
-                    {g.name}
-                  </div>
-                  <div className="mt-0.5 flex items-center gap-2 text-[11px] text-[var(--admin-muted)]">
-                    <span className="font-mono">{g.code}</span>
-                    <span className="h-2.5 w-px bg-[var(--admin-line)]" />
-                    <span>{g.seats} seats</span>
-                  </div>
+          visible.map((g) => (
+            <div
+              key={g.code}
+              className="flex items-center gap-3 border-b border-[var(--admin-line-soft)] px-5 py-3.5"
+            >
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-sm font-bold">
+                  {g.title ? `${g.title} ` : ""}
+                  {g.name}
                 </div>
-                {latest ? (
-                  <Tag tone={latest.attending ? "accent" : "neutral"}>
-                    {latest.attending ? "Yes" : "No"}
-                  </Tag>
-                ) : (
-                  <Tag tone="dashed">Waiting</Tag>
-                )}
-                <div className="relative shrink-0">
-                  <button
-                    onClick={() =>
-                      setOpenMenu((c) => (c === g.code ? null : g.code))
-                    }
-                    className="grid h-[34px] w-[34px] place-items-center border-2 border-[var(--admin-ink)]"
-                  >
-                    <MoreHorizontal className="h-[15px] w-[15px]" />
-                  </button>
-                  {openMenu === g.code && (
-                    <div className="absolute right-0 top-[38px] z-10 w-44 border-2 border-[var(--admin-ink)] bg-[var(--admin-surface)] shadow-[var(--admin-shadow-lg)]">
-                      <button
-                        onClick={() => copyInvitation(g.code)}
-                        className="flex w-full items-center gap-2 border-b border-[var(--admin-line-soft)] px-3 py-2.5 text-left text-xs font-semibold"
-                      >
-                        {copiedCode === g.code ? (
-                          <Check className="h-3.5 w-3.5" />
-                        ) : (
-                          <Copy className="h-3.5 w-3.5" />
-                        )}
-                        {copiedCode === g.code ? "Copied" : "Copy message"}
-                      </button>
-                      <button
-                        onClick={() => removeGuest(g.code)}
-                        className="flex w-full items-center gap-2 px-3 py-2.5 text-left text-xs font-semibold text-[var(--admin-accent-active)]"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" /> Delete guest
-                      </button>
-                    </div>
-                  )}
+                <div className="mt-0.5 flex items-center gap-2 text-[11px] text-[var(--admin-muted)]">
+                  <span className="font-mono">{g.code}</span>
+                  <span className="h-2.5 w-px bg-[var(--admin-line)]" />
+                  <span>{g.seats} seats</span>
                 </div>
               </div>
-            );
-          })
+              <button
+                onClick={() => copyInvitation(g.code)}
+                className="grid h-[34px] w-[34px] shrink-0 place-items-center border-2 border-[var(--admin-ink)]"
+                title="Copy invitation message"
+              >
+                {copiedCode === g.code ? (
+                  <Check className="h-[15px] w-[15px]" />
+                ) : (
+                  <Copy className="h-[15px] w-[15px]" />
+                )}
+              </button>
+              <button
+                onClick={() => removeGuest(g.code)}
+                className="grid h-[34px] w-[34px] shrink-0 place-items-center border-2 border-[var(--admin-ink)] text-[var(--admin-accent-active)]"
+                title="Delete guest"
+              >
+                <Trash2 className="h-[15px] w-[15px]" />
+              </button>
+            </div>
+          ))
         )}
       </div>
 

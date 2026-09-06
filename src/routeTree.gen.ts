@@ -16,11 +16,12 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CalendarDoticsRouteImport } from './routes/calendar[.]ics'
 import { Route as PeoplesBankRouteImport } from './routes/peoples-bank'
 import { Route as RsvpRouteImport } from './routes/rsvp'
-import { Route as SeatingRouteImport } from './routes/seating'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SsoRouteImport } from './routes/sso'
 import { Route as ThankYouRouteImport } from './routes/thank-you'
 import { Route as ThankyouRouteImport } from './routes/thankyou'
+import { Route as SlugIndexRouteImport } from './routes/$slug.index'
+import { Route as SlugSeatingRouteImport } from './routes/$slug.seating'
 import { Route as ApiTeamRouteImport } from './routes/api.team'
 
 const IndexRoute = IndexRouteImport.update({
@@ -58,11 +59,6 @@ const RsvpRoute = RsvpRouteImport.update({
   path: '/rsvp',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SeatingRoute = SeatingRouteImport.update({
-  id: '/seating',
-  path: '/seating',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -83,6 +79,16 @@ const ThankyouRoute = ThankyouRouteImport.update({
   path: '/thankyou',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SlugIndexRoute = SlugIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SlugRoute,
+} as any)
+const SlugSeatingRoute = SlugSeatingRouteImport.update({
+  id: '/seating',
+  path: '/seating',
+  getParentRoute: () => SlugRoute,
+} as any)
 const ApiTeamRoute = ApiTeamRouteImport.update({
   id: '/api/team',
   path: '/api/team',
@@ -91,49 +97,51 @@ const ApiTeamRoute = ApiTeamRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/$slug': typeof SlugRoute
+  '/$slug': typeof SlugRouteWithChildren
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/calendar.ics': typeof CalendarDoticsRoute
   '/peoples-bank': typeof PeoplesBankRoute
   '/rsvp': typeof RsvpRoute
-  '/seating': typeof SeatingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sso': typeof SsoRoute
   '/thank-you': typeof ThankYouRoute
   '/thankyou': typeof ThankyouRoute
+  '/$slug/seating': typeof SlugSeatingRoute
   '/api/team': typeof ApiTeamRoute
+  '/$slug/': typeof SlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/$slug': typeof SlugRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/calendar.ics': typeof CalendarDoticsRoute
   '/peoples-bank': typeof PeoplesBankRoute
   '/rsvp': typeof RsvpRoute
-  '/seating': typeof SeatingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sso': typeof SsoRoute
   '/thank-you': typeof ThankYouRoute
   '/thankyou': typeof ThankyouRoute
+  '/$slug/seating': typeof SlugSeatingRoute
   '/api/team': typeof ApiTeamRoute
+  '/$slug': typeof SlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/$slug': typeof SlugRoute
+  '/$slug': typeof SlugRouteWithChildren
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/calendar.ics': typeof CalendarDoticsRoute
   '/peoples-bank': typeof PeoplesBankRoute
   '/rsvp': typeof RsvpRoute
-  '/seating': typeof SeatingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sso': typeof SsoRoute
   '/thank-you': typeof ThankYouRoute
   '/thankyou': typeof ThankyouRoute
+  '/$slug/seating': typeof SlugSeatingRoute
   '/api/team': typeof ApiTeamRoute
+  '/$slug/': typeof SlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -145,27 +153,28 @@ export interface FileRouteTypes {
     | '/calendar.ics'
     | '/peoples-bank'
     | '/rsvp'
-    | '/seating'
     | '/sitemap.xml'
     | '/sso'
     | '/thank-you'
     | '/thankyou'
+    | '/$slug/seating'
     | '/api/team'
+    | '/$slug/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/$slug'
     | '/admin'
     | '/auth'
     | '/calendar.ics'
     | '/peoples-bank'
     | '/rsvp'
-    | '/seating'
     | '/sitemap.xml'
     | '/sso'
     | '/thank-you'
     | '/thankyou'
+    | '/$slug/seating'
     | '/api/team'
+    | '/$slug'
   id:
     | '__root__'
     | '/'
@@ -175,23 +184,23 @@ export interface FileRouteTypes {
     | '/calendar.ics'
     | '/peoples-bank'
     | '/rsvp'
-    | '/seating'
     | '/sitemap.xml'
     | '/sso'
     | '/thank-you'
     | '/thankyou'
+    | '/$slug/seating'
     | '/api/team'
+    | '/$slug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  SlugRoute: typeof SlugRoute
+  SlugRoute: typeof SlugRouteWithChildren
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
   CalendarDoticsRoute: typeof CalendarDoticsRoute
   PeoplesBankRoute: typeof PeoplesBankRoute
   RsvpRoute: typeof RsvpRoute
-  SeatingRoute: typeof SeatingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SsoRoute: typeof SsoRoute
   ThankYouRoute: typeof ThankYouRoute
@@ -250,13 +259,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RsvpRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/seating': {
-      id: '/seating'
-      path: '/seating'
-      fullPath: '/seating'
-      preLoaderRoute: typeof SeatingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -285,6 +287,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ThankyouRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$slug/': {
+      id: '/$slug/'
+      path: '/'
+      fullPath: '/$slug/'
+      preLoaderRoute: typeof SlugIndexRouteImport
+      parentRoute: typeof SlugRoute
+    }
+    '/$slug/seating': {
+      id: '/$slug/seating'
+      path: '/seating'
+      fullPath: '/$slug/seating'
+      preLoaderRoute: typeof SlugSeatingRouteImport
+      parentRoute: typeof SlugRoute
+    }
     '/api/team': {
       id: '/api/team'
       path: '/api/team'
@@ -295,15 +311,26 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface SlugRouteChildren {
+  SlugSeatingRoute: typeof SlugSeatingRoute
+  SlugIndexRoute: typeof SlugIndexRoute
+}
+
+const SlugRouteChildren: SlugRouteChildren = {
+  SlugSeatingRoute: SlugSeatingRoute,
+  SlugIndexRoute: SlugIndexRoute,
+}
+
+const SlugRouteWithChildren = SlugRoute._addFileChildren(SlugRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  SlugRoute: SlugRoute,
+  SlugRoute: SlugRouteWithChildren,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   CalendarDoticsRoute: CalendarDoticsRoute,
   PeoplesBankRoute: PeoplesBankRoute,
   RsvpRoute: RsvpRoute,
-  SeatingRoute: SeatingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SsoRoute: SsoRoute,
   ThankYouRoute: ThankYouRoute,
