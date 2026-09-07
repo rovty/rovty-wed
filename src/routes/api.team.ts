@@ -13,6 +13,39 @@ function isRole(v: unknown): v is Role {
   return v === "admin" || v === "view";
 }
 
+// Mirror image of DASHBOARD_SSO_RESOLVE_URL in src/routes/sso.ts — that one
+// lets the dashboard hand off an already-entitled user into this product;
+// this one lets this product tell the dashboard "this email now has a
+// reason to be entitled," since wedding_members is a concept the dashboard
+// has no visibility into on its own. See rovty-dashboard/worker/index.ts's
+// handleGrantProductAccess for the receiving end.
+const DASHBOARD_PRODUCT_ACCESS_GRANT_URL =
+  process.env.DASHBOARD_PRODUCT_ACCESS_GRANT_URL ??
+  "https://dash.rovty.com/api/product-access/grant";
+
+// Best-effort on purpose: the invite itself (the wedding_members row, the
+// account they'll actually sign in with) already succeeded by the time this
+// runs. A dashboard outage here shouldn't turn a successful invite into a
+// failed one — it should just mean the dashboard's lock icon is stale until
+// this is retried (safe to retry any time: the receiving end upserts).
+async function grantDashboardProductAccess(email: string, product: string) {
+  try {
+    const res = await fetch(DASHBOARD_PRODUCT_ACCESS_GRANT_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.TEAM_GRANT_SHARED_SECRET}`,
+      },
+      body: JSON.stringify({ email, product }),
+    });
+    if (!res.ok) {
+      console.error("[api/team] dashboard product-access grant failed:", res.status, await res.text());
+    }
+  } catch (err) {
+    console.error("[api/team] dashboard product-access grant unreachable:", err);
+  }
+}
+
 async function requireOwner(request: Request, weddingId: string) {
   const auth = request.headers.get("Authorization");
   if (!auth?.startsWith("Bearer ")) return null;
@@ -84,6 +117,11 @@ export const Route = createFileRoute("/api/team")({
             { status: 400 },
           );
         }
+        // Every role gets Rovty Wed unlocked on the dashboard — view-only
+        // members still need to open the product to use it at all, this
+        // isn't the same thing as the edit-rights split `role` governs
+        // inside the product itself (see has_wedding_edit_access).
+        await grantDashboardProductAccess(email, "wed");
         return Response.json({ ok: true });
       },
       PATCH: async ({ request }) => {
