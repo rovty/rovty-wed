@@ -43,6 +43,7 @@ export type Database = {
           maps_url: string | null;
           music_url: string | null;
           floor_plan_url: string | null;
+          share_image_url: string | null;
           published: boolean;
           created_at: string;
           updated_at: string;
@@ -71,6 +72,7 @@ export type Database = {
           maps_url?: string | null;
           music_url?: string | null;
           floor_plan_url?: string | null;
+          share_image_url?: string | null;
           published?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -99,6 +101,7 @@ export type Database = {
           maps_url?: string | null;
           music_url?: string | null;
           floor_plan_url?: string | null;
+          share_image_url?: string | null;
           published?: boolean;
           created_at?: string;
           updated_at?: string;

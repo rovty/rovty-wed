@@ -98,6 +98,7 @@ export type PublicWedding = {
   template: WeddingTemplate;
   couplePhotoUrl: string | null;
   venuePhotoUrl: string | null;
+  shareImageUrl: string | null;
   mapsUrl: string | null;
   musicUrl: string | null;
 };
@@ -117,6 +118,7 @@ function toPublicWedding(row: {
   template: string;
   couple_photo_url: string | null;
   venue_photo_url: string | null;
+  share_image_url: string | null;
   maps_url: string | null;
   music_url: string | null;
 }): PublicWedding {
@@ -139,27 +141,31 @@ function toPublicWedding(row: {
     template: isWeddingTemplate(row.template) ? row.template : "classic",
     couplePhotoUrl: row.couple_photo_url,
     venuePhotoUrl: row.venue_photo_url,
+    shareImageUrl: row.share_image_url,
     mapsUrl: row.maps_url,
     musicUrl: row.music_url,
   };
 }
 
 const WEDDING_COLUMNS =
-  "slug, bride, groom, event_date, event_end, reception_date, reception_end, venue, hall, address, description, template, couple_photo_url, venue_photo_url, maps_url, music_url";
+  "slug, bride, groom, event_date, event_end, reception_date, reception_end, venue, hall, address, description, template, couple_photo_url, venue_photo_url, share_image_url, maps_url, music_url";
 
-// Couple photo, venue photo, background music, and the hall's floor-plan
-// photo, all uploaded from the admin's Design/Details screen. Storage RLS
-// (20260904070000_wedding_media.sql) keys off the object path's first
-// folder segment being the wedding's id — that's the whole access-control
-// story, so the path shape here isn't cosmetic. floor_plan reuses the same
-// bucket/policies (image/jpeg|png|webp is already allowed) rather than
-// needing a bucket of its own.
-export type WeddingMediaKind = "couple" | "venue" | "music" | "floor_plan";
+// Couple photo, venue photo, background music, the hall's floor-plan photo,
+// and the link-preview share image, all uploaded from the admin's
+// Design/Details screen. Storage RLS (20260904070000_wedding_media.sql)
+// keys off the object path's first folder segment being the wedding's id —
+// that's the whole access-control story, so the path shape here isn't
+// cosmetic. floor_plan and share both reuse the same bucket/policies
+// (image/jpeg|png|webp is already allowed) rather than needing a bucket of
+// their own.
+export type WeddingMediaKind =
+  "couple" | "venue" | "music" | "floor_plan" | "share";
 const MEDIA_EXT_FALLBACK: Record<WeddingMediaKind, string> = {
   couple: "jpg",
   venue: "jpg",
   music: "mp3",
   floor_plan: "jpg",
+  share: "jpg",
 };
 
 export async function uploadWeddingMedia(

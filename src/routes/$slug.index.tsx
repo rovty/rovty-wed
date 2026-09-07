@@ -19,10 +19,19 @@ export const Route = createFileRoute("/$slug/")({
     // WhatsApp (and every other link-preview crawler) reads OG tags from the
     // server-rendered HTML at the moment a link is first shared, then caches
     // the result against that exact URL — so per-wedding images fall out for
-    // free here since every wedding already has its own /$slug URL. Must be
-    // an absolute URL: couplePhotoUrl already is (Supabase storage
-    // getPublicUrl), the fallback is hardcoded absolute for the same reason.
-    const ogImage = wedding.couplePhotoUrl ?? "https://wed.rovty.com/invite.jpg";
+    // free here since every wedding already has its own /$slug URL.
+    // shareImageUrl is a dedicated upload for this (Design → "Share image")
+    // since couplePhotoUrl is framed for the invitation page itself and
+    // often portrait, which crops awkwardly into the wide box chat apps use
+    // for preview cards. Falls back to the couple photo, then a generic
+    // default, so weddings that haven't uploaded either still get *some*
+    // preview. Must be an absolute URL: both Supabase storage URLs already
+    // are (getPublicUrl), the last-resort fallback is hardcoded absolute for
+    // the same reason.
+    const ogImage =
+      wedding.shareImageUrl ??
+      wedding.couplePhotoUrl ??
+      "https://wed.rovty.com/invite.jpg";
     return {
       meta: [
         { title: `${names} - Wedding Invitation` },

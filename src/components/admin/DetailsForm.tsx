@@ -52,6 +52,8 @@ export function DetailsForm({
         return { music_url: value };
       case "floor_plan":
         return { floor_plan_url: value };
+      case "share":
+        return { share_image_url: value };
     }
   };
 
@@ -216,7 +218,16 @@ export function DetailsForm({
             uploading={uploading === "couple"}
             onUpload={(f) => upload("couple", f)}
             onRemove={() => removeMedia("couple")}
-            hint="Recommended 1200×630 — this is also the image WhatsApp shows in link previews."
+          />
+          <MediaRow
+            label="Share image"
+            accept="image/*"
+            kind="share"
+            url={wedding.share_image_url}
+            uploading={uploading === "share"}
+            onUpload={(f) => upload("share", f)}
+            onRemove={() => removeMedia("share")}
+            hint="Recommended 1200×630. Shown as the preview image when the invitation link is shared on WhatsApp — falls back to the couple photo if you skip this."
           />
           <MediaRow
             label="Venue photo"
