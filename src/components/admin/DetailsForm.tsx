@@ -216,6 +216,7 @@ export function DetailsForm({
             uploading={uploading === "couple"}
             onUpload={(f) => upload("couple", f)}
             onRemove={() => removeMedia("couple")}
+            hint="Recommended 1200×630 — this is also the image WhatsApp shows in link previews."
           />
           <MediaRow
             label="Venue photo"
@@ -338,6 +339,7 @@ function MediaRow({
   uploading,
   onUpload,
   onRemove,
+  hint,
 }: {
   label: string;
   accept: string;
@@ -346,6 +348,7 @@ function MediaRow({
   uploading: boolean;
   onUpload: (file: File) => void;
   onRemove: () => void;
+  hint?: string;
 }) {
   const inputId = `media-upload-${kind}`;
   return (
@@ -370,6 +373,11 @@ function MediaRow({
         <p className="truncate text-xs text-[var(--admin-muted)]">
           {uploading ? "Uploading…" : url ? "Uploaded" : "Using the default"}
         </p>
+        {hint && (
+          <p className="mt-0.5 text-[10px] leading-snug text-[var(--admin-muted)]">
+            {hint}
+          </p>
+        )}
       </div>
       <div className="flex shrink-0 items-center gap-1.5">
         <label

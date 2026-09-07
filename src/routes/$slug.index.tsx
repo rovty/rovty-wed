@@ -16,12 +16,21 @@ export const Route = createFileRoute("/$slug/")({
     if (!wedding) return { meta: [{ title: "Wedding Invitation" }] };
     const names = `${wedding.groom} & ${wedding.bride}`;
     const when = `${formatLongDate(wedding.date)} · ${wedding.venue ?? ""}${wedding.hall ? ` · ${wedding.hall}` : ""}`;
+    // WhatsApp (and every other link-preview crawler) reads OG tags from the
+    // server-rendered HTML at the moment a link is first shared, then caches
+    // the result against that exact URL — so per-wedding images fall out for
+    // free here since every wedding already has its own /$slug URL. Must be
+    // an absolute URL: couplePhotoUrl already is (Supabase storage
+    // getPublicUrl), the fallback is hardcoded absolute for the same reason.
+    const ogImage = wedding.couplePhotoUrl ?? "https://wed.rovty.com/invite.jpg";
     return {
       meta: [
         { title: `${names} - Wedding Invitation` },
         { name: "description", content: wedding.description },
         { property: "og:title", content: `${names} - Wedding Invitation` },
         { property: "og:description", content: when },
+        { property: "og:image", content: ogImage },
+        { name: "twitter:image", content: ogImage },
       ],
     };
   },
