@@ -100,23 +100,40 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           crossOrigin: "anonymous",
         },
         {
-          // Playfair/Cormorant/Inter: "classic" template + site-wide default.
-          // The rest are one distinct display+accent pairing per template
-          // (see styles.css's .theme-* blocks) — not just a recolor of
-          // Playfair, an actual different typographic personality each.
+          // Playfair/Cormorant/Inter: "classic" template + site-wide default
+          // (Cormorant Garamond doubles as .font-script for several other
+          // templates too). Every other family below is one template's
+          // distinct heading typeface (see styles.css's .theme-* blocks) —
+          // not a recolor of Playfair, an actual different typographic
+          // personality each.
           rel: "stylesheet",
           href:
             "https://fonts.googleapis.com/css2?" +
             [
-              "family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400",
-              "family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300",
-              "family=Inter:wght@300;400;500;600;700",
-              "family=Manrope:wght@400;500;600;700;800", // minimal
-              "family=Fraunces:ital,wght@0,400;0,500;0,600;1,400", // botanical
-              "family=Marcellus", // luxe
-              "family=Quicksand:wght@500;600;700", // pastel display
-              "family=Caveat:wght@600;700", // pastel script
-              "family=Archivo:wght@400;500;600;700;800", // admin portal
+              "family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400", // classic
+              "family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500", // script default + chapel/shoreline/bloom
+              "family=Inter:wght@300;400;500;600;700", // body sans, site-wide
+              "family=Cinzel:wght@400;600", // poruwa
+              "family=Rozha+One", // thali
+              "family=Amiri:ital,wght@0,400;0,700;1,400", // nikkah
+              "family=Bodoni+Moda:ital,wght@0,400;0,500;1,400", // noir
+              "family=Instrument+Serif:ital@0;1", // editorial
+              "family=Manrope:wght@400;600;800", // quiet
+              "family=Newsreader:ital,wght@0,400;0,500;1,400;1,500", // garden
+              "family=Tenor+Sans", // shoreline
+              "family=Poiret+One", // deco
+              "family=Crimson+Pro:ital,wght@0,400;1,400", // film
+              "family=Marcellus", // bloom
+              "family=Archivo:wght@400;500;600;700;800", // admin portal + editorial kicker
+              // Kicker (small overline label) fonts — one per template that
+              // doesn't already reuse a heading/body family above.
+              "family=Mukta:wght@400;600", // poruwa/thali kicker
+              "family=Jost:wght@400;500;600", // nikkah/noir kicker
+              "family=Lato:wght@400;700", // chapel kicker
+              "family=Nunito+Sans:wght@400;600", // shoreline kicker
+              "family=Josefin+Sans:wght@300;400;600", // deco kicker
+              "family=IBM+Plex+Sans:wght@400;500", // film kicker
+              "family=Outfit:wght@400;500;600", // bloom kicker
             ].join("&") +
             "&display=swap",
         },

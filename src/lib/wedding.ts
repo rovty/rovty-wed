@@ -11,26 +11,70 @@ import { supabase } from "@/integrations/supabase/client";
 // local equivalent, and so SSR output and client hydration always agree.
 const TZ = "Asia/Colombo";
 
-// Every template renders the exact same WeddingSite component tree with the
-// exact same RSVP/seating/calendar functionality — only the CSS tokens each
-// one sets differ (see styles.css's .theme-* blocks). Keep this list and
+// Unlike the site's other shared-tree templates historically, each of
+// these 13 has a genuinely different hero layout and opening animation —
+// not just a recolor. TEMPLATE_META carries that structural choice per
+// template; WEDDING_TEMPLATES (label/description only) is what the admin
+// picker UI iterates over. Keep both, plus isDecorativeTemplate below and
 // the `weddings.template` check constraint (migration
-// 20260904050000_wedding_template.sql) in sync.
+// 20260907000000_wedding_templates_v2.sql), in sync.
 export const WEDDING_TEMPLATES = [
-  { id: "classic", label: "Classic", description: "Ivory, gold & rose — soft floral romance." },
-  { id: "minimal", label: "Minimal", description: "Clean monochrome, no florals, quiet confidence." },
-  { id: "botanical", label: "Botanical", description: "Sage green & cream, garden-party warmth." },
-  { id: "luxe", label: "Luxe", description: "Charcoal & gold foil, dramatic evening elegance." },
-  { id: "pastel", label: "Pastel", description: "Blush & lavender, soft and playful." },
+  {
+    id: "classic",
+    label: "Classic",
+    description: "Rose & gold, falling petals.",
+  },
+  { id: "poruwa", label: "Poruwa", description: "Sri Lankan, antique gold." },
+  { id: "thali", label: "Thali", description: "Pastel marigold & gold." },
+  { id: "chapel", label: "Chapel", description: "Powder blue & pearl." },
+  { id: "nikkah", label: "Nikkah", description: "Pastel sage & gold." },
+  { id: "noir", label: "Noir", description: "Champagne on charcoal." },
+  {
+    id: "editorial",
+    label: "Editorial",
+    description: "Oat, clay & gold rules.",
+  },
+  { id: "quiet", label: "Quiet", description: "Pearl white, gold hairline." },
+  { id: "garden", label: "Garden", description: "Pastel sage & cream." },
+  { id: "shoreline", label: "Shoreline", description: "Pastel aqua & sand." },
+  { id: "deco", label: "Deco", description: "Pastel jade & gilt." },
+  { id: "film", label: "Film", description: "Warm sepia, photo-led." },
+  { id: "bloom", label: "Bloom", description: "Blush rose-gold, arched." },
 ] as const;
 export type WeddingTemplate = (typeof WEDDING_TEMPLATES)[number]["id"];
 const TEMPLATE_IDS = WEDDING_TEMPLATES.map((t) => t.id);
 
-// "minimal" and "luxe" are meant to read as deliberately unadorned/dramatic,
-// not "classic" with different colors — every falling-petal/corner-rose
-// decoration across the site (WeddingSite, InvitationOpener) checks this
-// rather than each maintaining its own copy of the same three-item list.
-const DECORATIVE_TEMPLATE_IDS = new Set<WeddingTemplate>(["classic", "botanical", "pastel"]);
+export type HeroLayout =
+  "centered" | "framed" | "band" | "typo" | "photoTop" | "split";
+export type OpenerKind =
+  "envelope" | "ring" | "veil" | "gate" | "curtain" | "petals";
+export type Motif =
+  "diamond" | "geo" | "line" | "leaf" | "wave" | "deco" | "squiggle";
+
+export const TEMPLATE_META: Record<
+  WeddingTemplate,
+  { hero: HeroLayout; opener: OpenerKind; motif: Motif }
+> = {
+  classic: { hero: "centered", opener: "envelope", motif: "diamond" },
+  poruwa: { hero: "framed", opener: "ring", motif: "diamond" },
+  thali: { hero: "band", opener: "veil", motif: "geo" },
+  chapel: { hero: "centered", opener: "curtain", motif: "diamond" },
+  nikkah: { hero: "framed", opener: "ring", motif: "geo" },
+  noir: { hero: "typo", opener: "curtain", motif: "line" },
+  editorial: { hero: "split", opener: "veil", motif: "line" },
+  quiet: { hero: "typo", opener: "petals", motif: "line" },
+  garden: { hero: "centered", opener: "petals", motif: "leaf" },
+  shoreline: { hero: "photoTop", opener: "curtain", motif: "wave" },
+  deco: { hero: "framed", opener: "gate", motif: "deco" },
+  film: { hero: "photoTop", opener: "curtain", motif: "line" },
+  bloom: { hero: "split", opener: "ring", motif: "leaf" },
+};
+
+// Only "classic" carries the falling-petal/corner-rose floral decoration —
+// every other template is deliberately unadorned by that specific motif
+// (they get their own personality through TEMPLATE_META + styles.css's
+// .theme-* blocks instead).
+const DECORATIVE_TEMPLATE_IDS = new Set<WeddingTemplate>(["classic"]);
 export function isDecorativeTemplate(template: WeddingTemplate): boolean {
   return DECORATIVE_TEMPLATE_IDS.has(template);
 }
@@ -123,7 +167,8 @@ export async function uploadWeddingMedia(
   kind: WeddingMediaKind,
   file: File,
 ): Promise<string> {
-  const ext = file.name.split(".").pop()?.toLowerCase() || MEDIA_EXT_FALLBACK[kind];
+  const ext =
+    file.name.split(".").pop()?.toLowerCase() || MEDIA_EXT_FALLBACK[kind];
   const path = `${weddingId}/${kind}.${ext}`;
   const { error } = await supabase.storage
     .from("wedding-media")
@@ -152,7 +197,9 @@ export async function fetchPublishedWedding(): Promise<PublicWedding | null> {
   return toPublicWedding(data);
 }
 
-export async function fetchWeddingBySlug(slug: string): Promise<PublicWedding | null> {
+export async function fetchWeddingBySlug(
+  slug: string,
+): Promise<PublicWedding | null> {
   const { data, error } = await supabase
     .from("weddings")
     .select(WEDDING_COLUMNS)
@@ -164,19 +211,36 @@ export async function fetchWeddingBySlug(slug: string): Promise<PublicWedding | 
 }
 
 export function formatDayMonth(d: Date) {
-  return d.toLocaleDateString("en-US", { day: "numeric", month: "short", timeZone: TZ });
+  return d.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    timeZone: TZ,
+  });
 }
 
 export function formatWeekdayYear(d: Date) {
-  return d.toLocaleDateString("en-US", { weekday: "long", year: "numeric", timeZone: TZ });
+  return d.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    timeZone: TZ,
+  });
 }
 
 export function formatTime(d: Date) {
-  return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: TZ });
+  return d.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: TZ,
+  });
 }
 
 export function formatLongDate(d: Date) {
-  return d.toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric", timeZone: TZ });
+  return d.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: TZ,
+  });
 }
 
 export function formatScriptDate(d: Date) {
@@ -184,7 +248,9 @@ export function formatScriptDate(d: Date) {
 }
 
 function ordinalSuffix(d: Date, timeZone: string) {
-  const day = Number(d.toLocaleDateString("en-US", { day: "numeric", timeZone }));
+  const day = Number(
+    d.toLocaleDateString("en-US", { day: "numeric", timeZone }),
+  );
   if (day % 10 === 1 && day !== 11) return "st";
   if (day % 10 === 2 && day !== 12) return "nd";
   if (day % 10 === 3 && day !== 13) return "rd";
@@ -192,14 +258,18 @@ function ordinalSuffix(d: Date, timeZone: string) {
 }
 
 function toICSDate(d: Date) {
-  return d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  return d
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d{3}/, "");
 }
 
 export function buildICS(wedding: PublicWedding) {
   const dtStart = toICSDate(wedding.date);
   const dtEnd = toICSDate(wedding.endDate ?? wedding.date);
   const uid = `${wedding.slug}@rovty-wed`;
-  const location = wedding.address ?? [wedding.venue, wedding.hall].filter(Boolean).join(", ");
+  const location =
+    wedding.address ?? [wedding.venue, wedding.hall].filter(Boolean).join(", ");
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
@@ -219,7 +289,9 @@ export function buildICS(wedding: PublicWedding) {
 }
 
 export function downloadICS(wedding: PublicWedding, filename = "wedding.ics") {
-  const blob = new Blob([buildICS(wedding)], { type: "text/calendar;charset=utf-8" });
+  const blob = new Blob([buildICS(wedding)], {
+    type: "text/calendar;charset=utf-8",
+  });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -231,7 +303,8 @@ export function downloadICS(wedding: PublicWedding, filename = "wedding.ics") {
 }
 
 export function googleCalendarUrl(wedding: PublicWedding) {
-  const location = wedding.address ?? [wedding.venue, wedding.hall].filter(Boolean).join(", ");
+  const location =
+    wedding.address ?? [wedding.venue, wedding.hall].filter(Boolean).join(", ");
   const params = new URLSearchParams({
     action: "TEMPLATE",
     text: wedding.title,
@@ -243,7 +316,8 @@ export function googleCalendarUrl(wedding: PublicWedding) {
 }
 
 export function outlookCalendarUrl(wedding: PublicWedding) {
-  const location = wedding.address ?? [wedding.venue, wedding.hall].filter(Boolean).join(", ");
+  const location =
+    wedding.address ?? [wedding.venue, wedding.hall].filter(Boolean).join(", ");
   const params = new URLSearchParams({
     path: "/calendar/action/compose",
     rru: "addevent",

@@ -55,7 +55,9 @@ export function MusicPlayer({ src }: { src?: string | null } = {}) {
       a.pause();
       setPlaying(false);
     } else {
-      a.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+      a.play()
+        .then(() => setPlaying(true))
+        .catch(() => setPlaying(false));
     }
   };
 
@@ -63,8 +65,8 @@ export function MusicPlayer({ src }: { src?: string | null } = {}) {
     <button
       onClick={toggle}
       aria-label={playing ? "Mute background music" : "Play background music"}
-      className="fixed bottom-5 right-5 z-50 grid h-12 w-12 place-items-center rounded-full text-white shadow-gold transition-transform hover:scale-105 active:scale-95"
-      style={{ background: "var(--gradient-gold)" }}
+      className="fixed bottom-5 right-5 z-50 grid h-12 w-12 place-items-center rounded-full shadow-gold transition-transform hover:scale-105 active:scale-95"
+      style={{ background: "var(--gradient-gold)", color: "var(--btn-ink)" }}
       disabled={!ready}
     >
       {playing ? (

@@ -101,6 +101,11 @@
     oklch(0.98 0.015 70) 100%);
   --gradient-gold: linear-gradient(135deg, oklch(0.84 0.09 80), oklch(0.7 0.12 65));
   --gradient-blush: linear-gradient(135deg, oklch(0.96 0.025 15), oklch(0.9 0.05 20));
+
+  /* Text/icon color on top of --gradient-gold — white by default, but a
+     handful of templates use a light gold/champagne button that needs dark
+     ink instead (see each .theme-*'s --btn-ink below). */
+  --btn-ink: #fff;
 }
 
 .dark {
@@ -154,6 +159,61 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* Small accent-colored overline label ("Together with their families",
+   "Save the date") — distinct from .font-script (the larger flowing
+   ampersand/date text) because several templates style the two very
+   differently (e.g. noir's kicker is uppercase tracked sans, its script is
+   still a serif italic). Per-theme overrides always set every property
+   literally (never via var()) on this exact class, same reasoning as
+   .font-display/.font-script below. */
+@utility font-kicker {
+  font-family: var(--font-script);
+  font-style: italic;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+/* Primary pill CTA (RSVP, calendar rows, seating link) and the small icon
+   badges next to them. Background/color/radius are always set literally
+   per .theme-* below — never via var() — for the same Lightning CSS
+   const-folding reason documented on .font-display. */
+@utility tpl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #fff;
+  border-radius: 999px;
+}
+@utility tpl-icon {
+  display: grid;
+  place-items: center;
+  color: #fff;
+  border-radius: 999px;
+}
+/* Gallery/location/hero photos — radius and filter (grayscale, sepia, …)
+   vary by template. */
+@utility tpl-photo {
+  border-radius: 24px;
+  filter: none;
+}
+/* The solid "band" background used by band-layout heroes and the seating
+   banner — a filled block of color rather than the page's own background. */
+@utility tpl-band {
+  background: var(--gradient-blush);
+  color: var(--foreground);
+}
+/* Optional subtle background texture (dots/hatching) some templates layer
+   under their content; "none" for templates that don't set one. */
+@utility tpl-pattern {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: none;
+  background-size: auto;
 }
 
 @utility divider-ornament {
@@ -380,7 +440,7 @@
   width: 3.6rem;
   transform: translate(-50%, -50%);
   border-radius: 9999px;
-  color: white;
+  color: var(--btn-ink);
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
@@ -415,6 +475,95 @@
   .invite-envelope__flap,
   .invite-seal { transition: none; }
   .invite-seal { animation: none; }
+}
+
+/* ── Ring opener (poruwa/nikkah/bloom) — pulsing rings around a monogram,
+   scale/fade away on open ────────────────────────────────────────────── */
+.invite-ring__outer {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  border: 1px solid var(--gold);
+  opacity: .45;
+  transition: transform .9s cubic-bezier(.22,1,.36,1), opacity .8s ease;
+}
+.invite-ring__outer--open { opacity: 0; transform: scale(1.9); }
+.invite-ring__inner {
+  position: absolute;
+  inset: 22%;
+  border-radius: 999px;
+  background: var(--gradient-gold);
+  opacity: .14;
+  animation: tPulse 3s ease-in-out infinite;
+  transition: transform .9s cubic-bezier(.22,1,.36,1), opacity .8s ease;
+}
+.invite-ring__inner--open { opacity: 0; transform: scale(2.4); }
+@keyframes tPulse {
+  0%, 100% { box-shadow: 0 0 0 0 currentColor; }
+  50% { box-shadow: 0 0 0 12px transparent; }
+}
+
+/* ── Veil opener (editorial) — two translucent panels slide apart ──────── */
+.invite-veil {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 50%;
+  backdrop-filter: blur(6px);
+  transition: transform .95s cubic-bezier(.22,1,.36,1);
+}
+.invite-veil--left {
+  left: 0;
+  background: linear-gradient(120deg, rgba(255,255,255,.9), rgba(255,255,255,.45));
+  border-right: 1px solid var(--border);
+}
+.invite-veil--right {
+  right: 0;
+  background: linear-gradient(240deg, rgba(255,255,255,.9), rgba(255,255,255,.45));
+}
+.invite-veil--left.invite-veil--open { transform: translateX(-102%); }
+.invite-veil--right.invite-veil--open { transform: translateX(102%); }
+
+/* ── Gate opener (deco) — two panels rotate open like double doors ─────── */
+.invite-gate {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 50%;
+  transition: transform .95s cubic-bezier(.22,1,.36,1), opacity .8s ease;
+}
+.invite-gate--left {
+  left: 0;
+  background: linear-gradient(120deg, rgba(255,255,255,.86), rgba(194,161,92,.28));
+  border-right: 1px solid var(--gold);
+  transform-origin: left center;
+}
+.invite-gate--right {
+  right: 0;
+  background: linear-gradient(240deg, rgba(255,255,255,.86), rgba(194,161,92,.28));
+  transform-origin: right center;
+}
+.invite-gate--left.invite-gate--open { transform: perspective(900px) rotateY(-88deg); opacity: 0; }
+.invite-gate--right.invite-gate--open { transform: perspective(900px) rotateY(88deg); opacity: 0; }
+
+/* ── Curtain opener (chapel/noir/shoreline/film) — full-bleed photo fades
+   and scales away ──────────────────────────────────────────────────────── */
+.invite-curtain {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  transition: transform 1s cubic-bezier(.22,1,.36,1), opacity .9s ease;
+}
+.invite-curtain--open { transform: scale(1.1); opacity: 0; }
+
+/* ── Soft/petals opener (quiet/garden) — content sharpens into focus ───── */
+.invite-soft {
+  transition: filter .8s ease, transform .9s cubic-bezier(.22,1,.36,1);
+}
+.invite-soft--open { filter: blur(6px); transform: scale(1.04); }
+
+@media (prefers-reduced-motion: reduce) {
+  .invite-ring__outer, .invite-ring__inner,
+  .invite-veil, .invite-gate, .invite-curtain, .invite-soft { transition: none; }
+  .invite-ring__inner { animation: none; }
 }
 
 /* ---------- Wedding thank-you card ---------- */
@@ -533,208 +682,425 @@
 }
 
 /* ───────────────────────────────────────────────────────────────────────
-   Public invitation templates — 5 looks, one component tree (WeddingSite).
+   Public invitation templates — 13 looks, one component tree (WeddingSite).
    Same trick as .admin-portal: redefine the tokens the components already
-   read instead of forking the markup. "classic" IS today's look, so it
-   needs no block here at all — it's just whatever :root already says.
+   read instead of forking the markup, PLUS (unlike the old 5-template set)
+   a genuinely different hero layout and opener animation per template —
+   see TEMPLATE_META in src/lib/wedding.ts and Hero/InvitationOpener.
+   Every property below is set as a literal value, never via var() —
+   Tailwind/Lightning CSS folds a hand-written rule's var(--token) to its
+   :root value at build time rather than keeping it a live reference
+   (confirmed by testing on --font-display originally; literal
+   !important-free-of-var declarations here are the workaround that
+   doesn't depend on that var() actually being re-evaluated per element).
+   Colors/radius/border consumed via inline style in JSX (--gold, --rose,
+   --gradient-gold, --btn-ink, etc.) are unaffected by this and stay
+   plain custom-property overrides — the browser resolves inline style
+   var()s live, at paint time, regardless of any build-time CSS folding.
    The one exception to the token trick is body background: WeddingSite's
    <main> is a *descendant* of <body>, so a custom-property override here
-   can't reach back up to recolor body's own background — each non-classic
-   theme sets `background` on itself directly instead.
+   can't reach back up to recolor body's own background — every theme sets
+   `background` on itself directly instead.
    ─────────────────────────────────────────────────────────────────────── */
 
-@keyframes themeHeadingIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ── Classic — rose & gold, falling petals ─────────────────────────── */
+.theme-classic {
+  background: linear-gradient(180deg, #fdf9f4 0%, #f9ebe6 48%, #fcf6ec 100%);
+  --foreground: #3c2f2b;
+  --muted-foreground: #7d6a63;
+  --border: rgba(201, 151, 79, .26);
+  --gold: #c9974f;
+  --rose: #a06c33;
+  --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
+  --btn-ink: #3a2e1c;
 }
-@keyframes lineDraw {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
+.theme-classic h1, .theme-classic h2, .theme-classic h3, .theme-classic h4, .theme-classic .font-display {
+  font-family: "Playfair Display", serif !important;
+  font-weight: 500; font-style: normal; text-transform: none; letter-spacing: -0.01em;
 }
+.theme-classic .font-script { font-family: "Cormorant Garamond", serif !important; }
+.theme-classic .font-kicker {
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 17px; text-transform: none; letter-spacing: .01em; font-style: italic;
+}
+.theme-classic .glass-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.82), rgba(255,255,255,.52));
+  border: 1px solid rgba(255,255,255,.8);
+  box-shadow: 0 20px 46px -26px rgba(214,163,150,.55);
+  border-radius: 24px !important;
+}
+.theme-classic .tpl-btn, .theme-classic .tpl-icon { background: linear-gradient(135deg, #ebd3a0, #c9a45c); color: #3a2e1c; border-radius: 999px; }
+.theme-classic .tpl-photo { border-radius: 24px; filter: none; }
+.theme-classic .tpl-band { background: linear-gradient(120deg, rgba(233,190,182,.55), rgba(233,201,138,.55)); color: #3c2f2b; }
 
-/* ── Minimal — crisp, architectural, quiet ─────────────────────────── */
-.theme-minimal {
-  --font-display: "Manrope", var(--font-sans);
-  --font-script: "Manrope", var(--font-sans);
-  --gradient-gold: oklch(0.22 0 0);
-  --rose: oklch(0.22 0 0);
-  --gold: oklch(0.22 0 0);
-  --foreground: oklch(0.22 0 0);
-  --muted-foreground: oklch(0.5 0 0);
-  --border: oklch(0.88 0 0);
-  --shadow-gold: 0 1px 2px color-mix(in oklab, black 10%, transparent);
-  --radius: 0.25rem;
-  background: oklch(0.995 0 0);
+/* ── Poruwa — Sri Lankan, antique gold ──────────────────────────────── */
+.theme-poruwa {
+  background: linear-gradient(180deg, #fdf7ee, #f7ece0);
+  --foreground: #3a2b1e;
+  --muted-foreground: #82705c;
+  --border: rgba(181, 137, 63, .24);
+  --gold: #b5893f;
+  --rose: #8a6428;
+  --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
+  --btn-ink: #3a2e1c;
 }
-/* Tailwind/Lightning CSS folds the h1–h4 base rule's `var(--font-display)`
-   to its :root value at build time rather than keeping it a live
-   reference — confirmed by testing (the custom property itself resolves
-   correctly per-scope, but the computed font-family on real elements
-   doesn't follow it). Literal, !important font-family declarations here
-   are the workaround: they don't depend on that var() actually being
-   re-evaluated per element. */
-.theme-minimal h1,
-.theme-minimal h2,
-.theme-minimal h3,
-.theme-minimal h4,
-.theme-minimal .font-display {
-  font-family: "Manrope", "Inter", system-ui, sans-serif !important;
+.theme-poruwa h1, .theme-poruwa h2, .theme-poruwa h3, .theme-poruwa h4, .theme-poruwa .font-display {
+  font-family: "Cinzel", serif !important;
+  font-weight: 600; font-style: normal; text-transform: none; letter-spacing: .06em;
 }
-.theme-minimal h1,
-.theme-minimal h2,
-.theme-minimal h3 {
-  letter-spacing: -0.02em;
-  font-weight: 800;
-  text-transform: uppercase;
-  animation: themeHeadingIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+.theme-poruwa .font-script { font-family: "Cormorant Garamond", serif !important; }
+.theme-poruwa .font-kicker {
+  font-family: "Mukta", sans-serif !important;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .34em; font-style: normal;
 }
-.theme-minimal .font-script {
-  font-family: "Manrope", "Inter", system-ui, sans-serif !important;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  font-size: 0.7em;
-  font-style: normal;
+.theme-poruwa .glass-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.78), rgba(255,255,255,.46));
+  border: 1px solid rgba(181,137,63,.28);
+  box-shadow: 0 20px 44px -28px rgba(138,100,40,.42);
+  border-radius: 4px !important;
 }
-.theme-minimal .divider-ornament svg {
-  display: none;
-}
-.theme-minimal .divider-line {
-  animation: lineDraw 1s ease-out both;
-  animation-delay: 0.2s;
-}
-.theme-minimal .glass-card {
-  border-radius: 0 !important;
-}
+.theme-poruwa .tpl-btn, .theme-poruwa .tpl-icon { background: linear-gradient(135deg, #ebd3a0, #c9a45c); color: #3a2e1c; border-radius: 4px; }
+.theme-poruwa .tpl-photo { border-radius: 4px; filter: none; }
+.theme-poruwa .tpl-band { background: linear-gradient(120deg, rgba(213,178,124,.5), rgba(181,137,63,.42)); color: #3a2b1e; }
+.theme-poruwa .tpl-pattern { background-image: radial-gradient(circle at 10px 10px, rgba(181,137,63,.1) 1.5px, transparent 1.5px); background-size: 24px 24px; }
 
-/* ── Botanical — warm, garden-party, alive ─────────────────────────── */
-.theme-botanical {
-  --font-display: "Fraunces", serif;
-  --font-script: "Fraunces", serif;
-  --gradient-gold: linear-gradient(135deg, oklch(0.62 0.09 145), oklch(0.48 0.08 150));
-  --rose: oklch(0.5 0.09 145);
-  --gold: oklch(0.5 0.09 145);
-  --border: oklch(0.88 0.03 140);
-  --radius: 1.35rem;
-  background:
-    linear-gradient(180deg, oklch(0.97 0.015 120) 0%, oklch(0.94 0.03 140) 50%, oklch(0.97 0.012 100) 100%);
+/* ── Thali — pastel marigold & gold ─────────────────────────────────── */
+.theme-thali {
+  background: linear-gradient(180deg, #fdf5ea, #fbeade);
+  --foreground: #3f291d;
+  --muted-foreground: #8a6b57;
+  --border: rgba(217, 154, 91, .26);
+  --gold: #d99a5b;
+  --rose: #a2612f;
+  --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
+  --btn-ink: #3a2e1c;
 }
-.theme-botanical h1,
-.theme-botanical h2,
-.theme-botanical h3,
-.theme-botanical h4,
-.theme-botanical .font-display {
-  font-family: "Fraunces", "Cormorant Garamond", serif !important;
+.theme-thali h1, .theme-thali h2, .theme-thali h3, .theme-thali h4, .theme-thali .font-display {
+  font-family: "Rozha One", serif !important;
+  font-weight: 400; font-style: normal; text-transform: none; letter-spacing: 0;
 }
-.theme-botanical h1,
-.theme-botanical h2,
-.theme-botanical h3 {
-  font-style: italic;
-  font-weight: 500;
-  animation: themeHeadingIn 0.8s ease-out both;
+.theme-thali .font-script { font-family: "Cormorant Garamond", serif !important; }
+.theme-thali .font-kicker {
+  font-family: "Mukta", sans-serif !important;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .28em; font-style: normal;
 }
-.theme-botanical .font-script {
-  font-family: "Fraunces", "Cormorant Garamond", serif !important;
-  font-weight: 400;
+.theme-thali .glass-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.8), rgba(255,255,255,.5));
+  border: 1px solid rgba(217,154,91,.26);
+  box-shadow: 0 20px 46px -28px rgba(180,110,60,.4);
+  border-radius: 14px !important;
 }
+.theme-thali .tpl-btn, .theme-thali .tpl-icon { background: linear-gradient(135deg, #ebd3a0, #c9a45c); color: #3a2e1c; border-radius: 999px; }
+.theme-thali .tpl-photo { border-radius: 14px; filter: none; }
+.theme-thali .tpl-band { background: linear-gradient(120deg, rgba(240,196,140,.6), rgba(226,163,148,.5)); color: #3f291d; }
+.theme-thali .tpl-pattern { background-image: radial-gradient(circle at 12px 12px, rgba(217,154,91,.1) 2px, transparent 2px); background-size: 28px 28px; }
+
+/* ── Chapel — powder blue & pearl ───────────────────────────────────── */
+.theme-chapel {
+  background: linear-gradient(180deg, #fafbfd, #eef2f8);
+  --foreground: #2b3550;
+  --muted-foreground: #6c7793;
+  --border: rgba(43, 53, 80, .14);
+  --gold: #b99a5b;
+  --rose: #4a5876;
+  --gradient-gold: linear-gradient(135deg, #5b6a8c, #33405e);
+  --btn-ink: #f8fafd;
+}
+.theme-chapel h1, .theme-chapel h2, .theme-chapel h3, .theme-chapel h4, .theme-chapel .font-display {
+  font-family: "Cormorant Garamond", serif !important;
+  font-weight: 500; font-style: normal; text-transform: none; letter-spacing: .02em;
+}
+.theme-chapel .font-script { font-family: "Cormorant Garamond", serif !important; }
+.theme-chapel .font-kicker {
+  font-family: "Lato", sans-serif !important;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .36em; font-style: normal;
+}
+.theme-chapel .glass-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.86), rgba(255,255,255,.58));
+  border: 1px solid rgba(255,255,255,.85);
+  box-shadow: 0 22px 46px -30px rgba(43,53,80,.32);
+  border-radius: 6px !important;
+}
+.theme-chapel .tpl-btn, .theme-chapel .tpl-icon { background: linear-gradient(135deg, #5b6a8c, #33405e); color: #f8fafd; border-radius: 6px; }
+.theme-chapel .tpl-photo { border-radius: 170px 170px 6px 6px; filter: none; }
+.theme-chapel .tpl-band { background: linear-gradient(120deg, rgba(198,210,230,.6), rgba(229,214,182,.5)); color: #2b3550; }
+
+/* ── Nikkah — pastel sage & gold ─────────────────────────────────────── */
+.theme-nikkah {
+  background: linear-gradient(180deg, #f7fbf8, #eef5f0);
+  --foreground: #26382f;
+  --muted-foreground: #6d8177;
+  --border: rgba(38, 56, 47, .14);
+  --gold: #a98f4e;
+  --rose: #4f6b58;
+  --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
+  --btn-ink: #3a2e1c;
+}
+.theme-nikkah h1, .theme-nikkah h2, .theme-nikkah h3, .theme-nikkah h4, .theme-nikkah .font-display {
+  font-family: "Amiri", serif !important;
+  font-weight: 700; font-style: normal; text-transform: none; letter-spacing: 0;
+}
+.theme-nikkah .font-script { font-family: "Amiri", serif !important; }
+.theme-nikkah .font-kicker {
+  font-family: "Jost", sans-serif !important;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .3em; font-style: normal;
+}
+.theme-nikkah .glass-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.84), rgba(255,255,255,.54));
+  border: 1px solid rgba(169,143,78,.24);
+  box-shadow: 0 20px 44px -30px rgba(40,70,55,.35);
+  border-radius: 4px !important;
+}
+.theme-nikkah .tpl-btn, .theme-nikkah .tpl-icon { background: linear-gradient(135deg, #ebd3a0, #c9a45c); color: #3a2e1c; border-radius: 4px; }
+.theme-nikkah .tpl-photo { border-radius: 6px; filter: none; }
+.theme-nikkah .tpl-band { background: linear-gradient(120deg, rgba(186,208,193,.55), rgba(224,206,158,.5)); color: #26382f; }
+.theme-nikkah .tpl-pattern { background-image: repeating-linear-gradient(45deg, rgba(169,143,78,.05) 0 2px, transparent 2px 16px); }
+
+/* ── Noir — champagne on charcoal ───────────────────────────────────── */
+.theme-noir {
+  background: linear-gradient(180deg, #17161a, #211f25);
+  --foreground: #f3eee4;
+  --muted-foreground: #a9a196;
+  --border: rgba(243, 238, 228, .18);
+  --gold: #d8b877;
+  --rose: #e8cd94;
+  --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
+  --btn-ink: #20190f;
+}
+.theme-noir h1, .theme-noir h2, .theme-noir h3, .theme-noir h4, .theme-noir .font-display {
+  font-family: "Bodoni Moda", serif !important;
+  font-weight: 500; font-style: normal; text-transform: uppercase; letter-spacing: .08em;
+}
+.theme-noir .font-script { font-family: "Bodoni Moda", serif !important; }
+.theme-noir .font-kicker {
+  font-family: "Jost", sans-serif !important;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .42em; font-style: normal;
+}
+.theme-noir .glass-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.1), rgba(255,255,255,.03));
+  border: 1px solid rgba(216,184,119,.26);
+  box-shadow: 0 24px 50px -34px rgba(0,0,0,.7);
+  border-radius: 4px !important;
+}
+.theme-noir .tpl-btn, .theme-noir .tpl-icon { background: linear-gradient(135deg, #ebd3a0, #c9a45c); color: #20190f; border-radius: 4px; }
+.theme-noir .tpl-photo { border-radius: 4px; filter: none; }
+.theme-noir .tpl-band { background: linear-gradient(120deg, rgba(216,184,119,.24), rgba(255,255,255,.06)); color: #f6f0e4; }
+
+/* ── Editorial — oat, clay & gold rules ─────────────────────────────── */
+.theme-editorial {
+  background: linear-gradient(180deg, #faf7f3, #f2ebe4);
+  --foreground: #2a231e;
+  --muted-foreground: #786a5f;
+  --border: rgba(42, 35, 30, .16);
+  --gold: #c08e6d;
+  --rose: #95604a;
+  --gradient-gold: linear-gradient(135deg, #3a302a, #221c18);
+  --btn-ink: #faf7f3;
+}
+.theme-editorial h1, .theme-editorial h2, .theme-editorial h3, .theme-editorial h4, .theme-editorial .font-display {
+  font-family: "Instrument Serif", serif !important;
+  font-weight: 400; font-style: normal; text-transform: none; letter-spacing: -.02em;
+}
+.theme-editorial .font-script { font-family: "Instrument Serif", serif !important; }
+.theme-editorial .font-kicker {
+  font-family: "Archivo", sans-serif !important;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .22em; font-style: normal;
+}
+.theme-editorial .glass-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.8), rgba(255,255,255,.5));
+  border: 1px solid rgba(42,35,30,.14);
+  box-shadow: 0 20px 44px -30px rgba(90,70,55,.35);
+  border-radius: 2px !important;
+}
+.theme-editorial .tpl-btn, .theme-editorial .tpl-icon { background: linear-gradient(135deg, #3a302a, #221c18); color: #faf7f3; border-radius: 2px; }
+.theme-editorial .tpl-photo { border-radius: 2px; filter: none; }
+.theme-editorial .tpl-band { background: linear-gradient(120deg, rgba(214,176,150,.5), rgba(228,207,170,.5)); color: #2a231e; }
+
+/* ── Quiet — pearl white, gold hairline ─────────────────────────────── */
+.theme-quiet {
+  background: linear-gradient(180deg, #ffffff, #f7f5f2);
+  --foreground: #211f1d;
+  --muted-foreground: #7b756e;
+  --border: rgba(33, 31, 29, .12);
+  --gold: #c0a878;
+  --rose: #8a7748;
+  --gradient-gold: linear-gradient(135deg, #2c2926, #181614);
+  --btn-ink: #fbfaf8;
+}
+.theme-quiet h1, .theme-quiet h2, .theme-quiet h3, .theme-quiet h4, .theme-quiet .font-display {
+  font-family: "Manrope", sans-serif !important;
+  font-weight: 800; font-style: normal; text-transform: uppercase; letter-spacing: -.02em;
+}
+.theme-quiet .font-script { font-family: "Cormorant Garamond", serif !important; }
+.theme-quiet .font-kicker {
+  font-family: "Manrope", sans-serif !important;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .3em; font-style: normal;
+}
+.theme-quiet .glass-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.9), rgba(250,248,245,.7));
+  border: 1px solid rgba(192,168,120,.24);
+  box-shadow: 0 18px 40px -30px rgba(60,50,35,.25);
+  border-radius: 2px !important;
+}
+.theme-quiet .tpl-btn, .theme-quiet .tpl-icon { background: linear-gradient(135deg, #2c2926, #181614); color: #fbfaf8; border-radius: 2px; }
+.theme-quiet .tpl-photo { border-radius: 2px; filter: grayscale(.85); }
+.theme-quiet .tpl-band { background: linear-gradient(120deg, rgba(233,226,212,.7), rgba(246,243,238,.7)); color: #211f1d; }
+
+/* ── Garden — pastel sage & cream ───────────────────────────────────── */
+.theme-garden {
+  background: linear-gradient(180deg, #f7faf3, #eef4e9);
+  --foreground: #2c3626;
+  --muted-foreground: #6c7c60;
+  --border: rgba(44, 54, 38, .13);
+  --gold: #8fa673;
+  --rose: #55703f;
+  --gradient-gold: linear-gradient(135deg, #7c9761, #4e6b3b);
+  --btn-ink: #f7faf2;
+}
+.theme-garden h1, .theme-garden h2, .theme-garden h3, .theme-garden h4, .theme-garden .font-display {
+  font-family: "Newsreader", serif !important;
+  font-weight: 400; font-style: italic; text-transform: none; letter-spacing: 0;
+}
+.theme-garden .font-script { font-family: "Newsreader", serif !important; }
+.theme-garden .font-kicker {
+  font-family: "Newsreader", serif !important;
+  font-size: 15px; text-transform: none; letter-spacing: .01em; font-style: italic;
+}
+.theme-garden .glass-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.85), rgba(255,255,255,.55));
+  border: 1px solid rgba(143,166,115,.24);
+  box-shadow: 0 22px 46px -30px rgba(70,95,55,.35);
+  border-radius: 22px !important;
+}
+.theme-garden .tpl-btn, .theme-garden .tpl-icon { background: linear-gradient(135deg, #7c9761, #4e6b3b); color: #f7faf2; border-radius: 999px; }
+.theme-garden .tpl-photo { border-radius: 22px; filter: none; }
+.theme-garden .tpl-band { background: linear-gradient(120deg, rgba(196,214,175,.6), rgba(232,224,190,.5)); color: #2c3626; }
 @keyframes leafSway {
   0%, 100% { transform: rotate(-2deg) translateY(0); }
   50% { transform: rotate(2deg) translateY(-3px); }
 }
-.theme-botanical img[alt=""]:not(.animate-petal) {
+.theme-garden img[alt=""]:not(.animate-petal) {
   animation: leafSway 7s ease-in-out infinite;
   transform-origin: 30% 20%;
 }
 
-/* ── Luxe — dark, dramatic, gold-foil evening elegance ─────────────── */
-.theme-luxe {
-  --font-display: "Marcellus", serif;
-  --font-script: "Cormorant Garamond", serif;
-  --gradient-gold: linear-gradient(135deg, oklch(0.72 0.13 78), oklch(0.55 0.13 55));
-  --rose: oklch(0.78 0.12 80);
-  --gold: oklch(0.78 0.12 80);
-  --foreground: oklch(0.94 0.015 80);
-  --muted-foreground: oklch(0.72 0.02 70);
-  --border: color-mix(in oklab, oklch(0.78 0.12 80) 25%, transparent);
-  --radius: 0.375rem;
-  background: linear-gradient(180deg, oklch(0.16 0.012 264) 0%, oklch(0.12 0.01 264) 100%);
+/* ── Shoreline — pastel aqua & sand ─────────────────────────────────── */
+.theme-shoreline {
+  background: linear-gradient(180deg, #fcf8f1, #ecf5f5);
+  --foreground: #1f3c45;
+  --muted-foreground: #65838b;
+  --border: rgba(31, 60, 69, .13);
+  --gold: #8bb6bd;
+  --rose: #3a6d78;
+  --gradient-gold: linear-gradient(135deg, #7fadb6, #39707c);
+  --btn-ink: #f7fbfb;
 }
-.theme-luxe h1,
-.theme-luxe h2,
-.theme-luxe h3,
-.theme-luxe h4,
-.theme-luxe .font-display {
-  font-family: "Marcellus", "Playfair Display", serif !important;
+.theme-shoreline h1, .theme-shoreline h2, .theme-shoreline h3, .theme-shoreline h4, .theme-shoreline .font-display {
+  font-family: "Tenor Sans", sans-serif !important;
+  font-weight: 400; font-style: normal; text-transform: none; letter-spacing: .06em;
 }
-.theme-luxe .font-script {
-  font-family: "Cormorant Garamond", serif !important;
+.theme-shoreline .font-script { font-family: "Cormorant Garamond", serif !important; }
+.theme-shoreline .font-kicker {
+  font-family: "Nunito Sans", sans-serif !important;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .3em; font-style: normal;
 }
-.theme-luxe h1,
-.theme-luxe h2,
-.theme-luxe h3 {
-  letter-spacing: 0.02em;
-  animation: themeHeadingIn 0.9s ease-out both;
+.theme-shoreline .glass-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.82), rgba(255,255,255,.5));
+  border: 1px solid rgba(139,182,189,.28);
+  box-shadow: 0 22px 44px -30px rgba(35,80,90,.35);
+  border-radius: 18px !important;
 }
-.theme-luxe .glass-card {
-  background: color-mix(in oklab, black 55%, transparent);
-  border: 1px solid color-mix(in oklab, oklch(0.78 0.12 80) 28%, transparent);
-  border-radius: 0.375rem !important;
-}
-@keyframes luxeShimmer {
-  0%, 45% { transform: translateX(-130%); }
-  65%, 100% { transform: translateX(130%); }
-}
-.theme-luxe [style*="gradient-gold"] {
-  position: relative;
-  overflow: hidden;
-}
-.theme-luxe [style*="gradient-gold"]::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(115deg, transparent 30%, color-mix(in oklab, white 55%, transparent) 50%, transparent 70%);
-  transform: translateX(-130%);
-  animation: luxeShimmer 3.4s ease-in-out infinite;
-}
+.theme-shoreline .tpl-btn, .theme-shoreline .tpl-icon { background: linear-gradient(135deg, #7fadb6, #39707c); color: #f7fbfb; border-radius: 999px; }
+.theme-shoreline .tpl-photo { border-radius: 18px; filter: none; }
+.theme-shoreline .tpl-band { background: linear-gradient(120deg, rgba(178,212,216,.6), rgba(238,224,199,.55)); color: #1f3c45; }
 
-/* ── Pastel — soft, playful, bouncy ────────────────────────────────── */
-.theme-pastel {
-  --font-display: "Quicksand", var(--font-sans);
-  --font-script: "Caveat", cursive;
-  --gradient-gold: linear-gradient(135deg, oklch(0.84 0.06 320), oklch(0.8 0.07 280));
-  --rose: oklch(0.72 0.1 340);
-  --gold: oklch(0.72 0.1 340);
-  --border: oklch(0.9 0.03 300);
-  --radius: 1.6rem;
-  background:
-    linear-gradient(180deg, oklch(0.97 0.02 340) 0%, oklch(0.95 0.03 290) 50%, oklch(0.97 0.02 200) 100%);
+/* ── Deco — pastel jade & gilt ───────────────────────────────────────── */
+.theme-deco {
+  background: linear-gradient(180deg, #f6f3ea, #eef0e7);
+  --foreground: #1f4241;
+  --muted-foreground: #5f7b7a;
+  --border: rgba(31, 66, 65, .18);
+  --gold: #c2a15c;
+  --rose: #7d6528;
+  --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
+  --btn-ink: #3a2e1c;
 }
-.theme-pastel h1,
-.theme-pastel h2,
-.theme-pastel h3,
-.theme-pastel h4,
-.theme-pastel .font-display {
-  font-family: "Quicksand", "Inter", system-ui, sans-serif !important;
+.theme-deco h1, .theme-deco h2, .theme-deco h3, .theme-deco h4, .theme-deco .font-display {
+  font-family: "Poiret One", sans-serif !important;
+  font-weight: 400; font-style: normal; text-transform: uppercase; letter-spacing: .18em;
 }
-.theme-pastel h1,
-.theme-pastel h2,
-.theme-pastel h3 {
-  font-weight: 700;
+.theme-deco .font-script { font-family: "Poiret One", sans-serif !important; }
+.theme-deco .font-kicker {
+  font-family: "Josefin Sans", sans-serif !important;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .4em; font-style: normal;
 }
-.theme-pastel .font-script {
-  font-family: "Caveat", cursive !important;
-  font-size: 1.25em;
+.theme-deco .glass-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.82), rgba(255,255,255,.5));
+  border: 1px solid rgba(194,161,92,.3);
+  box-shadow: 0 20px 44px -30px rgba(35,70,68,.35);
+  border-radius: 0 !important;
 }
-@keyframes pastelPop {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
+.theme-deco .tpl-btn, .theme-deco .tpl-icon { background: linear-gradient(135deg, #ebd3a0, #c9a45c); color: #3a2e1c; border-radius: 0; }
+.theme-deco .tpl-photo { border-radius: 0; filter: none; }
+.theme-deco .tpl-band { background: linear-gradient(120deg, rgba(176,201,197,.55), rgba(224,201,146,.55)); color: #1f4241; }
+.theme-deco .tpl-pattern { background-image: repeating-linear-gradient(90deg, rgba(194,161,92,.08) 0 1px, transparent 1px 14px); }
+
+/* ── Film — warm sepia, photo-led ───────────────────────────────────── */
+.theme-film {
+  background: linear-gradient(180deg, #161311, #1e1a17);
+  --foreground: #f4ece1;
+  --muted-foreground: #a89c8d;
+  --border: rgba(244, 236, 225, .18);
+  --gold: #d9c3a0;
+  --rose: #f0e3cf;
+  --gradient-gold: linear-gradient(135deg, #efe3d1, #cdb494);
+  --btn-ink: #241d16;
 }
-.theme-pastel h1 {
-  animation: pastelPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+.theme-film h1, .theme-film h2, .theme-film h3, .theme-film h4, .theme-film .font-display {
+  font-family: "Crimson Pro", serif !important;
+  font-weight: 400; font-style: normal; text-transform: none; letter-spacing: .01em;
 }
-@keyframes pastelFloat {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(2deg); }
+.theme-film .font-script { font-family: "Crimson Pro", serif !important; }
+.theme-film .font-kicker {
+  font-family: "IBM Plex Sans", sans-serif !important;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .28em; font-style: normal;
 }
-.theme-pastel img[alt=""]:not(.animate-petal) {
-  animation: pastelFloat 5s ease-in-out infinite;
+.theme-film .glass-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.1), rgba(255,255,255,.03));
+  border: 1px solid rgba(217,195,160,.24);
+  box-shadow: 0 24px 50px -34px rgba(0,0,0,.7);
+  border-radius: 3px !important;
 }
+.theme-film .tpl-btn, .theme-film .tpl-icon { background: linear-gradient(135deg, #efe3d1, #cdb494); color: #241d16; border-radius: 3px; }
+.theme-film .tpl-photo { border-radius: 3px; filter: sepia(.18) contrast(1.04); }
+.theme-film .tpl-band { background: linear-gradient(120deg, rgba(217,195,160,.24), rgba(255,255,255,.06)); color: #f7efe3; }
+
+/* ── Bloom — blush rose-gold, arched ────────────────────────────────── */
+.theme-bloom {
+  background: linear-gradient(180deg, #fdf8f6, #f7eee9);
+  --foreground: #3f2e2b;
+  --muted-foreground: #8b736e;
+  --border: rgba(63, 46, 43, .12);
+  --gold: #d3a293;
+  --rose: #a06455;
+  --gradient-gold: linear-gradient(135deg, #e2b6a4, #b07463);
+  --btn-ink: #fff8f5;
+}
+.theme-bloom h1, .theme-bloom h2, .theme-bloom h3, .theme-bloom h4, .theme-bloom .font-display {
+  font-family: "Marcellus", serif !important;
+  font-weight: 400; font-style: normal; text-transform: none; letter-spacing: .01em;
+}
+.theme-bloom .font-script { font-family: "Cormorant Garamond", serif !important; }
+.theme-bloom .font-kicker {
+  font-family: "Outfit", sans-serif !important;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .3em; font-style: normal;
+}
+.theme-bloom .glass-card {
+  background: linear-gradient(160deg, rgba(255,255,255,.85), rgba(255,255,255,.55));
+  border: 1px solid rgba(211,162,147,.26);
+  box-shadow: 0 24px 50px -32px rgba(140,90,78,.4);
+  border-radius: 18px !important;
+}
+.theme-bloom .tpl-btn, .theme-bloom .tpl-icon { background: linear-gradient(135deg, #e2b6a4, #b07463); color: #fff8f5; border-radius: 999px; }
+.theme-bloom .tpl-photo { border-radius: 200px 200px 18px 18px; filter: none; }
+.theme-bloom .tpl-band { background: linear-gradient(120deg, rgba(232,197,185,.6), rgba(233,201,138,.55)); color: #3f2e2b; }

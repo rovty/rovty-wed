@@ -10,7 +10,8 @@ import { useEffect, useState } from "react";
 import { Heart, Sparkles, MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Reveal } from "@/components/wedding/Reveal";
-import { FloralDivider, FloralCorner } from "@/components/wedding/Floral";
+import { Motif } from "@/components/Motif";
+import { RoseCorner } from "@/components/RoseCorner";
 import { z } from "zod";
 import { fallback } from "@tanstack/zod-adapter";
 import seatingPlanImg from "@/assets/seating.png";
@@ -18,6 +19,7 @@ import {
   fetchWeddingBySlug,
   formatLongDate,
   isDecorativeTemplate,
+  TEMPLATE_META,
   type PublicWedding,
 } from "@/lib/wedding";
 
@@ -109,6 +111,7 @@ function SeatingPage() {
   }
 
   const decorative = isDecorativeTemplate(wedding.template);
+  const { motif } = TEMPLATE_META[wedding.template];
 
   if (loading) {
     return (
@@ -145,14 +148,8 @@ function SeatingPage() {
         <div className="glass-card relative max-w-sm rounded-3xl p-8 text-center">
           {decorative && (
             <>
-              <FloralCorner
-                className="pointer-events-none absolute left-4 top-4 h-20 w-20 opacity-60"
-                style={{ transform: "none" }}
-              />
-              <FloralCorner
-                className="pointer-events-none absolute right-4 top-4 h-20 w-20 opacity-60"
-                style={{ transform: "scaleX(-1)" }}
-              />
+              <RoseCorner position="tl" size={80} opacity={0.6} />
+              <RoseCorner position="tr" size={80} opacity={0.6} />
             </>
           )}
           <Ornament />
@@ -180,14 +177,8 @@ function SeatingPage() {
       {/* Corner ornaments */}
       {decorative && (
         <>
-          <FloralCorner
-            className="pointer-events-none absolute left-3 top-3 h-20 w-20 opacity-50 sm:h-24 sm:w-24"
-            style={{ transform: "none" }}
-          />
-          <FloralCorner
-            className="pointer-events-none absolute right-3 top-3 h-20 w-20 opacity-50 sm:h-24 sm:w-24"
-            style={{ transform: "scaleX(-1)" }}
-          />
+          <RoseCorner position="tl" size={96} opacity={0.5} />
+          <RoseCorner position="tr" size={96} opacity={0.5} />
         </>
       )}
 
@@ -210,7 +201,9 @@ function SeatingPage() {
         </Reveal>
 
         <Reveal delay={250}>
-          <FloralDivider className="mt-5 w-56 text-champagne sm:w-64" />
+          <div className="mt-5">
+            <Motif motif={motif} />
+          </div>
         </Reveal>
 
         {/* Welcome */}
@@ -253,20 +246,22 @@ function SeatingPage() {
             <p className="text-center text-[0.65rem] font-medium uppercase tracking-[0.35em] text-muted-foreground">
               You're seated with
             </p>
-            <Ornament />
+            <div className="my-4 flex justify-center">
+              <Motif motif={motif} />
+            </div>
             <ul className="space-y-2.5">
               {seating.tablemates.map((mate) => (
                 <li
                   key={mate.name}
                   className={`flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm transition-colors ${
                     mate.is_current
-                      ? "bg-champagne/20 font-semibold text-foreground"
+                      ? "bg-gold/15 font-semibold text-foreground"
                       : "text-foreground/80"
                   }`}
                 >
                   <span
                     className={`inline-block h-2 w-2 shrink-0 rounded-full ${
-                      mate.is_current ? "bg-gold" : "bg-champagne"
+                      mate.is_current ? "bg-gold" : "bg-gold/35"
                     }`}
                   />
                   {mate.name}
@@ -291,7 +286,7 @@ function SeatingPage() {
               <img
                 src={seatingPlanImg}
                 alt={`${w.hall ?? w.venue ?? "Reception"} seating plan`}
-                className="block h-auto w-full select-none rounded-2xl"
+                className="tpl-photo block h-auto w-full select-none"
                 loading="eager"
                 draggable={false}
               />
@@ -325,10 +320,7 @@ function SeatingPage() {
               rel="noreferrer"
               className="glass-card flex items-center gap-3 rounded-2xl p-4 transition-transform hover:-translate-y-0.5 active:scale-[0.98]"
             >
-              <div
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-white"
-                style={{ background: "var(--gradient-gold)" }}
-              >
+              <div className="tpl-icon grid h-10 w-10 shrink-0 place-items-center">
                 <MapPin className="h-5 w-5" />
               </div>
               <div className="min-w-0 flex-1">
@@ -346,7 +338,9 @@ function SeatingPage() {
 
         {/* Closing */}
         <Reveal delay={850}>
-          <FloralDivider className="mt-10 w-56 text-champagne sm:w-64" />
+          <div className="mt-10 flex justify-center">
+            <Motif motif={motif} />
+          </div>
           <p className="mt-6 text-center font-script text-lg italic text-foreground/70">
             We can't wait to celebrate with you{" "}
             <Heart className="inline h-4 w-4 text-rose" />

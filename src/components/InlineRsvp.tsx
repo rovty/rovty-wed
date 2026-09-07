@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import { Heart, Check, X, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
-type Guest = { code: string; name: string; title: string | null; seats: number };
+type Guest = {
+  code: string;
+  name: string;
+  title: string | null;
+  seats: number;
+};
 
 function Ornament() {
   return (
@@ -14,7 +19,13 @@ function Ornament() {
   );
 }
 
-export function InlineRsvp({ slug, coupleNames }: { slug: string; coupleNames: string }) {
+export function InlineRsvp({
+  slug,
+  coupleNames,
+}: {
+  slug: string;
+  coupleNames: string;
+}) {
   const [guest, setGuest] = useState<Guest | null>(null);
   const [checked, setChecked] = useState(false);
   const [attending, setAttending] = useState<"yes" | "no" | null>(null);
@@ -30,7 +41,10 @@ export function InlineRsvp({ slug, coupleNames }: { slug: string; coupleNames: s
       return;
     }
     (async () => {
-      const { data, error } = await supabase.rpc("get_guest_by_code", { _slug: slug, _code: code });
+      const { data, error } = await supabase.rpc("get_guest_by_code", {
+        _slug: slug,
+        _code: code,
+      });
       if (!error && data && (data as Guest[]).length > 0) {
         setGuest((data as Guest[])[0]);
       }
@@ -81,10 +95,7 @@ export function InlineRsvp({ slug, coupleNames }: { slug: string; coupleNames: s
   if (submitted) {
     return (
       <div className="glass-card rounded-3xl p-8 text-center animate-fade-up">
-        <div
-          className="mx-auto grid h-16 w-16 place-items-center rounded-full text-white"
-          style={{ background: "var(--gradient-gold)" }}
-        >
+        <div className="tpl-icon mx-auto grid h-16 w-16 place-items-center">
           <Heart className="h-7 w-7 animate-float-soft" />
         </div>
         <Ornament />
@@ -104,7 +115,10 @@ export function InlineRsvp({ slug, coupleNames }: { slug: string; coupleNames: s
   }
 
   return (
-    <form onSubmit={submit} className="glass-card rounded-3xl p-7 animate-fade-up">
+    <form
+      onSubmit={submit}
+      className="glass-card rounded-3xl p-7 animate-fade-up"
+    >
       <div className="text-center">
         <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground">
           Dear
@@ -143,7 +157,8 @@ export function InlineRsvp({ slug, coupleNames }: { slug: string; coupleNames: s
       {attending === "no" && (
         <div className="mt-4 animate-fade-up">
           <label className="mb-1.5 block text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-            Message to the couple <span className="lowercase italic">(optional)</span>
+            Message to the couple{" "}
+            <span className="lowercase italic">(optional)</span>
           </label>
           <textarea
             value={message}
@@ -162,10 +177,10 @@ export function InlineRsvp({ slug, coupleNames }: { slug: string; coupleNames: s
       <button
         type="submit"
         disabled={!attending || submitting}
-        className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-medium text-white shadow-gold transition-transform hover:scale-[1.01] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
-        style={{ background: "var(--gradient-gold)" }}
+        className="tpl-btn mt-6 w-full min-h-[3.375rem] text-sm font-medium shadow-gold transition-transform hover:scale-[1.01] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
       >
-        <Heart className="h-4 w-4" /> {submitting ? "Sending…" : "Send Response"}
+        <Heart className="h-4 w-4" />{" "}
+        {submitting ? "Sending…" : "Send Response"}
       </button>
     </form>
   );
@@ -188,10 +203,14 @@ function Choice({
       onClick={onClick}
       className={`relative flex items-center justify-center gap-2 rounded-2xl border px-3 py-4 text-sm font-medium transition-all ${
         active
-          ? "border-transparent text-white shadow-gold"
+          ? "border-transparent shadow-gold"
           : "border-border bg-white/60 text-foreground backdrop-blur hover:bg-white"
       }`}
-      style={active ? { background: "var(--gradient-gold)" } : undefined}
+      style={
+        active
+          ? { background: "var(--gradient-gold)", color: "var(--btn-ink)" }
+          : undefined
+      }
     >
       {icon}
       {label}

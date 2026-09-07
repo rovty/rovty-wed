@@ -2,7 +2,15 @@
 // single-tenant convenience alias) and `/$slug` (the real, shareable public
 // URL every "Public link" in admin actually points at). Kept as one
 // component so the two routes can't drift apart in what a guest sees.
-import { Calendar, Clock, MapPin, Sparkles, Heart, ChevronRight, Apple, Users } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Heart,
+  ChevronRight,
+  Apple,
+  Users,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { RosePetals } from "@/components/RosePetals";
 import { RoseCorner } from "@/components/RoseCorner";
@@ -10,6 +18,8 @@ import { Countdown } from "@/components/Countdown";
 import { MusicPlayer } from "@/components/MusicPlayer";
 import { InlineRsvp } from "@/components/InlineRsvp";
 import { InvitationOpener } from "@/components/InvitationOpener";
+import { Monogram } from "@/components/Monogram";
+import { Motif } from "@/components/Motif";
 import {
   formatDayMonth,
   formatWeekdayYear,
@@ -18,27 +28,21 @@ import {
   formatLongDate,
   googleCalendarUrl,
   isDecorativeTemplate,
+  TEMPLATE_META,
+  type Motif as MotifKind,
   type PublicWedding,
 } from "@/lib/wedding";
 import { supabase } from "@/integrations/supabase/client";
 import coupleImg from "@/assets/couple.png";
 import venueImg from "@/assets/venue.jpg";
 
-function Ornament() {
-  return (
-    <div className="divider-ornament my-4">
-      <span className="divider-line" />
-      <Sparkles className="h-4 w-4" />
-      <span className="divider-line" />
-    </div>
-  );
-}
-
 export function WeddingNotLive() {
   return (
     <main className="grid min-h-[100svh] place-items-center px-5 text-center">
       <div className="glass-card max-w-sm rounded-3xl p-8">
-        <h1 className="font-display text-2xl">This invitation isn't live yet</h1>
+        <h1 className="font-display text-2xl">
+          This invitation isn't live yet
+        </h1>
         <p className="mt-3 text-sm text-muted-foreground">
           Check back soon, or ask the couple for their latest link.
         </p>
@@ -47,15 +51,18 @@ export function WeddingNotLive() {
   );
 }
 
-// Every template shares this exact tree — Hero, Details, RSVP, seating,
-// calendar links, all identical logic. Only two things vary by template:
-// the CSS custom properties `theme-${template}` redefines (see
-// styles.css), and whether the falling-petals/corner-rose decoration shows
-// at all (isDecorativeTemplate, in @/lib/wedding).
+// Every template renders this same WeddingSite tree with the same
+// RSVP/seating/calendar functionality — what differs per template
+// (TEMPLATE_META, in @/lib/wedding) is the hero layout, the opener
+// animation, the divider motif, and the CSS tokens `theme-${template}`
+// redefines (see styles.css's .theme-* blocks). Only "classic" shows the
+// falling-petals/corner-rose decoration (isDecorativeTemplate).
 export function WeddingSite({ wedding }: { wedding: PublicWedding }) {
   const decorative = isDecorativeTemplate(wedding.template);
+  const meta = TEMPLATE_META[wedding.template];
   return (
     <main className={`theme-${wedding.template} relative overflow-x-hidden`}>
+      <div className="tpl-pattern" aria-hidden="true" />
       {decorative && <RosePetals />}
       <MusicPlayer src={wedding.musicUrl} />
       <InvitationOpener wedding={wedding} />
@@ -64,46 +71,236 @@ export function WeddingSite({ wedding }: { wedding: PublicWedding }) {
       <Details wedding={wedding} decorative={decorative} />
       <Gallery wedding={wedding} />
       <CalendarSection wedding={wedding} decorative={decorative} />
-      <RsvpCta wedding={wedding} />
-      <SeatingCta wedding={wedding} />
-      <Location wedding={wedding} />
+      <RsvpCta wedding={wedding} motif={meta.motif} />
+      <SeatingCta wedding={wedding} motif={meta.motif} />
+      <Location wedding={wedding} motif={meta.motif} />
       <Footer wedding={wedding} decorative={decorative} />
     </main>
   );
 }
 
-function Hero({ wedding, decorative }: { wedding: PublicWedding; decorative: boolean }) {
-  return (
-    <section className="relative px-5 pt-12 pb-6">
-      {decorative && <RoseCorner position="tl" size={140} opacity={0.2} />}
+function Hero({
+  wedding,
+  decorative,
+}: {
+  wedding: PublicWedding;
+  decorative: boolean;
+}) {
+  const { hero, motif } = TEMPLATE_META[wedding.template];
+  const initials = `${wedding.groom.charAt(0)} & ${wedding.bride.charAt(0)}`;
 
-      <div className="relative z-20 mx-auto flex max-w-xl flex-col items-center text-center animate-fade-up">
-        <p className="font-script text-lg italic tracking-wide text-rose">
-          Together with their families
-        </p>
-        <Ornament />
-        <h1 className="font-display text-6xl leading-[0.95] text-foreground sm:text-7xl md:text-8xl" style={{ textShadow: "0 2px 16px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
-          {wedding.groom}
-          <span className="mx-2 font-script italic text-gradient-gold">&</span>
-          {wedding.bride}
-        </h1>
-        <Ornament />
-        <p className="max-w-md text-balance text-sm leading-relaxed text-muted-foreground sm:text-base">
+  return (
+    <section className="relative">
+      {hero === "centered" && (
+        <div className="relative px-5 pt-12 pb-2">
+          {decorative && <RoseCorner position="tl" size={140} opacity={0.2} />}
+          <div className="relative z-20 mx-auto flex max-w-xl flex-col items-center text-center animate-fade-up">
+            <Monogram initials={initials} size={74} />
+            <p className="font-kicker mt-5 text-rose">
+              Together with their families
+            </p>
+            <div className="mt-3.5">
+              <Motif motif={motif} />
+            </div>
+            <h1 className="mt-3.5 font-display text-6xl leading-[0.95] text-foreground sm:text-7xl md:text-8xl">
+              {wedding.groom}
+              <span className="mx-2 font-script italic text-gradient-gold">
+                &
+              </span>
+              {wedding.bride}
+            </h1>
+            <div className="mt-4">
+              <Motif motif={motif} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {hero === "framed" && (
+        <div className="relative px-5 pt-12 pb-2 animate-fade-up">
+          {decorative && <RoseCorner position="tl" size={140} opacity={0.2} />}
+          <div
+            className="relative z-20 mx-auto max-w-xl p-1.5"
+            style={{
+              border: "1px solid var(--gold)",
+              background:
+                "linear-gradient(160deg, rgba(255,255,255,.5), rgba(255,255,255,.12))",
+            }}
+          >
+            <div
+              className="flex flex-col items-center px-6 py-9 text-center"
+              style={{ border: "1px solid var(--border)" }}
+            >
+              <Monogram initials={initials} size={70} />
+              <p className="font-kicker mt-4.5 text-muted-foreground">
+                Together with their families
+              </p>
+              <h1 className="mt-4 font-display text-5xl leading-[1.06] text-foreground sm:text-6xl">
+                {wedding.groom}
+                <br />
+                <span className="font-script italic text-gradient-gold text-[0.8em]">
+                  &
+                </span>
+                <br />
+                {wedding.bride}
+              </h1>
+              <div className="mt-5">
+                <Motif motif={motif} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {hero === "band" && (
+        <div className="tpl-band relative overflow-hidden px-5 py-14 text-center animate-fade-up">
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(255,255,255,.35), transparent 60%)",
+            }}
+          />
+          <div className="relative z-10 mx-auto flex max-w-xl flex-col items-center">
+            <Monogram initials={initials} size={74} />
+            <p
+              className="font-kicker mt-5"
+              style={{ opacity: 0.85, color: "inherit" }}
+            >
+              Together with their families
+            </p>
+            <h1 className="mt-3.5 font-display text-6xl leading-[0.95] sm:text-7xl">
+              {wedding.groom} &amp; {wedding.bride}
+            </h1>
+            <p
+              className="mt-3.5 text-xs uppercase tracking-[0.24em]"
+              style={{ opacity: 0.8 }}
+            >
+              {formatLongDate(wedding.date)}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {hero === "typo" && (
+        <div className="relative px-5 pt-12 pb-2 animate-fade-up">
+          <div className="relative z-20 mx-auto max-w-xl">
+            <div className="flex items-center gap-4">
+              <Monogram initials={initials} size={56} />
+              <div
+                className="h-px flex-1"
+                style={{
+                  background:
+                    "linear-gradient(90deg, var(--gold), transparent)",
+                }}
+              />
+            </div>
+            <p className="font-kicker mt-5 text-muted-foreground">
+              The wedding of
+            </p>
+            <h1 className="mt-3 font-display text-6xl leading-[0.96] text-foreground sm:text-7xl">
+              {wedding.groom}
+              <br />
+              &amp; {wedding.bride}
+            </h1>
+            <div
+              className="mt-5 flex items-end justify-between gap-4 border-t pt-3.5"
+              style={{ borderColor: "var(--border)" }}
+            >
+              <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                {formatLongDate(wedding.date)}
+              </p>
+              {wedding.venue && (
+                <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                  {wedding.venue}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {hero === "photoTop" && (
+        <div className="relative animate-fade-up">
+          <img
+            src={wedding.couplePhotoUrl ?? coupleImg}
+            alt={`${wedding.groom} & ${wedding.bride}`}
+            loading="eager"
+            className="tpl-photo block h-[280px] w-full object-cover sm:h-[380px]"
+          />
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(0,0,0,.12) 0%, rgba(0,0,0,.04) 38%, rgba(0,0,0,.72) 100%)",
+            }}
+          />
+          <div className="absolute inset-x-0 bottom-0 px-5 pb-6 text-center text-white">
+            <div className="flex justify-center">
+              <Monogram initials={initials} size={64} />
+            </div>
+            <p
+              className="font-kicker mt-4.5"
+              style={{ color: "#fff", opacity: 0.86, fontStyle: "normal" }}
+            >
+              Together with their families
+            </p>
+            <h1 className="mt-3 font-display text-5xl leading-none sm:text-6xl">
+              {wedding.groom} &amp; {wedding.bride}
+            </h1>
+          </div>
+        </div>
+      )}
+
+      {hero === "split" && (
+        <div className="relative px-5 pt-12 pb-2 animate-fade-up">
+          <div className="relative z-20 mx-auto grid max-w-3xl items-center gap-8 md:grid-cols-2 md:gap-11">
+            <div className="text-center md:text-left">
+              <div className="flex justify-center md:justify-start">
+                <Monogram initials={initials} size={64} />
+              </div>
+              <p className="font-kicker mt-4.5 text-rose">
+                Together with their families
+              </p>
+              <h1 className="mt-3 font-display text-5xl leading-[0.99] text-foreground sm:text-6xl">
+                {wedding.groom} &amp; {wedding.bride}
+              </h1>
+              <p className="mt-4.5 max-w-[34ch] text-sm leading-relaxed text-muted-foreground">
+                Request the pleasure of your company as we celebrate our
+                wedding.
+              </p>
+              <p
+                className="mt-4.5 border-t pt-3.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground"
+                style={{ borderColor: "var(--border)" }}
+              >
+                {formatLongDate(wedding.date)}
+                {wedding.venue ? ` · ${wedding.venue}` : ""}
+              </p>
+            </div>
+            <img
+              src={wedding.couplePhotoUrl ?? coupleImg}
+              alt={`${wedding.groom} & ${wedding.bride}`}
+              loading="eager"
+              className="tpl-photo block w-full object-cover"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Shared across every layout: the line, countdown, and RSVP CTA. */}
+      <div className="relative z-20 mx-auto max-w-xl px-5 pt-6 pb-6 text-center">
+        <p className="mx-auto max-w-[42ch] text-sm leading-relaxed text-muted-foreground text-balance">
           Request the pleasure of your company as we celebrate our wedding
         </p>
-
-        <p className="mt-6 font-script text-xl italic text-foreground/80">
+        <p className="mt-4.5 font-script text-xl italic text-foreground/80">
           {formatScriptDate(wedding.date)}
         </p>
-
         <div className="mt-5 w-full">
           <Countdown target={wedding.date} />
         </div>
-
         <a
           href="#rsvp"
-          className="mt-8 inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-medium text-white shadow-gold transition-transform hover:scale-[1.03] active:scale-95"
-          style={{ background: "var(--gradient-gold)" }}
+          className="tpl-btn mt-8 min-h-12 px-7 text-sm font-medium"
         >
           <Heart className="h-4 w-4" /> RSVP Now
         </a>
@@ -125,10 +322,7 @@ function DetailCard({
 }) {
   return (
     <div className="glass-card group rounded-3xl p-5 text-center transition-transform hover:-translate-y-1">
-      <div
-        className="mx-auto grid h-12 w-12 place-items-center rounded-full text-white"
-        style={{ background: "var(--gradient-gold)" }}
-      >
+      <div className="tpl-icon mx-auto grid h-12 w-12 place-items-center">
         <Icon className="h-5 w-5" />
       </div>
       <p className="mt-3 text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground">
@@ -140,23 +334,54 @@ function DetailCard({
   );
 }
 
-function Details({ wedding, decorative }: { wedding: PublicWedding; decorative: boolean }) {
+function Details({
+  wedding,
+  decorative,
+}: {
+  wedding: PublicWedding;
+  decorative: boolean;
+}) {
+  const { motif } = TEMPLATE_META[wedding.template];
   return (
     <section className="relative px-5 pt-4 pb-10">
       {decorative && <RoseCorner position="tr" size={140} opacity={0.25} />}
       <div className="relative z-20 mx-auto max-w-xl text-center">
-        <p className="font-script text-base italic text-rose">Save the date</p>
-        <h2 className="mt-1 font-display text-4xl text-foreground">Wedding Details</h2>
-        <Ornament />
+        <p className="font-kicker text-rose">Save the date</p>
+        <h2 className="mt-1 font-display text-4xl text-foreground">
+          Wedding Details
+        </h2>
+        <div className="mt-3.5 flex justify-center">
+          <Motif motif={motif} />
+        </div>
 
         <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4">
-          <DetailCard icon={Calendar} label="Date" value={formatDayMonth(wedding.date)} sub={formatWeekdayYear(wedding.date)} />
-          <DetailCard icon={Clock} label="Ceremony" value={formatTime(wedding.date)} sub="Auspicious time" />
+          <DetailCard
+            icon={Calendar}
+            label="Date"
+            value={formatDayMonth(wedding.date)}
+            sub={formatWeekdayYear(wedding.date)}
+          />
+          <DetailCard
+            icon={Clock}
+            label="Ceremony"
+            value={formatTime(wedding.date)}
+            sub="Auspicious time"
+          />
           {wedding.receptionDate && (
-            <DetailCard icon={Sparkles} label="Reception" value={formatTime(wedding.receptionDate)} sub="Onwards" />
+            <DetailCard
+              icon={Heart}
+              label="Reception"
+              value={formatTime(wedding.receptionDate)}
+              sub="Onwards"
+            />
           )}
           {wedding.venue && (
-            <DetailCard icon={MapPin} label="Venue" value={wedding.venue} sub={wedding.hall ?? undefined} />
+            <DetailCard
+              icon={MapPin}
+              label="Venue"
+              value={wedding.venue}
+              sub={wedding.hall ?? undefined}
+            />
           )}
         </div>
       </div>
@@ -165,6 +390,10 @@ function Details({ wedding, decorative }: { wedding: PublicWedding; decorative: 
 }
 
 function Gallery({ wedding }: { wedding: PublicWedding }) {
+  const { hero } = TEMPLATE_META[wedding.template];
+  // The photoTop/split hero layouts already show the couple's photo up top —
+  // showing it again here would be redundant.
+  if (hero === "photoTop" || hero === "split") return null;
   return (
     <section className="relative px-5 py-4">
       <div className="relative z-20 mx-auto max-w-xl">
@@ -172,7 +401,7 @@ function Gallery({ wedding }: { wedding: PublicWedding }) {
           src={wedding.couplePhotoUrl ?? coupleImg}
           alt="The couple"
           loading="lazy"
-          className="mx-auto w-full max-w-md object-contain drop-shadow-[0_16px_32px_rgba(0,0,0,0.12)]"
+          className="tpl-photo mx-auto w-full max-w-md object-contain drop-shadow-[0_16px_32px_rgba(0,0,0,0.12)]"
         />
       </div>
     </section>
@@ -196,10 +425,7 @@ function CalButton({
     "glass-card flex items-center gap-3 rounded-2xl p-4 text-left transition-transform hover:-translate-y-0.5 active:scale-[0.98]";
   const inner = (
     <>
-      <div
-        className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-white"
-        style={{ background: "var(--gradient-gold)" }}
-      >
+      <div className="tpl-icon grid h-10 w-10 shrink-0 place-items-center">
         <Icon className="h-5 w-5" />
       </div>
       <div className="min-w-0 flex-1">
@@ -227,44 +453,79 @@ function CalButton({
   );
 }
 
-function CalendarSection({ wedding, decorative }: { wedding: PublicWedding; decorative: boolean }) {
+function CalendarSection({
+  wedding,
+  decorative,
+}: {
+  wedding: PublicWedding;
+  decorative: boolean;
+}) {
+  const { motif } = TEMPLATE_META[wedding.template];
   return (
     <section className="relative px-5 py-10">
       {decorative && <RoseCorner position="tl" size={140} opacity={0.25} />}
       <div className="relative z-20 mx-auto max-w-xl">
         <div className="text-center">
-          <p className="font-script text-base italic text-rose">Save the moment</p>
+          <p className="font-kicker text-rose">Save the moment</p>
           <h2 className="mt-1 font-display text-4xl">Add to Calendar</h2>
-          <Ornament />
+          <div className="mt-3.5 flex justify-center">
+            <Motif motif={motif} />
+          </div>
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <CalButton icon={Apple} label="Apple Calendar" href="/calendar.ics" sameTab />
-          <CalButton icon={Calendar} label="Google Calendar" href={googleCalendarUrl(wedding)} />
+          <CalButton
+            icon={Apple}
+            label="Apple Calendar"
+            href="/calendar.ics"
+            sameTab
+          />
+          <CalButton
+            icon={Calendar}
+            label="Google Calendar"
+            href={googleCalendarUrl(wedding)}
+          />
         </div>
       </div>
     </section>
   );
 }
 
-function RsvpCta({ wedding }: { wedding: PublicWedding }) {
+function RsvpCta({
+  wedding,
+  motif,
+}: {
+  wedding: PublicWedding;
+  motif: MotifKind;
+}) {
   return (
     <section id="rsvp" className="relative px-5 py-10">
       <div className="relative z-20 mx-auto max-w-xl">
         <div className="text-center">
-          <p className="font-script text-base italic text-rose">Kindly respond</p>
+          <p className="font-kicker text-rose">Kindly respond</p>
           <h2 className="mt-1 font-display text-4xl">RSVP</h2>
-          <Ornament />
+          <div className="mt-3.5 flex justify-center">
+            <Motif motif={motif} />
+          </div>
         </div>
         <div className="mt-6">
-          <InlineRsvp slug={wedding.slug} coupleNames={`${wedding.groom} & ${wedding.bride}`} />
+          <InlineRsvp
+            slug={wedding.slug}
+            coupleNames={`${wedding.groom} & ${wedding.bride}`}
+          />
         </div>
       </div>
     </section>
   );
 }
 
-function SeatingCta({ wedding }: { wedding: PublicWedding }) {
+function SeatingCta({
+  wedding,
+  motif,
+}: {
+  wedding: PublicWedding;
+  motif: MotifKind;
+}) {
   const [hasSeating, setHasSeating] = useState(false);
   const [code, setCode] = useState<string | null>(null);
 
@@ -283,28 +544,57 @@ function SeatingCta({ wedding }: { wedding: PublicWedding }) {
 
   return (
     <section className="relative px-5 py-10">
-      <div className="relative z-20 mx-auto max-w-xl text-center">
-        <p className="font-script text-base italic text-rose">Reception</p>
-        <h2 className="mt-1 font-display text-4xl">Your Seating</h2>
-        <Ornament />
-        <p className="mt-3 text-sm text-muted-foreground">
-          Your table has been assigned. View your seating details and find your
-          table on the ballroom map.
-        </p>
-        <a
-          href={`/seating?code=${code}`}
-          className="mt-5 inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-medium text-white shadow-gold transition-transform hover:scale-[1.03] active:scale-95"
-          style={{ background: "var(--gradient-gold)" }}
-        >
-          <Users className="h-4 w-4" /> View Your Table
-        </a>
+      <div className="relative z-20 mx-auto max-w-xl">
+        <div className="tpl-band relative overflow-hidden rounded-3xl px-6 py-9 text-center">
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(255,255,255,.3), transparent 65%)",
+            }}
+          />
+          <div className="relative z-10">
+            <p className="font-kicker" style={{ opacity: 0.85 }}>
+              Reception
+            </p>
+            <h2 className="mt-2.5 font-display text-4xl">Your Seating</h2>
+            <p
+              className="mt-3 max-w-[38ch] text-sm leading-relaxed mx-auto"
+              style={{ opacity: 0.9 }}
+            >
+              Your table has been assigned. View your seating details and find
+              your table on the ballroom map.
+            </p>
+            <a
+              href={`/seating?code=${code}`}
+              className="tpl-btn mt-5 min-h-12 px-7 text-sm font-medium"
+            >
+              <Users className="h-4 w-4" /> View Your Table
+            </a>
+          </div>
+        </div>
+        <div className="sr-only">
+          <Motif motif={motif} />
+        </div>
       </div>
     </section>
   );
 }
 
-function Location({ wedding }: { wedding: PublicWedding }) {
-  if (!wedding.venue && !wedding.address && !wedding.mapsUrl && !wedding.venuePhotoUrl) return null;
+function Location({
+  wedding,
+  motif,
+}: {
+  wedding: PublicWedding;
+  motif: MotifKind;
+}) {
+  if (
+    !wedding.venue &&
+    !wedding.address &&
+    !wedding.mapsUrl &&
+    !wedding.venuePhotoUrl
+  )
+    return null;
   // A custom maps link (Details tab) always wins — it's a real link to the
   // actual place, not a guess. The search-query fallback only exists for
   // weddings that haven't set one.
@@ -315,10 +605,12 @@ function Location({ wedding }: { wedding: PublicWedding }) {
     <section className="relative px-5 py-10">
       <div className="relative z-20 mx-auto max-w-xl">
         <div className="text-center">
-          <p className="font-script text-base italic text-rose">Find us</p>
+          <p className="font-kicker text-rose">Find us</p>
           <h2 className="mt-1 font-display text-4xl">Location</h2>
-          <Ornament />
-          <p className="text-sm text-muted-foreground">
+          <div className="mt-3.5 flex justify-center">
+            <Motif motif={motif} />
+          </div>
+          <p className="mt-2 text-sm text-muted-foreground">
             {[wedding.venue, wedding.hall].filter(Boolean).join(" · ")}
           </p>
         </div>
@@ -327,13 +619,13 @@ function Location({ wedding }: { wedding: PublicWedding }) {
           href={mapsHref}
           target="_blank"
           rel="noreferrer"
-          className="mt-6 block overflow-hidden rounded-3xl shadow-soft glass-card p-1.5"
+          className="mt-6 block overflow-hidden shadow-soft glass-card p-1.5"
         >
           <img
             src={wedding.venuePhotoUrl ?? venueImg}
             alt={wedding.venue ?? "The venue"}
             loading="lazy"
-            className="h-72 w-full rounded-2xl object-cover"
+            className="tpl-photo h-72 w-full object-cover"
           />
         </a>
 
@@ -350,7 +642,13 @@ function Location({ wedding }: { wedding: PublicWedding }) {
   );
 }
 
-function Footer({ wedding, decorative }: { wedding: PublicWedding; decorative: boolean }) {
+function Footer({
+  wedding,
+  decorative,
+}: {
+  wedding: PublicWedding;
+  decorative: boolean;
+}) {
   return (
     <footer className="relative px-5 pb-16 pt-8 text-center">
       {decorative && (
@@ -360,15 +658,27 @@ function Footer({ wedding, decorative }: { wedding: PublicWedding; decorative: b
         </>
       )}
       <div className="relative z-20 mx-auto max-w-md">
-        <Ornament />
-        <h3 className="font-script text-3xl italic text-gradient-gold">
+        <div className="flex justify-center">
+          <Monogram
+            initials={`${wedding.groom.charAt(0)} & ${wedding.bride.charAt(0)}`}
+            size={66}
+          />
+        </div>
+        <h3 className="mt-5 font-script text-3xl italic text-gradient-gold">
           With love & gratitude
         </h3>
         <p className="mt-3 text-sm text-muted-foreground">
-          Thank you for being part of our story. We can't wait to celebrate with you.
+          Thank you for being part of our story. We can't wait to celebrate with
+          you.
         </p>
-        <p className="mt-6 font-display text-xl">{wedding.groom} <span className="font-script italic text-rose">&</span> {wedding.bride}</p>
-        <p className="mt-2 text-xs text-muted-foreground">{formatLongDate(wedding.date)}</p>
+        <p className="mt-6 font-display text-xl">
+          {wedding.groom}{" "}
+          <span className="font-script italic text-rose">&</span>{" "}
+          {wedding.bride}
+        </p>
+        <p className="mt-2 text-xs text-muted-foreground">
+          {formatLongDate(wedding.date)}
+        </p>
       </div>
     </footer>
   );
