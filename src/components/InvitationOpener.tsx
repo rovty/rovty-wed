@@ -10,6 +10,7 @@ import {
 } from "@/lib/wedding";
 import { RosePetals } from "@/components/RosePetals";
 import { RoseCorner } from "@/components/RoseCorner";
+import { LotusPetals } from "@/components/LotusPetals";
 import { LotusVineBand, LotusStemsCorner } from "@/components/LotusCorner";
 import { Monogram } from "@/components/Monogram";
 import { Motif } from "@/components/Motif";
@@ -432,14 +433,9 @@ function LotusOpener({
 }: OpenerProps & { greeting: string; initials: string; motif: MotifKind }) {
   return (
     <>
-      {/* No prefilled petal layer of our own here, unlike the other
-          openers — WeddingSite already mounts a persistent <LotusPetals />
-          for the whole page, falling continuously underneath this opaque
-          overlay the entire time it's shown. A second, separately-seeded
-          batch here would vanish outright the instant this component
-          unmounts (no per-particle fade-out), visibly thinning the field
-          mid-fall right as the opener disappears, instead of the one
-          already-falling set carrying on smoothly. */}
+      <div className="invite-opener__petals">
+        <LotusPetals count={12} prefill />
+      </div>
       {/* Same height as the Hero's own LotusVineBand (its default, 190px) —
           the opener sits directly over the already-mounted page while it
           fades out, so a mismatched band height here left a visible seam

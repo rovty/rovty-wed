@@ -1104,6 +1104,17 @@
   --rose: #96712a;
   --gradient-gold: linear-gradient(135deg, #e8cf95, #c0993f);
   --btn-ink: #2f2a22;
+  /* --gradient-hero (:root) is never re-themed by any other .theme-* block
+     either — it's what .invite-opener's own background is built from, so
+     every opener shows this same generic pink-toned gradient underneath
+     its own graphics. Every other template's opener content (envelope,
+     veil/gate panels, curtain photo) is opaque enough to hide it almost
+     entirely; the lotus opener's silk panels part to a real gap down the
+     middle with nothing else covering most of it below the vine, so the
+     mismatch — pink showing through an ivory/gold template — was actually
+     visible instead of just theoretical. Matches this theme's own page
+     background exactly, so the opener and the page it fades into agree. */
+  --gradient-hero: linear-gradient(180deg, #fdf9f0 0%, #f6eddc 52%, #fbf5e8 100%);
 }
 .theme-lotus h1, .theme-lotus h2, .theme-lotus h3, .theme-lotus h4, .theme-lotus .font-display {
   font-family: "Playfair Display", serif !important;
