@@ -3,6 +3,7 @@ import { Heart, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   isDecorativeTemplate,
+  familyLine,
   TEMPLATE_META,
   type Motif as MotifKind,
   type PublicWedding,
@@ -276,7 +277,7 @@ function VeilOpener({
       <div className="invite-opener__scene relative z-[3]">
         <Monogram initials={initials} size={84} />
         <p className="font-kicker mt-6 text-muted-foreground">
-          Together with their families
+          {familyLine(wedding)}
         </p>
         <h2 className="mt-3 font-display text-4xl leading-[1.06] text-foreground text-center">
           {wedding.groom} & {wedding.bride}

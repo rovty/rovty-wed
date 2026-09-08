@@ -96,6 +96,8 @@ export type PublicWedding = {
   slug: string;
   bride: string;
   groom: string;
+  groomParentsNames: string | null;
+  brideParentsNames: string | null;
   title: string;
   date: Date;
   endDate: Date | null;
@@ -117,6 +119,8 @@ function toPublicWedding(row: {
   slug: string;
   bride: string;
   groom: string;
+  groom_parents_names: string | null;
+  bride_parents_names: string | null;
   event_date: string;
   event_end: string | null;
   reception_date: string | null;
@@ -137,6 +141,8 @@ function toPublicWedding(row: {
     slug: row.slug,
     bride: row.bride,
     groom: row.groom,
+    groomParentsNames: row.groom_parents_names,
+    brideParentsNames: row.bride_parents_names,
     title,
     date: new Date(row.event_date),
     endDate: row.event_end ? new Date(row.event_end) : null,
@@ -158,7 +164,24 @@ function toPublicWedding(row: {
 }
 
 const WEDDING_COLUMNS =
-  "slug, bride, groom, event_date, event_end, reception_date, reception_end, venue, hall, address, description, template, couple_photo_url, venue_photo_url, share_image_url, maps_url, music_url";
+  "slug, bride, groom, groom_parents_names, bride_parents_names, event_date, event_end, reception_date, reception_end, venue, hall, address, description, template, couple_photo_url, venue_photo_url, share_image_url, maps_url, music_url";
+
+// The "Together with their families" kicker several hero layouts open
+// with (WeddingSite.tsx, InvitationOpener.tsx's VeilOpener) — swapped for
+// the couple's actual parents' names when they've filled either or both
+// in (Design → Details → Couple). Free text on both sides, so this never
+// assumes a "Mr. & Mrs." shape or which side has which parent; it just
+// credits whatever the couple typed. Falls back to the generic line when
+// neither is set, so this is purely additive — no template needs its own
+// opt-in.
+export function familyLine(wedding: PublicWedding): string {
+  const groom = wedding.groomParentsNames?.trim();
+  const bride = wedding.brideParentsNames?.trim();
+  if (groom && bride)
+    return `Together with the families of ${groom} & ${bride}`;
+  if (groom || bride) return `Together with the family of ${groom || bride}`;
+  return "Together with their families";
+}
 
 // Couple photo, venue photo, background music, the hall's floor-plan photo,
 // and the link-preview share image, all uploaded from the admin's

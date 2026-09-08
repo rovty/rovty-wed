@@ -31,6 +31,7 @@ import {
   googleCalendarUrl,
   isDecorativeTemplate,
   hasLotusPetals,
+  familyLine,
   TEMPLATE_META,
   type Motif as MotifKind,
   type PublicWedding,
@@ -104,9 +105,7 @@ function Hero({
           {decorative && <RoseCorner position="tl" size={140} opacity={0.2} />}
           <div className="relative z-20 mx-auto flex max-w-xl flex-col items-center text-center animate-fade-up">
             <Monogram initials={initials} size={74} />
-            <p className="font-kicker mt-5 text-rose">
-              Together with their families
-            </p>
+            <p className="font-kicker mt-5 text-rose">{familyLine(wedding)}</p>
             <div className="mt-3.5">
               <Motif motif={motif} />
             </div>
@@ -141,7 +140,7 @@ function Hero({
             >
               <Monogram initials={initials} size={70} />
               <p className="font-kicker mt-4.5 text-muted-foreground">
-                Together with their families
+                {familyLine(wedding)}
               </p>
               <h1 className="mt-4 font-display text-5xl leading-[1.06] text-foreground sm:text-6xl">
                 {wedding.groom}
@@ -175,7 +174,7 @@ function Hero({
               className="font-kicker mt-5"
               style={{ opacity: 0.85, color: "inherit" }}
             >
-              Together with their families
+              {familyLine(wedding)}
             </p>
             <h1 className="mt-3.5 font-display text-6xl leading-[0.95] sm:text-7xl">
               {wedding.groom} &amp; {wedding.bride}
@@ -251,7 +250,7 @@ function Hero({
               className="font-kicker mt-4.5"
               style={{ color: "#fff", opacity: 0.86, fontStyle: "normal" }}
             >
-              Together with their families
+              {familyLine(wedding)}
             </p>
             <h1 className="mt-3 font-display text-5xl leading-none sm:text-6xl">
               {wedding.groom} &amp; {wedding.bride}
@@ -268,7 +267,7 @@ function Hero({
                 <Monogram initials={initials} size={64} />
               </div>
               <p className="font-kicker mt-4.5 text-rose">
-                Together with their families
+                {familyLine(wedding)}
               </p>
               <h1 className="mt-3 font-display text-5xl leading-[0.99] text-foreground sm:text-6xl">
                 {wedding.groom} &amp; {wedding.bride}

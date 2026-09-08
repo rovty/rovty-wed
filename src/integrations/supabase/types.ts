@@ -25,6 +25,8 @@ export type Database = {
           slug: string;
           bride: string;
           groom: string;
+          groom_parents_names: string | null;
+          bride_parents_names: string | null;
           event_date: string;
           event_end: string | null;
           reception_date: string | null;
@@ -54,6 +56,8 @@ export type Database = {
           slug: string;
           bride: string;
           groom: string;
+          groom_parents_names?: string | null;
+          bride_parents_names?: string | null;
           event_date: string;
           event_end?: string | null;
           reception_date?: string | null;
@@ -83,6 +87,8 @@ export type Database = {
           slug?: string;
           bride?: string;
           groom?: string;
+          groom_parents_names?: string | null;
+          bride_parents_names?: string | null;
           event_date?: string;
           event_end?: string | null;
           reception_date?: string | null;

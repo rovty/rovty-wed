@@ -20,6 +20,8 @@ export function DetailsForm({
   const [form, setForm] = useState({
     bride: wedding.bride,
     groom: wedding.groom,
+    groom_parents_names: wedding.groom_parents_names ?? "",
+    bride_parents_names: wedding.bride_parents_names ?? "",
     event_date: toDatetimeLocalValue(wedding.event_date),
     event_end: toOptionalDatetimeLocalValue(wedding.event_end),
     reception_date: toOptionalDatetimeLocalValue(wedding.reception_date),
@@ -105,6 +107,8 @@ export function DetailsForm({
       .update({
         bride: form.bride.trim(),
         groom: form.groom.trim(),
+        groom_parents_names: form.groom_parents_names.trim() || null,
+        bride_parents_names: form.bride_parents_names.trim() || null,
         event_date: new Date(form.event_date).toISOString(),
         event_end: form.event_end
           ? new Date(form.event_end).toISOString()
@@ -162,6 +166,19 @@ export function DetailsForm({
         <div className="mt-2.5 grid grid-cols-2 gap-2.5">
           {field("groom", "Groom")}
           {field("bride", "Bride")}
+        </div>
+        <p className="mt-3.5 text-[11px] text-[var(--admin-muted)]">
+          Parents' names (optional) — shown as "Together with the families of
+          ..." on the invitation instead of the generic line. Leave blank to
+          keep it generic.
+        </p>
+        <div className="mt-2.5 grid grid-cols-2 gap-2.5">
+          {field("groom_parents_names", "Groom's parents", {
+            placeholder: "e.g. Mr. & Mrs. Perera",
+          })}
+          {field("bride_parents_names", "Bride's parents", {
+            placeholder: "e.g. Mr. & Mrs. Silva",
+          })}
         </div>
       </section>
 
