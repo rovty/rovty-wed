@@ -166,21 +166,25 @@ function toPublicWedding(row: {
 const WEDDING_COLUMNS =
   "slug, bride, groom, groom_parents_names, bride_parents_names, event_date, event_end, reception_date, reception_end, venue, hall, address, description, template, couple_photo_url, venue_photo_url, share_image_url, maps_url, music_url";
 
-// The "Together with their families" kicker several hero layouts open
-// with (WeddingSite.tsx, InvitationOpener.tsx's VeilOpener) — swapped for
-// the couple's actual parents' names when they've filled either or both
-// in (Design → Details → Couple). Free text on both sides, so this never
-// assumes a "Mr. & Mrs." shape or which side has which parent; it just
-// credits whatever the couple typed. Falls back to the generic line when
-// neither is set, so this is purely additive — no template needs its own
-// opt-in.
-export function familyLine(wedding: PublicWedding): string {
+// The "families" kicker several hero layouts open with (WeddingSite.tsx,
+// InvitationOpener.tsx's VeilOpener) — swapped for the couple's actual
+// parents' names when they've filled either or both in (Design → Details
+// → Couple). Free text on both sides, so this never assumes a "Mr. & Mrs."
+// shape or which side has which parent; it just credits whatever the
+// couple typed. Falls back to `fallback` (each template's own generic
+// wording — "Together with their families", lotus's "With the blessings
+// of their families", etc.) when neither is set, so this is purely
+// additive — no template needs its own opt-in, just its own fallback text.
+export function familyLine(
+  wedding: PublicWedding,
+  fallback = "Together with their families",
+): string {
   const groom = wedding.groomParentsNames?.trim();
   const bride = wedding.brideParentsNames?.trim();
   if (groom && bride)
     return `Together with the families of ${groom} & ${bride}`;
   if (groom || bride) return `Together with the family of ${groom || bride}`;
-  return "Together with their families";
+  return fallback;
 }
 
 // Couple photo, venue photo, background music, the hall's floor-plan photo,

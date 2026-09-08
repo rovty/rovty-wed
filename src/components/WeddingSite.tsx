@@ -300,7 +300,7 @@ function Hero({
           <div className="relative z-20 mx-auto flex max-w-xl flex-col items-center">
             <Monogram variant="lotus" initials={initials} size={104} />
             <p className="font-kicker mt-6 text-muted-foreground">
-              With the blessings of their families
+              {familyLine(wedding, "With the blessings of their families")}
             </p>
             <h1
               className="mt-4 leading-[1.2] text-foreground"
