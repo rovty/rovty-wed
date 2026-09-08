@@ -419,10 +419,10 @@ function PetalsOpener({
 
 // Two silk panels part like the veil opener, but with a soft field of
 // falling lotus blooms and a gold corner spray underneath instead of a bare
-// panel — the design's own falling-petal field behind an already-visible
-// scene, made tap-to-reveal (rather than fully invisible until tapped) via
-// a shared explicit button, matching every other opener here instead of
-// the prototype's full-screen invisible tap target.
+// panel. Tap-anywhere-to-open, per the design — the scene is already fully
+// visible (not hidden behind the silk), so a full-screen invisible button
+// sits over it rather than one small pill; "Touch anywhere to open" hints
+// at that, in place of the labeled buttons every other opener here uses.
 function LotusOpener({
   wedding,
   greeting,
@@ -443,6 +443,14 @@ function LotusOpener({
       />
       <div
         className={`invite-lotus invite-lotus--right ${opening ? "invite-lotus--open" : ""}`}
+      />
+      <button
+        onClick={onOpen}
+        aria-label="Open your invitation"
+        // Above .invite-opener__scene's own z-index: 20 (styles.css, shared
+        // by every opener) — without this the scene's text/monogram sit on
+        // top and swallow the tap instead of passing it through to us.
+        className="absolute inset-0 z-[25] cursor-pointer border-0 bg-transparent p-0"
       />
       <div className="invite-opener__scene relative z-[3]">
         <div className="flex flex-col items-center">
@@ -481,12 +489,11 @@ function LotusOpener({
             </span>
             , we joyfully request the honour of your presence.
           </p>
-          <button
-            onClick={onOpen}
-            className="tpl-btn mt-6 min-h-12 px-8 text-xs font-semibold uppercase tracking-[0.16em]"
-          >
-            Open the invitation
-          </button>
+          {!opening && (
+            <p className="invite-opener__hint mt-7 text-center text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground">
+              Touch anywhere to open
+            </p>
+          )}
         </div>
       </div>
     </>
