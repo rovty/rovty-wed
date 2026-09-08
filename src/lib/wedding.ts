@@ -240,15 +240,38 @@ async function prepareShareImage(file: File): Promise<File> {
     const ctx = canvas.getContext("2d");
     if (!ctx) return file;
 
-    // Cover-fit crop into the 1200×630 box WhatsApp/OG expect, same idea
-    // as CSS `object-fit: cover` — scale to fill, then center-crop the
-    // overhang on whichever axis is longer.
-    const scale = Math.max(
+    // Most wedding photos are portrait, so a hard cover-crop into a
+    // landscape box would slice off heads/feet. Instead: a cover-fit,
+    // blurred, darkened copy of the same photo fills the box edge to
+    // edge as a backdrop, then the whole uncropped photo sits centered
+    // on top at contain-fit — nothing in the couple's photo is ever cut
+    // off, and a portrait source still fills a landscape card instead of
+    // leaving hard bars. Wide/landscape sources just fill the box on
+    // their own with barely any backdrop showing.
+    const coverScale = Math.max(
       SHARE_IMAGE_WIDTH / img.width,
       SHARE_IMAGE_HEIGHT / img.height,
     );
-    const drawWidth = img.width * scale;
-    const drawHeight = img.height * scale;
+    const bgWidth = img.width * coverScale;
+    const bgHeight = img.height * coverScale;
+    ctx.filter = "blur(24px)";
+    ctx.drawImage(
+      img,
+      (SHARE_IMAGE_WIDTH - bgWidth) / 2,
+      (SHARE_IMAGE_HEIGHT - bgHeight) / 2,
+      bgWidth,
+      bgHeight,
+    );
+    ctx.filter = "none";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
+    ctx.fillRect(0, 0, SHARE_IMAGE_WIDTH, SHARE_IMAGE_HEIGHT);
+
+    const containScale = Math.min(
+      SHARE_IMAGE_WIDTH / img.width,
+      SHARE_IMAGE_HEIGHT / img.height,
+    );
+    const drawWidth = img.width * containScale;
+    const drawHeight = img.height * containScale;
     ctx.drawImage(
       img,
       (SHARE_IMAGE_WIDTH - drawWidth) / 2,

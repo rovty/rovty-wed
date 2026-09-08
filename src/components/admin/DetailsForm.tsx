@@ -244,7 +244,7 @@ export function DetailsForm({
             uploading={uploading === "share"}
             onUpload={(f) => upload("share", f)}
             onRemove={() => removeMedia("share")}
-            hint="Shown as the preview image when the invitation link is shared on WhatsApp — automatically cropped to 1200×630 and compressed, so any photo works. Falls back to the couple photo if you skip this."
+            hint="Shown as the preview image when the invitation link is shared on WhatsApp — automatically fitted to 1200×630 and compressed (portrait photos get a blurred backdrop rather than being cropped), so any photo works. Falls back to the couple photo if you skip this."
           />
           <MediaRow
             label="Venue photo"
