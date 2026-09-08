@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { RosePetals } from "@/components/RosePetals";
 import { RoseCorner } from "@/components/RoseCorner";
 import { LotusPetals } from "@/components/LotusPetals";
-import { LotusCorner } from "@/components/LotusCorner";
+import { LotusVineBand, LotusStemsCorner } from "@/components/LotusCorner";
 import { Countdown } from "@/components/Countdown";
 import { MusicPlayer } from "@/components/MusicPlayer";
 import { InlineRsvp } from "@/components/InlineRsvp";
@@ -297,9 +297,7 @@ function Hero({
 
       {hero === "lotus" && (
         <div className="relative px-5 pt-12 pb-2 text-center animate-fade-up">
-          {hasLotusPetals(wedding.template) && (
-            <LotusCorner position="tl" size={140} opacity={0.35} />
-          )}
+          {hasLotusPetals(wedding.template) && <LotusVineBand />}
           <div className="relative z-20 mx-auto flex max-w-xl flex-col items-center">
             <Monogram variant="lotus" initials={initials} size={104} />
             <p className="font-kicker mt-6 text-muted-foreground">
@@ -396,9 +394,6 @@ function Details({
   return (
     <section className="relative px-5 pt-4 pb-10">
       {decorative && <RoseCorner position="tr" size={140} opacity={0.25} />}
-      {hasLotusPetals(wedding.template) && (
-        <LotusCorner position="tr" size={140} opacity={0.4} />
-      )}
       <div className="relative z-20 mx-auto max-w-xl text-center">
         <p className="font-kicker text-rose">Save the date</p>
         <h2 className="mt-1 font-display text-4xl text-foreground">
@@ -518,9 +513,6 @@ function CalendarSection({
   return (
     <section className="relative px-5 py-10">
       {decorative && <RoseCorner position="tl" size={140} opacity={0.25} />}
-      {hasLotusPetals(wedding.template) && (
-        <LotusCorner position="tl" size={140} opacity={0.4} />
-      )}
       <div className="relative z-20 mx-auto max-w-xl">
         <div className="text-center">
           <p className="font-kicker text-rose">Save the moment</p>
@@ -715,12 +707,7 @@ function Footer({
           <RoseCorner position="br" size={150} opacity={0.6} />
         </>
       )}
-      {lotusDecor && (
-        <>
-          <LotusCorner position="bl" size={150} opacity={0.6} />
-          <LotusCorner position="br" size={150} opacity={0.6} />
-        </>
-      )}
+      {lotusDecor && <LotusStemsCorner opacity={0.6} />}
       <div className="relative z-20 mx-auto max-w-md">
         <div className="flex justify-center">
           <Monogram

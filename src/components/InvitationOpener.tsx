@@ -10,7 +10,7 @@ import {
 import { RosePetals } from "@/components/RosePetals";
 import { RoseCorner } from "@/components/RoseCorner";
 import { LotusPetals } from "@/components/LotusPetals";
-import { LotusCorner } from "@/components/LotusCorner";
+import { LotusVineBand, LotusStemsCorner } from "@/components/LotusCorner";
 import { Monogram } from "@/components/Monogram";
 import { Motif } from "@/components/Motif";
 import coupleImg from "@/assets/couple.png";
@@ -435,8 +435,8 @@ function LotusOpener({
       <div className="invite-opener__petals">
         <LotusPetals count={12} prefill />
       </div>
-      <LotusCorner position="tl" size={140} opacity={0.5} />
-      <LotusCorner position="br" size={140} opacity={0.5} />
+      <LotusVineBand height="34%" opacity={0.42} />
+      <LotusStemsCorner opacity={0.42} />
       <div
         className={`invite-lotus invite-lotus--left ${opening ? "invite-lotus--open" : ""}`}
       />
