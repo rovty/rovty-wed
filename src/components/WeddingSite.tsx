@@ -14,6 +14,8 @@ import {
 import { useEffect, useState } from "react";
 import { RosePetals } from "@/components/RosePetals";
 import { RoseCorner } from "@/components/RoseCorner";
+import { LotusPetals } from "@/components/LotusPetals";
+import { LotusCorner } from "@/components/LotusCorner";
 import { Countdown } from "@/components/Countdown";
 import { MusicPlayer } from "@/components/MusicPlayer";
 import { InlineRsvp } from "@/components/InlineRsvp";
@@ -28,6 +30,7 @@ import {
   formatLongDate,
   googleCalendarUrl,
   isDecorativeTemplate,
+  hasLotusPetals,
   TEMPLATE_META,
   type Motif as MotifKind,
   type PublicWedding,
@@ -56,14 +59,19 @@ export function WeddingNotLive() {
 // (TEMPLATE_META, in @/lib/wedding) is the hero layout, the opener
 // animation, the divider motif, and the CSS tokens `theme-${template}`
 // redefines (see styles.css's .theme-* blocks). Only "classic" shows the
-// falling-petals/corner-rose decoration (isDecorativeTemplate).
+// falling-petals/corner-rose decoration (isDecorativeTemplate); "lotus"
+// gets its own separate falling-lotus/corner-vine decoration
+// (hasLotusPetals) instead of joining that set — see that function's own
+// comment in lib/wedding.ts for why.
 export function WeddingSite({ wedding }: { wedding: PublicWedding }) {
   const decorative = isDecorativeTemplate(wedding.template);
+  const lotusDecor = hasLotusPetals(wedding.template);
   const meta = TEMPLATE_META[wedding.template];
   return (
     <main className={`theme-${wedding.template} relative overflow-x-hidden`}>
       <div className="tpl-pattern" aria-hidden="true" />
       {decorative && <RosePetals />}
+      {lotusDecor && <LotusPetals />}
       <MusicPlayer src={wedding.musicUrl} />
       <InvitationOpener wedding={wedding} />
 
@@ -287,6 +295,49 @@ function Hero({
         </div>
       )}
 
+      {hero === "lotus" && (
+        <div className="relative px-5 pt-12 pb-2 text-center animate-fade-up">
+          {hasLotusPetals(wedding.template) && (
+            <LotusCorner position="tl" size={140} opacity={0.35} />
+          )}
+          <div className="relative z-20 mx-auto flex max-w-xl flex-col items-center">
+            <Monogram variant="lotus" initials={initials} size={104} />
+            <p className="font-kicker mt-6 text-muted-foreground">
+              With the blessings of their families
+            </p>
+            <h1
+              className="mt-4 leading-[1.2] text-foreground"
+              style={{
+                fontFamily: "'Cinzel', serif",
+                fontSize: "clamp(2.2rem, 8vw, 3.4rem)",
+                fontWeight: 600,
+              }}
+            >
+              {wedding.groom}
+            </h1>
+            <p className="my-2.5 font-script text-3xl italic text-gradient-gold">
+              &amp;
+            </p>
+            <h1
+              className="leading-[1.2] text-foreground"
+              style={{
+                fontFamily: "'Cinzel', serif",
+                fontSize: "clamp(2.2rem, 8vw, 3.4rem)",
+                fontWeight: 600,
+              }}
+            >
+              {wedding.bride}
+            </h1>
+            <div className="mt-6 mb-5">
+              <Motif motif={motif} />
+            </div>
+            <p className="text-xs uppercase tracking-[0.3em] text-rose">
+              {formatLongDate(wedding.date)}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Shared across every layout: the line, countdown, and RSVP CTA. */}
       <div className="relative z-20 mx-auto max-w-xl px-5 pt-6 pb-6 text-center">
         <p className="mx-auto max-w-[42ch] text-sm leading-relaxed text-muted-foreground text-balance">
@@ -345,6 +396,9 @@ function Details({
   return (
     <section className="relative px-5 pt-4 pb-10">
       {decorative && <RoseCorner position="tr" size={140} opacity={0.25} />}
+      {hasLotusPetals(wedding.template) && (
+        <LotusCorner position="tr" size={140} opacity={0.4} />
+      )}
       <div className="relative z-20 mx-auto max-w-xl text-center">
         <p className="font-kicker text-rose">Save the date</p>
         <h2 className="mt-1 font-display text-4xl text-foreground">
@@ -464,6 +518,9 @@ function CalendarSection({
   return (
     <section className="relative px-5 py-10">
       {decorative && <RoseCorner position="tl" size={140} opacity={0.25} />}
+      {hasLotusPetals(wedding.template) && (
+        <LotusCorner position="tl" size={140} opacity={0.4} />
+      )}
       <div className="relative z-20 mx-auto max-w-xl">
         <div className="text-center">
           <p className="font-kicker text-rose">Save the moment</p>
@@ -649,6 +706,7 @@ function Footer({
   wedding: PublicWedding;
   decorative: boolean;
 }) {
+  const lotusDecor = hasLotusPetals(wedding.template);
   return (
     <footer className="relative px-5 pb-16 pt-8 text-center">
       {decorative && (
@@ -657,9 +715,16 @@ function Footer({
           <RoseCorner position="br" size={150} opacity={0.6} />
         </>
       )}
+      {lotusDecor && (
+        <>
+          <LotusCorner position="bl" size={150} opacity={0.6} />
+          <LotusCorner position="br" size={150} opacity={0.6} />
+        </>
+      )}
       <div className="relative z-20 mx-auto max-w-md">
         <div className="flex justify-center">
           <Monogram
+            variant={lotusDecor ? "lotus" : "disc"}
             initials={`${wedding.groom.charAt(0)} & ${wedding.bride.charAt(0)}`}
             size={66}
           />

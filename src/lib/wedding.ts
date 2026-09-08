@@ -12,12 +12,12 @@ import { supabase } from "@/integrations/supabase/client";
 const TZ = "Asia/Colombo";
 
 // Unlike the site's other shared-tree templates historically, each of
-// these 13 has a genuinely different hero layout and opening animation —
+// these 14 has a genuinely different hero layout and opening animation —
 // not just a recolor. TEMPLATE_META carries that structural choice per
 // template; WEDDING_TEMPLATES (label/description only) is what the admin
-// picker UI iterates over. Keep both, plus isDecorativeTemplate below and
-// the `weddings.template` check constraint (migration
-// 20260907000000_wedding_templates_v2.sql), in sync.
+// picker UI iterates over. Keep both, plus isDecorativeTemplate/
+// hasLotusPetals below and the `weddings.template` check constraint
+// (migration 20260907000000_wedding_templates_v2.sql), in sync.
 export const WEDDING_TEMPLATES = [
   {
     id: "classic",
@@ -39,17 +39,18 @@ export const WEDDING_TEMPLATES = [
   { id: "shoreline", label: "Shoreline", description: "Pastel aqua & sand." },
   { id: "deco", label: "Deco", description: "Pastel jade & gilt." },
   { id: "film", label: "Film", description: "Warm sepia, photo-led." },
+  { id: "lotus", label: "Lotus", description: "Ivory & gold, falling lotus." },
   { id: "bloom", label: "Bloom", description: "Blush rose-gold, arched." },
 ] as const;
 export type WeddingTemplate = (typeof WEDDING_TEMPLATES)[number]["id"];
 const TEMPLATE_IDS = WEDDING_TEMPLATES.map((t) => t.id);
 
 export type HeroLayout =
-  "centered" | "framed" | "band" | "typo" | "photoTop" | "split";
+  "centered" | "framed" | "band" | "typo" | "photoTop" | "split" | "lotus";
 export type OpenerKind =
-  "envelope" | "ring" | "veil" | "gate" | "curtain" | "petals";
+  "envelope" | "ring" | "veil" | "gate" | "curtain" | "petals" | "lotus";
 export type Motif =
-  "diamond" | "geo" | "line" | "leaf" | "wave" | "deco" | "squiggle";
+  "diamond" | "geo" | "line" | "leaf" | "wave" | "deco" | "squiggle" | "lotus";
 
 export const TEMPLATE_META: Record<
   WeddingTemplate,
@@ -67,16 +68,25 @@ export const TEMPLATE_META: Record<
   shoreline: { hero: "photoTop", opener: "curtain", motif: "wave" },
   deco: { hero: "framed", opener: "gate", motif: "deco" },
   film: { hero: "photoTop", opener: "curtain", motif: "line" },
+  lotus: { hero: "lotus", opener: "lotus", motif: "lotus" },
   bloom: { hero: "split", opener: "ring", motif: "leaf" },
 };
 
 // Only "classic" carries the falling-petal/corner-rose floral decoration —
 // every other template is deliberately unadorned by that specific motif
 // (they get their own personality through TEMPLATE_META + styles.css's
-// .theme-* blocks instead).
+// .theme-* blocks instead). "lotus" gets its own separate falling-lotus/
+// corner-vine decoration (hasLotusPetals below) rather than joining this
+// set — it needs different assets (LotusPetals/LotusCorner, not
+// RosePetals/RoseCorner), so folding it into the same boolean would force
+// every call site to also branch on template just to pick the right pair.
 const DECORATIVE_TEMPLATE_IDS = new Set<WeddingTemplate>(["classic"]);
 export function isDecorativeTemplate(template: WeddingTemplate): boolean {
   return DECORATIVE_TEMPLATE_IDS.has(template);
+}
+const LOTUS_PETAL_TEMPLATE_IDS = new Set<WeddingTemplate>(["lotus"]);
+export function hasLotusPetals(template: WeddingTemplate): boolean {
+  return LOTUS_PETAL_TEMPLATE_IDS.has(template);
 }
 function isWeddingTemplate(v: string): v is WeddingTemplate {
   return (TEMPLATE_IDS as string[]).includes(v);

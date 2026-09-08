@@ -25,6 +25,10 @@ export const Route = createFileRoute("/thankyou")({
         },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },
+        // Post-RSVP confirmation for one wedding's guests, not a page
+        // Google should ever surface — same reasoning as /rsvp and
+        // /$slug/seating, which already noindex.
+        { name: "robots", content: "noindex" },
       ],
     };
   },

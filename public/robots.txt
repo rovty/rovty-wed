@@ -1,3 +1,5 @@
 User-agent: *
 Allow: /
 Disallow: /rsvp
+
+Sitemap: https://wed.rovty.com/sitemap.xml

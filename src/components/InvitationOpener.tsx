@@ -9,6 +9,8 @@ import {
 } from "@/lib/wedding";
 import { RosePetals } from "@/components/RosePetals";
 import { RoseCorner } from "@/components/RoseCorner";
+import { LotusPetals } from "@/components/LotusPetals";
+import { LotusCorner } from "@/components/LotusCorner";
 import { Monogram } from "@/components/Monogram";
 import { Motif } from "@/components/Motif";
 import coupleImg from "@/assets/couple.png";
@@ -22,9 +24,9 @@ type Guest = {
 
 /**
  * Full-screen invitation "opener" shown before the site is revealed. Which
- * of the six animations plays (envelope/ring/veil/gate/curtain/petals) is
- * decided by the template (TEMPLATE_META) — the guest-lookup, scroll-lock,
- * and dismiss-timing logic underneath is shared by all of them.
+ * of the seven animations plays (envelope/ring/veil/gate/curtain/petals/
+ * lotus) is decided by the template (TEMPLATE_META) — the guest-lookup,
+ * scroll-lock, and dismiss-timing logic underneath is shared by all of them.
  * If the visitor arrives via a personal link (?code=...), we greet them by name.
  */
 export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
@@ -135,6 +137,16 @@ export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
       )}
       {meta.opener === "petals" && (
         <PetalsOpener
+          wedding={wedding}
+          greeting={greeting}
+          initials={initials}
+          motif={meta.motif}
+          opening={opening}
+          onOpen={open}
+        />
+      )}
+      {meta.opener === "lotus" && (
+        <LotusOpener
           wedding={wedding}
           greeting={greeting}
           initials={initials}
@@ -401,5 +413,81 @@ function PetalsOpener({
         Begin
       </button>
     </div>
+  );
+}
+
+// Two silk panels part like the veil opener, but with a soft field of
+// falling lotus blooms and a gold corner spray underneath instead of a bare
+// panel — the design's own falling-petal field behind an already-visible
+// scene, made tap-to-reveal (rather than fully invisible until tapped) via
+// a shared explicit button, matching every other opener here instead of
+// the prototype's full-screen invisible tap target.
+function LotusOpener({
+  wedding,
+  greeting,
+  initials,
+  motif,
+  opening,
+  onOpen,
+}: OpenerProps & { greeting: string; initials: string; motif: MotifKind }) {
+  return (
+    <>
+      <div className="invite-opener__petals">
+        <LotusPetals count={12} prefill />
+      </div>
+      <LotusCorner position="tl" size={140} opacity={0.5} />
+      <LotusCorner position="br" size={140} opacity={0.5} />
+      <div
+        className={`invite-lotus invite-lotus--left ${opening ? "invite-lotus--open" : ""}`}
+      />
+      <div
+        className={`invite-lotus invite-lotus--right ${opening ? "invite-lotus--open" : ""}`}
+      />
+      <div className="invite-opener__scene relative z-[3]">
+        <div className="flex flex-col items-center">
+          <Monogram variant="lotus" initials={initials} size={124} />
+          <p className="font-kicker mt-7 text-muted-foreground">
+            The wedding of
+          </p>
+          <h2
+            className="mt-4 text-center leading-[1.14]"
+            style={{
+              fontFamily: "'Cinzel', serif",
+              fontSize: "clamp(2.1rem, 8vw, 2.75rem)",
+              fontWeight: 600,
+              letterSpacing: ".04em",
+              color: "var(--foreground)",
+            }}
+          >
+            {wedding.groom}
+            <br />
+            <span className="font-script text-[0.62em] italic text-gradient-gold">
+              &amp;
+            </span>
+            <br />
+            {wedding.bride}
+          </h2>
+          <div className="my-5">
+            <Motif motif={motif} />
+          </div>
+          <p className="max-w-[32ch] text-center text-[13px] leading-relaxed text-muted-foreground">
+            Dear{" "}
+            <span
+              style={{ fontFamily: "'Cinzel', serif", color: "var(--rose)" }}
+              className="text-[15px] font-semibold tracking-[.02em]"
+            >
+              {greeting}
+            </span>
+            , we joyfully request the honour of your presence.
+          </p>
+          <button
+            onClick={onOpen}
+            className="tpl-btn mt-6 min-h-12 px-8 text-xs font-semibold uppercase tracking-[0.16em]"
+          >
+            Open the invitation
+          </button>
+        </div>
+      </div>
+    </>
   );
 }

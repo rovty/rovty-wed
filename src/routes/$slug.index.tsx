@@ -13,7 +13,21 @@ export const Route = createFileRoute("/$slug/")({
   loader: ({ params }) => fetchWeddingBySlug(params.slug),
   head: ({ loaderData }) => {
     const wedding = loaderData as PublicWedding | null;
-    if (!wedding) return { meta: [{ title: "Wedding Invitation" }] };
+    // Every wedding here is one customer's private invitation — reachable
+    // only by knowing (or being sent) its slug/guest code, never something
+    // Rovty Wed wants surfaced in Google results. `noindex` has to come from
+    // this head() (SSR, runs server-side per request — see __root.tsx) and
+    // not a client-side effect, since crawlers read the meta tags out of the
+    // initial HTML and don't run our JS. Query params (?code=...) never
+    // reach this function at all — TanStack Router matches /$slug purely on
+    // the path, so a guest code can't produce a separate indexable variant.
+    if (!wedding)
+      return {
+        meta: [
+          { title: "Wedding Invitation" },
+          { name: "robots", content: "noindex" },
+        ],
+      };
     const names = `${wedding.groom} & ${wedding.bride}`;
     const when = `${formatLongDate(wedding.date)} · ${wedding.venue ?? ""}${wedding.hall ? ` · ${wedding.hall}` : ""}`;
     // WhatsApp (and every other link-preview crawler) reads OG tags from the
@@ -40,6 +54,7 @@ export const Route = createFileRoute("/$slug/")({
         { property: "og:description", content: when },
         { property: "og:image", content: ogImage },
         { name: "twitter:image", content: ogImage },
+        { name: "robots", content: "noindex" },
       ],
     };
   },

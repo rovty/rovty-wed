@@ -100,5 +100,36 @@ function MotifSvg({ motif }: { motif: MotifKind }) {
           <path d="M6 13c10-10 20 6 30-2s20 8 30 0 20 8 30 0 20 6 28-2" />
         </svg>
       );
+    case "lotus":
+      return (
+        <svg
+          {...common}
+          height={24}
+          viewBox="0 0 150 24"
+          strokeWidth={1.1}
+          strokeLinecap="round"
+        >
+          <path d="M2 15h50M98 15h50" strokeOpacity=".6" />
+          <path
+            d="M75 3c2.6 5 3 9.6 0 14-3-4.4-2.6-9 0-14z"
+            fill="currentColor"
+            fillOpacity=".22"
+          />
+          <path
+            d="M75 17c-6-2.6-9.4-7.4-9-13 4 2.6 7.6 7.4 9 13z"
+            fill="currentColor"
+            fillOpacity=".16"
+          />
+          <path
+            d="M75 17c6-2.6 9.4-7.4 9-13-4 2.6-7.6 7.4-9 13z"
+            fill="currentColor"
+            fillOpacity=".16"
+          />
+          <path d="M75 17.5c-7 1-13.4-2-17-8 6 .4 12.6 3.4 17 8z" />
+          <path d="M75 17.5c7 1 13.4-2 17-8-6 .4-12.6 3.4-17 8z" />
+          <circle cx="58" cy="15" r="1.5" fill="currentColor" stroke="none" />
+          <circle cx="92" cy="15" r="1.5" fill="currentColor" stroke="none" />
+        </svg>
+      );
   }
 }

@@ -560,9 +560,28 @@
 }
 .invite-soft--open { filter: blur(6px); transform: scale(1.04); }
 
+/* ── Lotus opener (lotus) — two silk panels part while the monogram and
+   names fade in underneath, echoing the veil opener but in the theme's own
+   ivory-and-gold palette instead of a neutral white ─────────────────────── */
+.invite-lotus {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 50%;
+  background: linear-gradient(160deg, rgba(253,249,240,.95), rgba(246,237,220,.6));
+  transition: transform 1s cubic-bezier(.22,1,.36,1);
+}
+.invite-lotus--left {
+  left: 0;
+  border-right: 1px solid var(--border);
+}
+.invite-lotus--right { right: 0; }
+.invite-lotus--left.invite-lotus--open { transform: translateX(-102%); }
+.invite-lotus--right.invite-lotus--open { transform: translateX(102%); }
+
 @media (prefers-reduced-motion: reduce) {
   .invite-ring__outer, .invite-ring__inner,
-  .invite-veil, .invite-gate, .invite-curtain, .invite-soft { transition: none; }
+  .invite-veil, .invite-gate, .invite-curtain, .invite-soft,
+  .invite-lotus { transition: none; }
   .invite-ring__inner { animation: none; }
 }
 
@@ -1074,6 +1093,37 @@
 .theme-film .tpl-btn, .theme-film .tpl-icon { background: linear-gradient(135deg, #efe3d1, #cdb494); color: #241d16; border-radius: 3px; }
 .theme-film .tpl-photo { border-radius: 3px; filter: sepia(.18) contrast(1.04); }
 .theme-film .tpl-band { background: linear-gradient(120deg, rgba(217,195,160,.24), rgba(255,255,255,.06)); color: #f7efe3; }
+
+/* ── Lotus — ivory & gold, falling lotus ────────────────────────────── */
+.theme-lotus {
+  background: linear-gradient(180deg, #fdf9f0 0%, #f6eddc 52%, #fbf5e8 100%);
+  --foreground: #2f2a22;
+  --muted-foreground: #8a7b60;
+  --border: rgba(192, 153, 63, .28);
+  --gold: #c0993f;
+  --rose: #96712a;
+  --gradient-gold: linear-gradient(135deg, #e8cf95, #c0993f);
+  --btn-ink: #2f2a22;
+}
+.theme-lotus h1, .theme-lotus h2, .theme-lotus h3, .theme-lotus h4, .theme-lotus .font-display {
+  font-family: "Playfair Display", serif !important;
+  font-weight: 500; font-style: normal; text-transform: none; letter-spacing: .01em;
+}
+.theme-lotus .font-script { font-family: "Cormorant Garamond", serif !important; }
+.theme-lotus .font-kicker {
+  font-family: "Lato", sans-serif !important;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .3em; font-style: normal;
+}
+.theme-lotus .glass-card {
+  background: linear-gradient(160deg, rgba(255,253,247,.86), rgba(255,251,240,.54));
+  border: 1px solid rgba(192,153,63,.3);
+  box-shadow: 0 22px 48px -28px rgba(150,113,42,.4);
+  border-radius: 6px !important;
+}
+.theme-lotus .tpl-btn, .theme-lotus .tpl-icon { background: linear-gradient(135deg, #e8cf95, #c0993f); color: #2f2a22; border-radius: 6px; }
+.theme-lotus .tpl-photo { border-radius: 6px; filter: none; }
+.theme-lotus .tpl-band { background: linear-gradient(120deg, rgba(232,207,149,.55), rgba(246,237,220,.7)); color: #2f2a22; }
+.theme-lotus .tpl-pattern { background-image: radial-gradient(circle at 14px 14px, rgba(192,153,63,.07) 1.6px, transparent 1.6px); background-size: 30px 30px; }
 
 /* ── Bloom — blush rose-gold, arched ────────────────────────────────── */
 .theme-bloom {
