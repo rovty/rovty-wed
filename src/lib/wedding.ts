@@ -205,17 +205,97 @@ const MEDIA_EXT_FALLBACK: Record<WeddingMediaKind, string> = {
   share: "jpg",
 };
 
+// WhatsApp's own link-preview crawler is one thing on iOS and something
+// stricter on Android: iOS goes through Apple's shared Link Presentation
+// stack, which decodes and downsamples pretty much whatever you throw at
+// it, while Android's WhatsApp fetches og:image itself and quietly skips
+// rendering a thumbnail (no error, no retry — the message just sends
+// without a preview) once the file is too big or too tall. A phone-camera
+// photo picked straight out of the gallery for "Share image" (several MB,
+// 3000px+ on a side) sails past that ceiling — hence "works when an
+// iPhone sends the invite link, not when an Android does". couple/venue
+// don't go through this: couplePhotoUrl is framed full-bleed on the
+// invitation page itself (often portrait) and would crop wrong at a
+// fixed 1200×630, so only the dedicated share image gets normalized.
+// Re-encoding to JPEG here also sidesteps Android WhatsApp's flaky
+// handling of webp/gif source images for previews.
+const SHARE_IMAGE_WIDTH = 1200;
+const SHARE_IMAGE_HEIGHT = 630;
+const SHARE_IMAGE_MAX_BYTES = 300 * 1024;
+
+async function prepareShareImage(file: File): Promise<File> {
+  if (typeof document === "undefined") return file; // never runs server-side, but guard anyway
+  const objectUrl = URL.createObjectURL(file);
+  try {
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const el = new Image();
+      el.onload = () => resolve(el);
+      el.onerror = () => reject(new Error("Couldn't read that image."));
+      el.src = objectUrl;
+    });
+
+    const canvas = document.createElement("canvas");
+    canvas.width = SHARE_IMAGE_WIDTH;
+    canvas.height = SHARE_IMAGE_HEIGHT;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+
+    // Cover-fit crop into the 1200×630 box WhatsApp/OG expect, same idea
+    // as CSS `object-fit: cover` — scale to fill, then center-crop the
+    // overhang on whichever axis is longer.
+    const scale = Math.max(
+      SHARE_IMAGE_WIDTH / img.width,
+      SHARE_IMAGE_HEIGHT / img.height,
+    );
+    const drawWidth = img.width * scale;
+    const drawHeight = img.height * scale;
+    ctx.drawImage(
+      img,
+      (SHARE_IMAGE_WIDTH - drawWidth) / 2,
+      (SHARE_IMAGE_HEIGHT - drawHeight) / 2,
+      drawWidth,
+      drawHeight,
+    );
+
+    const toJpegBlob = (quality: number) =>
+      new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, "image/jpeg", quality),
+      );
+
+    // Step quality down until it fits Android WhatsApp's practical size
+    // budget, or we hit a floor not worth compressing past.
+    let blob: Blob | null = null;
+    for (const quality of [0.85, 0.75, 0.65, 0.55, 0.45]) {
+      blob = await toJpegBlob(quality);
+      if (blob && blob.size <= SHARE_IMAGE_MAX_BYTES) break;
+    }
+    if (!blob) return file;
+
+    return new File([blob], "share.jpg", { type: "image/jpeg" });
+  } catch {
+    // Any decode failure (e.g. a format canvas can't read) — fall back to
+    // uploading the original rather than blocking the save entirely.
+    return file;
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
 export async function uploadWeddingMedia(
   weddingId: string,
   kind: WeddingMediaKind,
   file: File,
 ): Promise<string> {
+  const uploadFile = kind === "share" ? await prepareShareImage(file) : file;
   const ext =
-    file.name.split(".").pop()?.toLowerCase() || MEDIA_EXT_FALLBACK[kind];
+    uploadFile.name.split(".").pop()?.toLowerCase() || MEDIA_EXT_FALLBACK[kind];
   const path = `${weddingId}/${kind}.${ext}`;
   const { error } = await supabase.storage
     .from("wedding-media")
-    .upload(path, file, { upsert: true, contentType: file.type || undefined });
+    .upload(path, uploadFile, {
+      upsert: true,
+      contentType: uploadFile.type || undefined,
+    });
   if (error) throw error;
   const { data } = supabase.storage.from("wedding-media").getPublicUrl(path);
   // Upsert keeps the same URL across re-uploads — cache-bust with a query

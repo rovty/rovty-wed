@@ -578,6 +578,25 @@
 .invite-lotus--left.invite-lotus--open { transform: translateX(-102%); }
 .invite-lotus--right.invite-lotus--open { transform: translateX(102%); }
 
+/* The shared .invite-opener transition (above) delays 0.7s before the
+   overlay even starts fading, while these silk panels start sliding
+   immediately with no delay of their own — two motions on different
+   clocks, finishing at different times, read as a stagger rather than
+   one movement. Lotus's silk panels already visually carry the "opening"
+   moment (there's no envelope/veil/card silhouette here), so this makes
+   the whole thing one undelayed crossfade instead: overlay opacity,
+   scene lift, and silk slide all start together and land together.
+   LOTUS_DISMISS_MS (InvitationOpener.tsx) is kept matched to this 1.6s by
+   hand — see that constant's own comment. */
+.theme-lotus .invite-lotus { transition: transform 1.5s cubic-bezier(.22,1,.36,1); }
+.theme-lotus .invite-opener {
+  transition: opacity 1.6s ease-in-out, visibility 0s linear 1.6s;
+}
+.theme-lotus .invite-opener--opening .invite-opener__scene {
+  transform: translateY(-24px) scale(0.98);
+  transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .invite-ring__outer, .invite-ring__inner,
   .invite-veil, .invite-gate, .invite-curtain, .invite-soft,

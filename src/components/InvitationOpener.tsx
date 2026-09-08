@@ -16,6 +16,14 @@ import { Monogram } from "@/components/Monogram";
 import { Motif } from "@/components/Motif";
 import coupleImg from "@/assets/couple.png";
 
+// Matches the 1.6s undelayed crossfade .theme-lotus .invite-opener uses
+// (styles.css) — every other opener's own 2100ms default matches the
+// shared 0.7s-delay-then-1.2s-fade timing instead. Kept in sync by hand
+// since one lives in CSS and the other drives a JS setTimeout; a mismatch
+// either unmounts before the fade visually finishes (a hard cut) or
+// leaves a beat of nothing happening after it already has.
+const LOTUS_DISMISS_MS = 1750;
+
 type Guest = {
   code: string;
   name: string;
@@ -58,7 +66,13 @@ export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
     };
   }, [wedding.slug]);
 
-  const open = () => {
+  // dismissAfterMs matches whatever CSS transition duration the calling
+  // opener actually uses — the shared 2100ms default matches .invite-opener
+  // in styles.css; lotus overrides its own transition to be a single,
+  // longer, undelayed crossfade (see that CSS block's own comment) and
+  // needs a matching longer value here so the unmount lands exactly when
+  // that fade finishes, not before or after it.
+  const open = (dismissAfterMs = 2100) => {
     if (opening) return;
     // Blur whatever was just clicked (the seal, the monogram, lotus's
     // full-screen tap target, ...) before it's removed from the DOM at
@@ -75,7 +89,7 @@ export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
     window.setTimeout(() => {
       document.body.style.overflow = "";
       setDismissed(true);
-    }, 2100);
+    }, dismissAfterMs);
   };
 
   if (dismissed) return null;
@@ -163,7 +177,7 @@ export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
           initials={initials}
           motif={meta.motif}
           opening={opening}
-          onOpen={open}
+          onOpen={() => open(LOTUS_DISMISS_MS)}
         />
       )}
     </div>

@@ -9,7 +9,7 @@ import lotusStems from "@/assets/lotus-stems-sm.png";
 // repeated at every corner.
 
 export function LotusVineBand({
-  height = 190,
+  height = 240,
   opacity = 0.45,
 }: {
   /** Height of the clipped band the vine hangs into — px or any CSS length. */
@@ -42,15 +42,17 @@ export function LotusVineBand({
 export function LotusStemsCorner({ opacity = 0.46 }: { opacity?: number }) {
   return (
     // The image is deliberately offset past its own box (bottom/right
-    // negative, so it bleeds toward the corner) — without this wrapper's
-    // overflow-hidden, an absolutely-positioned element that extends past
-    // its container still enlarges that container's *scrollable* area
-    // even though it doesn't affect layout height, so the page scrolled
-    // past the real content into blank space. inset-0 here clips it back
-    // to the section's own box — the same crop the site already gets for
-    // free horizontally from <main>'s overflow-x-hidden.
+    // negative, so it bleeds toward the corner) — without a clipping
+    // wrapper, an absolutely-positioned element that extends past its
+    // container still enlarges that container's *scrollable* area even
+    // though it doesn't affect layout height, so the page scrolled past
+    // the real content into blank space. Clipping flush at inset-0 fixed
+    // that but also cropped the bloom right where it's meant to bleed —
+    // this wrapper gives it defined, bounded room (not unbounded like
+    // before) to bleed into instead of cutting it off at the section's
+    // exact edge.
     <div
-      className="pointer-events-none absolute inset-0 overflow-hidden"
+      className="pointer-events-none absolute -inset-x-[20%] -bottom-[12%] top-0 overflow-hidden"
       aria-hidden
     >
       <img
@@ -59,9 +61,9 @@ export function LotusStemsCorner({ opacity = 0.46 }: { opacity?: number }) {
         loading="lazy"
         className="absolute select-none"
         style={{
-          bottom: "-4%",
-          right: "-18%",
-          width: "50%",
+          bottom: "0",
+          right: "2%",
+          width: "38%",
           height: "auto",
           opacity,
         }}

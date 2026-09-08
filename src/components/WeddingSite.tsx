@@ -69,7 +69,23 @@ export function WeddingSite({ wedding }: { wedding: PublicWedding }) {
   const lotusDecor = hasLotusPetals(wedding.template);
   const meta = TEMPLATE_META[wedding.template];
   return (
-    <main className={`theme-${wedding.template} relative overflow-x-hidden`}>
+    // overflow-x-hidden (not -clip) here used to leave <main> as its own
+    // independently-scrollable container: per spec, when one axis is
+    // "hidden" and the other is left "visible", the browser must compute
+    // the visible one as "auto" instead — so <main> silently became a
+    // second, nested overflow-y:auto scroller alongside the page's own
+    // window scroll, and things like the opener's focused button being
+    // removed from the DOM could nudge *that* inner scrollTop instead of
+    // (or in addition to) window.scrollY, landing the revealed invitation
+    // not quite at the top even though window.scrollY read 0. overflow-x
+    // "clip" gets the same horizontal-bleed clipping (still needed — the
+    // lotus corner art and a couple of hero/gallery images intentionally
+    // bleed past the edge) without that side effect, since "clip" doesn't
+    // carry the "other axis becomes auto" rule "hidden" does.
+    <main
+      className={`theme-${wedding.template} relative`}
+      style={{ overflowX: "clip" }}
+    >
       <div className="tpl-pattern" aria-hidden="true" />
       {decorative && <RosePetals />}
       {lotusDecor && <LotusPetals />}
