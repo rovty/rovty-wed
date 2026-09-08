@@ -60,6 +60,16 @@ export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
 
   const open = () => {
     if (opening) return;
+    // Blur whatever was just clicked (the seal, the monogram, lotus's
+    // full-screen tap target, ...) before it's removed from the DOM at
+    // unmount below. Otherwise the browser moves focus to whatever's next
+    // in tab order when a focused element disappears — which, on a page
+    // this long, can be a button far down near the RSVP/seating sections —
+    // and scrolls it into view, so the invitation "loads" already scrolled
+    // partway down instead of at the top.
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
     setOpening(true);
     // Let the animation play, then the overlay fades out fully before unmount.
     window.setTimeout(() => {
