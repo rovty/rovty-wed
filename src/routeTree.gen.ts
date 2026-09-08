@@ -21,6 +21,7 @@ import { Route as SsoRouteImport } from './routes/sso'
 import { Route as ThankYouRouteImport } from './routes/thank-you'
 import { Route as ThankyouRouteImport } from './routes/thankyou'
 import { Route as SlugIndexRouteImport } from './routes/$slug.index'
+import { Route as SlugCalendarDoticsRouteImport } from './routes/$slug.calendar[.]ics'
 import { Route as SlugSeatingRouteImport } from './routes/$slug.seating'
 import { Route as ApiTeamRouteImport } from './routes/api.team'
 
@@ -84,6 +85,11 @@ const SlugIndexRoute = SlugIndexRouteImport.update({
   path: '/',
   getParentRoute: () => SlugRoute,
 } as any)
+const SlugCalendarDoticsRoute = SlugCalendarDoticsRouteImport.update({
+  id: '/calendar.ics',
+  path: '/calendar.ics',
+  getParentRoute: () => SlugRoute,
+} as any)
 const SlugSeatingRoute = SlugSeatingRouteImport.update({
   id: '/seating',
   path: '/seating',
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/sso': typeof SsoRoute
   '/thank-you': typeof ThankYouRoute
   '/thankyou': typeof ThankyouRoute
+  '/$slug/calendar.ics': typeof SlugCalendarDoticsRoute
   '/$slug/seating': typeof SlugSeatingRoute
   '/api/team': typeof ApiTeamRoute
   '/$slug/': typeof SlugIndexRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/sso': typeof SsoRoute
   '/thank-you': typeof ThankYouRoute
   '/thankyou': typeof ThankyouRoute
+  '/$slug/calendar.ics': typeof SlugCalendarDoticsRoute
   '/$slug/seating': typeof SlugSeatingRoute
   '/api/team': typeof ApiTeamRoute
   '/$slug': typeof SlugIndexRoute
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/sso': typeof SsoRoute
   '/thank-you': typeof ThankYouRoute
   '/thankyou': typeof ThankyouRoute
+  '/$slug/calendar.ics': typeof SlugCalendarDoticsRoute
   '/$slug/seating': typeof SlugSeatingRoute
   '/api/team': typeof ApiTeamRoute
   '/$slug/': typeof SlugIndexRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/sso'
     | '/thank-you'
     | '/thankyou'
+    | '/$slug/calendar.ics'
     | '/$slug/seating'
     | '/api/team'
     | '/$slug/'
@@ -172,6 +182,7 @@ export interface FileRouteTypes {
     | '/sso'
     | '/thank-you'
     | '/thankyou'
+    | '/$slug/calendar.ics'
     | '/$slug/seating'
     | '/api/team'
     | '/$slug'
@@ -188,6 +199,7 @@ export interface FileRouteTypes {
     | '/sso'
     | '/thank-you'
     | '/thankyou'
+    | '/$slug/calendar.ics'
     | '/$slug/seating'
     | '/api/team'
     | '/$slug/'
@@ -294,6 +306,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SlugIndexRouteImport
       parentRoute: typeof SlugRoute
     }
+    '/$slug/calendar.ics': {
+      id: '/$slug/calendar.ics'
+      path: '/calendar.ics'
+      fullPath: '/$slug/calendar.ics'
+      preLoaderRoute: typeof SlugCalendarDoticsRouteImport
+      parentRoute: typeof SlugRoute
+    }
     '/$slug/seating': {
       id: '/$slug/seating'
       path: '/seating'
@@ -312,11 +331,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface SlugRouteChildren {
+  SlugCalendarDoticsRoute: typeof SlugCalendarDoticsRoute
   SlugSeatingRoute: typeof SlugSeatingRoute
   SlugIndexRoute: typeof SlugIndexRoute
 }
 
 const SlugRouteChildren: SlugRouteChildren = {
+  SlugCalendarDoticsRoute: SlugCalendarDoticsRoute,
   SlugSeatingRoute: SlugSeatingRoute,
   SlugIndexRoute: SlugIndexRoute,
 }

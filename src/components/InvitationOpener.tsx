@@ -300,7 +300,7 @@ function VeilOpener({
       />
       <div className="invite-opener__scene relative z-[3]">
         <Monogram initials={initials} size={84} />
-        <p className="font-kicker mt-6 text-muted-foreground">
+        <p className="font-kicker mt-6 whitespace-pre-line text-muted-foreground">
           {familyLine(wedding)}
         </p>
         <h2 className="mt-3 font-display text-4xl leading-[1.06] text-foreground text-center">
@@ -445,8 +445,10 @@ function PetalsOpener({
 // falling lotus blooms and a gold corner spray underneath instead of a bare
 // panel. Tap-anywhere-to-open, per the design — the scene is already fully
 // visible (not hidden behind the silk), so a full-screen invisible button
-// sits over it rather than one small pill; "Touch anywhere to open" hints
-// at that, in place of the labeled buttons every other opener here uses.
+// sits over it rather than one small pill; "Touch the lotus to bloom" hints
+// at that (on-theme wording, in place of the labeled buttons every other
+// opener here uses), even though the tap target is the whole screen, not
+// just the monogram.
 function LotusOpener({
   wedding,
   greeting,
@@ -519,7 +521,7 @@ function LotusOpener({
           </p>
           {!opening && (
             <p className="invite-opener__hint mt-7 text-center text-xs font-medium uppercase tracking-[0.25em] text-muted-foreground">
-              Touch anywhere to open
+              Touch the lotus to bloom
             </p>
           )}
         </div>

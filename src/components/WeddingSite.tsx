@@ -121,7 +121,9 @@ function Hero({
           {decorative && <RoseCorner position="tl" size={140} opacity={0.2} />}
           <div className="relative z-20 mx-auto flex max-w-xl flex-col items-center text-center animate-fade-up">
             <Monogram initials={initials} size={74} />
-            <p className="font-kicker mt-5 text-rose">{familyLine(wedding)}</p>
+            <p className="font-kicker mt-5 whitespace-pre-line text-rose">
+              {familyLine(wedding)}
+            </p>
             <div className="mt-3.5">
               <Motif motif={motif} />
             </div>
@@ -155,7 +157,7 @@ function Hero({
               style={{ border: "1px solid var(--border)" }}
             >
               <Monogram initials={initials} size={70} />
-              <p className="font-kicker mt-4.5 text-muted-foreground">
+              <p className="font-kicker mt-4.5 whitespace-pre-line text-muted-foreground">
                 {familyLine(wedding)}
               </p>
               <h1 className="mt-4 font-display text-5xl leading-[1.06] text-foreground sm:text-6xl">
@@ -187,7 +189,7 @@ function Hero({
           <div className="relative z-10 mx-auto flex max-w-xl flex-col items-center">
             <Monogram initials={initials} size={74} />
             <p
-              className="font-kicker mt-5"
+              className="font-kicker mt-5 whitespace-pre-line"
               style={{ opacity: 0.85, color: "inherit" }}
             >
               {familyLine(wedding)}
@@ -263,7 +265,7 @@ function Hero({
               <Monogram initials={initials} size={64} />
             </div>
             <p
-              className="font-kicker mt-4.5"
+              className="font-kicker mt-4.5 whitespace-pre-line"
               style={{ color: "#fff", opacity: 0.86, fontStyle: "normal" }}
             >
               {familyLine(wedding)}
@@ -282,7 +284,7 @@ function Hero({
               <div className="flex justify-center md:justify-start">
                 <Monogram initials={initials} size={64} />
               </div>
-              <p className="font-kicker mt-4.5 text-rose">
+              <p className="font-kicker mt-4.5 whitespace-pre-line text-rose">
                 {familyLine(wedding)}
               </p>
               <h1 className="mt-3 font-display text-5xl leading-[0.99] text-foreground sm:text-6xl">
@@ -321,7 +323,7 @@ function Hero({
                 short generic fallback, low-contrast muted text got lost
                 against that busier background. */}
             <p
-              className="font-kicker mt-6 max-w-[36ch] text-rose"
+              className="font-kicker mt-6 max-w-[36ch] whitespace-pre-line text-rose"
               style={{
                 textShadow:
                   "0 0 10px var(--background), 0 0 4px var(--background)",
@@ -552,7 +554,7 @@ function CalendarSection({
           <CalButton
             icon={Apple}
             label="Apple Calendar"
-            href="/calendar.ics"
+            href={`/${wedding.slug}/calendar.ics`}
             sameTab
           />
           <CalButton

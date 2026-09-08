@@ -175,6 +175,14 @@ const WEDDING_COLUMNS =
 // wording — "Together with their families", lotus's "With the blessings
 // of their families", etc.) when neither is set, so this is purely
 // additive — no template needs its own opt-in, just its own fallback text.
+//
+// Two names ("Mr and Mrs Athukorala" / "Mr and Mrs Rathnayaka") easily run
+// well past what the kicker's width can hold on one line, and left to
+// plain CSS wrapping that breaks wherever it runs out of room — mid-name,
+// or stranding a lone "&" — rather than at a sensible point. \n's here put
+// the break exactly at "of" / before "&" / after "&" instead; every call
+// site renders this with `whitespace-pre-line` so those breaks actually
+// take effect (plain HTML text collapses \n to a space otherwise).
 export function familyLine(
   wedding: PublicWedding,
   fallback = "Together with their families",
@@ -182,8 +190,8 @@ export function familyLine(
   const groom = wedding.groomParentsNames?.trim();
   const bride = wedding.brideParentsNames?.trim();
   if (groom && bride)
-    return `Together with the families of ${groom} & ${bride}`;
-  if (groom || bride) return `Together with the family of ${groom || bride}`;
+    return `Together with the families of\n${groom}\n&\n${bride}`;
+  if (groom || bride) return `Together with the family of\n${groom || bride}`;
   return fallback;
 }
 
