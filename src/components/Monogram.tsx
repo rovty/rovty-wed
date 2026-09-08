@@ -65,6 +65,19 @@ function LotusMonogram({ initials, size }: { initials: string; size: number }) {
       className="relative grid shrink-0 place-items-center isolate"
       style={{ width: size, height: size }}
     >
+      {/* The design's own lotus monogram has no disc behind it — reads
+          fine over a plain background, but loses contrast wherever it
+          overlaps busier art (e.g. the footer's LotusStemsCorner leaves).
+          A soft, blurred glow — not a hard circle — keeps that "no disc"
+          look while guaranteeing the gold-gradient text stays legible. */}
+      <div
+        className="absolute inset-[-15%] rounded-full"
+        style={{
+          background:
+            "radial-gradient(circle, color-mix(in oklab, var(--background) 85%, transparent) 0%, transparent 72%)",
+          filter: "blur(4px)",
+        }}
+      />
       <svg
         viewBox="0 0 100 100"
         fill="none"

@@ -299,7 +299,18 @@ function Hero({
           {hasLotusPetals(wedding.template) && <LotusVineBand />}
           <div className="relative z-20 mx-auto flex max-w-xl flex-col items-center">
             <Monogram variant="lotus" initials={initials} size={104} />
-            <p className="font-kicker mt-6 text-muted-foreground">
+            {/* text-rose (not the usual text-muted-foreground) plus a soft
+                halo — this line sits right where the vine band's flowers
+                hang, and once it's real parents' names rather than the
+                short generic fallback, low-contrast muted text got lost
+                against that busier background. */}
+            <p
+              className="font-kicker mt-6 max-w-[36ch] text-rose"
+              style={{
+                textShadow:
+                  "0 0 10px var(--background), 0 0 4px var(--background)",
+              }}
+            >
               {familyLine(wedding, "With the blessings of their families")}
             </p>
             <h1

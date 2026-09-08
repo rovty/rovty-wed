@@ -1,10 +1,14 @@
-import lotus from "@/assets/lotus.svg";
+import petalA from "@/assets/petal-lotus-a.png";
+import petalB from "@/assets/petal-lotus-b.png";
 import { useEffect, useMemo, useState } from "react";
 
 // Same falling-petal mechanic as RosePetals — a random field of particles
-// each riding the shared `petal-fall` keyframe (styles.css) — just with the
-// lotus template's own bloom icon instead of a rose petal, per the design's
-// `petalSrc: "lotus.svg"`.
+// each riding the shared `petal-fall` keyframe (styles.css) — with the
+// design's own two lotus petal photos, alternating (its lotusA/lotusB
+// split by even/odd index). Not lotus.svg — that's a boolean feature flag
+// in the source theme data (`petalSrc: "lotus.svg"` just means "petals
+// are on"), not an actual image reference; every real petal in the design
+// markup is petal-lotus-a/b.png.
 export function LotusPetals({
   count = 12,
   prefill = false,
@@ -22,6 +26,7 @@ export function LotusPetals({
         const duration = 14 + Math.random() * 16;
         return {
           id: i,
+          src: i % 2 === 0 ? petalA : petalB,
           left: Math.random() * 100,
           size: 20 + Math.random() * 22,
           duration,
@@ -42,14 +47,14 @@ export function LotusPetals({
       {petals.map((p) => (
         <img
           key={p.id}
-          src={lotus}
+          src={p.src}
           alt=""
           className="absolute animate-petal will-change-transform"
           style={{
             left: `${p.left}%`,
             top: "-10vh",
             width: p.size,
-            height: p.size * 0.875,
+            height: "auto",
             opacity: p.opacity,
             animationDuration: `${p.duration}s`,
             animationDelay: `${p.delay}s`,

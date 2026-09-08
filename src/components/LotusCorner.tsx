@@ -41,19 +41,31 @@ export function LotusVineBand({
 
 export function LotusStemsCorner({ opacity = 0.46 }: { opacity?: number }) {
   return (
-    <img
-      src={lotusStems}
-      alt=""
+    // The image is deliberately offset past its own box (bottom/right
+    // negative, so it bleeds toward the corner) — without this wrapper's
+    // overflow-hidden, an absolutely-positioned element that extends past
+    // its container still enlarges that container's *scrollable* area
+    // even though it doesn't affect layout height, so the page scrolled
+    // past the real content into blank space. inset-0 here clips it back
+    // to the section's own box — the same crop the site already gets for
+    // free horizontally from <main>'s overflow-x-hidden.
+    <div
+      className="pointer-events-none absolute inset-0 overflow-hidden"
       aria-hidden
-      loading="lazy"
-      className="pointer-events-none absolute select-none"
-      style={{
-        bottom: "-4%",
-        right: "-18%",
-        width: "50%",
-        height: "auto",
-        opacity,
-      }}
-    />
+    >
+      <img
+        src={lotusStems}
+        alt=""
+        loading="lazy"
+        className="absolute select-none"
+        style={{
+          bottom: "-4%",
+          right: "-18%",
+          width: "50%",
+          height: "auto",
+          opacity,
+        }}
+      />
+    </div>
   );
 }
