@@ -52,8 +52,14 @@ jobs:
         run: |
           set -euo pipefail
           sudo install -d /usr/share/postgresql-common/pgdg
+          # --batch --yes --no-tty: without these, gpg tries to open a
+          # controlling terminal for a trust-warning prompt — there isn't
+          # one in a GitHub Actions shell, so it fails with "cannot open
+          # '/dev/tty'" and takes the curl side of the pipe down with it
+          # (curl's own "Failure writing output to destination" is just
+          # that pipe breaking, not a separate bug).
           curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
-            | sudo gpg --dearmor -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg
+            | sudo gpg --batch --yes --no-tty --dearmor -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg
           echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
             | sudo tee /etc/apt/sources.list.d/pgdg.list
           sudo apt-get update
