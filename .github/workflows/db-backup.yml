@@ -9,11 +9,21 @@ name: Nightly database backup
 #
 # Required repository secrets (Settings → Secrets and variables → Actions
 # → Secrets):
-#   SUPABASE_DB_URL     Direct connection string (NOT the pooler) from
-#                       Supabase dashboard → Project Settings → Database →
-#                       Connection string → URI, "Direct connection" tab.
-#                       Looks like:
-#                       postgresql://postgres:[password]@db.<ref>.supabase.co:5432/postgres
+#   SUPABASE_DB_URL     Session pooler connection string — NOT "Direct
+#                       connection". Direct connection
+#                       (db.<ref>.supabase.co) now resolves IPv6-only on
+#                       projects without Supabase's paid IPv4 add-on, and
+#                       GitHub's hosted runners have no IPv6 egress, so
+#                       pg_dump just gets "Network is unreachable" against
+#                       it. The Session pooler host is dual-stack (has an
+#                       IPv4 address) and, unlike the *Transaction* pooler,
+#                       still supports the full session semantics pg_dump
+#                       needs. Get it from Supabase dashboard → Project
+#                       Settings → Database → Connection string → URI,
+#                       "Session pooler" tab. Looks like:
+#                       postgresql://postgres.<ref>:[password]@aws-0-<region>.pooler.supabase.com:5432/postgres
+#                       (note the username is "postgres.<ref>", not just
+#                       "postgres", for pooler connections)
 #   R2_ACCOUNT_ID       Cloudflare dashboard → R2 → Overview (right side).
 #   R2_ACCESS_KEY_ID    R2 → Manage API tokens → create a token scoped to
 #   R2_SECRET_ACCESS_KEY just the backup bucket, "Object Read & Write".
