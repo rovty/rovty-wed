@@ -74,6 +74,16 @@ jobs:
             | sudo tee /etc/apt/sources.list.d/pgdg.list
           sudo apt-get update
           sudo apt-get install -y postgresql-client-17
+          # postgresql-client-17 installs its binaries under
+          # /usr/lib/postgresql/17/bin, not /usr/bin — ubuntu-latest's
+          # runner image already ships its own postgresql-client (v16) at
+          # /usr/bin/pg_dump ahead of it on PATH, and installing 17 doesn't
+          # retarget that. Without this, `pg_dump` on PATH silently stays
+          # v16 and refuses to dump a v17 server ("aborting because of
+          # server version mismatch") even though 17 is sitting right
+          # there. Prepending via GITHUB_PATH makes it win for every
+          # later step in this job, not just this one.
+          echo "/usr/lib/postgresql/17/bin" >> "$GITHUB_PATH"
 
       - name: Dump database
         env:
