@@ -16,7 +16,7 @@ export function BuildSection() {
           </h2>
           <p className="m-0 max-w-[50ch] text-[15.5px] leading-relaxed text-[#3c3a39]">
             Type your details, pick a design, scroll the phone. This is the real
-            invitation your guests would receive — nothing is saved.
+            invitation your guests would receive, and nothing is saved.
           </p>
         </div>
         <div className="my-6 h-0.5 bg-wl-ink sm:my-8" />

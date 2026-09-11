@@ -277,7 +277,7 @@ function RingOpener({
         {wedding.bride}
       </h2>
       <p className="mt-3.5 max-w-[34ch] text-center text-[13px] leading-relaxed text-muted-foreground">
-        Dear Guest — touch the monogram to unseal your invitation.
+        Dear Guest, touch the monogram to unseal your invitation.
       </p>
     </div>
   );
@@ -391,7 +391,7 @@ function CurtainOpener({
           {wedding.groom} &amp; {wedding.bride}
         </h2>
         <p className="mt-4 text-sm leading-relaxed" style={{ opacity: 0.85 }}>
-          Dear {greeting} — you are invited to celebrate with us.
+          Dear {greeting}, you are invited to celebrate with us.
         </p>
         <button
           onClick={onOpen}

@@ -80,7 +80,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         {
           name: "description",
           content:
-            "You're invited — RSVP and find everything you need for the big day.",
+            "You're invited: RSVP and find everything you need for the big day.",
         },
         { name: "theme-color", content: "#f7e9d7" },
         { property: "og:type", content: "website" },

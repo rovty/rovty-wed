@@ -141,7 +141,7 @@ export function BuilderDemo() {
       <div className="flex min-w-0 flex-col gap-[22px]">
         <div>
           <p className="m-0 text-[10px] font-bold uppercase tracking-[0.22em] text-[#605d5d]">
-            Step 01 — your details
+            Step 01: Your details
           </p>
           <div className="mt-2 h-0.5 bg-wl-ink" />
           <div className="mt-3.5 grid grid-cols-2 gap-3">
@@ -187,7 +187,7 @@ export function BuilderDemo() {
 
         <div>
           <p className="m-0 text-[10px] font-bold uppercase tracking-[0.22em] text-[#605d5d]">
-            Step 02 — pick a design
+            Step 02: Pick a design
           </p>
           <div className="mt-2 h-0.5 bg-wl-ink" />
           <div
@@ -336,8 +336,8 @@ export function BuilderDemo() {
             })}
           </div>
           <p className="mt-3.5 text-[13px] leading-relaxed text-[#605d5d]">
-            Every design changes the layout, the type and the opening animation
-            — not just the colour.{" "}
+            Every design changes the layout, the type and the opening animation,
+            not just the colour.{" "}
             <strong className="text-wl-ink">{t.label}:</strong> {t.desc}
           </p>
         </div>
@@ -593,7 +593,7 @@ export function BuilderDemo() {
           </div>
         </div>
         <p className="max-w-[340px] text-center text-[11px] text-[#605d5d]">
-          Scroll inside the phone. This is the real invitation layout — an
+          Scroll inside the phone. This is the real invitation layout, with an
           example couple, not a real wedding.
         </p>
       </div>

@@ -47,7 +47,7 @@ export function Templates({
     <div className="flex flex-1 flex-col overflow-hidden">
       <ScreenHeader
         title="Choose a design"
-        subtitle="Same details, guests, RSVP and seating carry over to any of them — switch as often as you like until you send."
+        subtitle="Same details, guests, RSVP and seating carry over to any of them. Switch as often as you like until you send."
         onBack={onBack}
       />
       <div className="flex-1 overflow-y-auto px-5 py-4">

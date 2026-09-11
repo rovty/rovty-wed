@@ -13,15 +13,15 @@ export const Route = createFileRoute("/thankyou")({
     const when = wedding ? formatLongDate(wedding.date) : "";
     return {
       meta: [
-        { title: `Thank You — ${names} ♡ ${when}` },
+        { title: `Thank You · ${names} ♡ ${when}` },
         {
           name: "description",
           content: `A heartfelt thank you from ${names} for being part of our wedding day, ${when}.`,
         },
-        { property: "og:title", content: `Thank You — ${names}` },
+        { property: "og:title", content: `Thank You · ${names}` },
         {
           property: "og:description",
-          content: `Thank you for being part of our special day. With love, ${names} — ${when}.`,
+          content: `Thank you for being part of our special day. With love, ${names}, ${when}.`,
         },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },

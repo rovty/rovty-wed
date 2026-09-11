@@ -125,7 +125,7 @@ function PublishCard({
     if (
       wedding.published &&
       !confirm(
-        `Change your public link to wed.rovty.com/${next}? Anyone using the current link (wed.rovty.com/${wedding.slug}) — including any invitations already sent — will stop being able to open your invitation there.`,
+        `Change your public link to wed.rovty.com/${next}? Anyone using the current link (wed.rovty.com/${wedding.slug}), including any invitations already sent, will stop being able to open your invitation there.`,
       )
     )
       return;
@@ -141,7 +141,7 @@ function PublishCard({
     if (error) {
       setSlugError(
         error.code === "23505"
-          ? "That link is already taken — try another."
+          ? "That link is already taken, try another."
           : error.message,
       );
       return;

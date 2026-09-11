@@ -8,7 +8,7 @@ export const Route = createFileRoute("/peoples-bank")({
   component: PeoplesBankPage,
   head: () => ({
     meta: [
-      { title: "People's Bank — Tables 13, 14, 16 — Iresh & Asha" },
+      { title: "People's Bank · Tables 13, 14, 16 · Iresh & Asha" },
       { name: "robots", content: "noindex" },
     ],
   }),

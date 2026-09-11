@@ -138,7 +138,7 @@ export function Team({ wedding }: { wedding: Wedding }) {
                     : undefined
                 }
               >
-                Admin — can edit
+                Can edit
               </button>
               <button
                 type="button"

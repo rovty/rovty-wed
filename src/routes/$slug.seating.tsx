@@ -45,7 +45,7 @@ export const Route = createFileRoute("/$slug/seating")({
       : "the couple";
     return {
       meta: [
-        { title: `Your Table is Ready — ${names} 🪑` },
+        { title: `Your Table is Ready · ${names} 🪑` },
         {
           name: "description",
           content: `Find your table at ${names}'s wedding reception${wedding?.venue ? ` at ${wedding.venue}` : ""}.`,
@@ -102,7 +102,7 @@ function SeatingPage() {
         <div>
           <h1 className="font-display text-2xl">Page not found</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            This link isn't live yet — check back once the invitation is
+            This link isn't live yet. Check back once the invitation is
             published.
           </p>
         </div>

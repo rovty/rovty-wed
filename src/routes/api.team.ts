@@ -97,7 +97,7 @@ export const Route = createFileRoute("/api/team")({
           return Response.json(
             {
               error: alreadyExists
-                ? "That person already has a Rovty account — they may already have access, or contact us to add them."
+                ? "That person already has a Rovty account. They may already have access, or contact us to add them."
                 : (inviteError?.message ?? "Could not send invite"),
             },
             { status: 400 },

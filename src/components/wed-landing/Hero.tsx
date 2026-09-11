@@ -13,7 +13,7 @@ export function Hero() {
           </h1>
           <p className="mx-0 mt-[26px] max-w-[44ch] text-lg leading-relaxed text-[#3c3a39]">
             A designed invitation page, guest list, WhatsApp sending, RSVPs and
-            seating — all in one place, styled exactly like your wedding. One
+            seating, all in one place, styled exactly like your wedding. One
             payment, per wedding, from LKR 4,900.
           </p>
           <div className="mt-[30px] flex flex-wrap gap-2.5">

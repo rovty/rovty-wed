@@ -530,14 +530,14 @@ function AssignSheet({
             <optgroup label="Confirmed">
               {unassignedConfirmed.map((g) => (
                 <option key={g.code} value={g.code}>
-                  {g.name} ({g.code}) — {g.seats} seats
+                  {g.name} ({g.code}) · {g.seats} seats
                 </option>
               ))}
             </optgroup>
             <optgroup label="Other">
               {unassignedOther.map((g) => (
                 <option key={g.code} value={g.code}>
-                  {g.name} ({g.code}) — {g.seats} seats
+                  {g.name} ({g.code}) · {g.seats} seats
                 </option>
               ))}
             </optgroup>

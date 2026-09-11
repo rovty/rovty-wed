@@ -168,7 +168,7 @@ export function DetailsForm({
           {field("bride", "Bride")}
         </div>
         <p className="mt-3.5 text-[11px] text-[var(--admin-muted)]">
-          Parents' names (optional) — shown as "Together with the families of
+          Parents' names (optional), shown as "Together with the families of
           ..." on the invitation instead of the generic line. Leave blank to
           keep it generic.
         </p>
@@ -244,7 +244,7 @@ export function DetailsForm({
             uploading={uploading === "share"}
             onUpload={(f) => upload("share", f)}
             onRemove={() => removeMedia("share")}
-            hint="Shown as the preview image when the invitation link is shared on WhatsApp — automatically fitted to 1200×630 and compressed (portrait photos get a blurred backdrop rather than being cropped), so any photo works. Falls back to the couple photo if you skip this."
+            hint="Shown as the preview image when the invitation link is shared on WhatsApp. Automatically fitted to 1200×630 and compressed (portrait photos get a blurred backdrop rather than being cropped), so any photo works. Falls back to the couple photo if you skip this."
           />
           <MediaRow
             label="Venue photo"
@@ -275,7 +275,7 @@ export function DetailsForm({
       <section>
         <Kicker>WhatsApp invitation message</Kicker>
         <p className="mt-1 text-[11px] leading-relaxed text-[var(--admin-muted)]">
-          The guest's personal link is always inserted between these two — leave
+          The guest's personal link is always inserted between these two. Leave
           both blank to use the default message.
         </p>
         <div className="mt-2.5 flex flex-col gap-2">
@@ -305,7 +305,7 @@ export function DetailsForm({
         <Kicker>WhatsApp seating message</Kicker>
         <p className="mt-1 text-[11px] leading-relaxed text-[var(--admin-muted)]">
           What "Copy seating message" (Seating → a guest's table) sends. The
-          guest's personal seating link is always inserted between these two —
+          guest's personal seating link is always inserted between these two,
           leave both blank to use the default message.
         </p>
         <div className="mt-2.5 flex flex-col gap-2">

@@ -10,9 +10,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { WedLandingPage } from "@/components/wed-landing/WedLandingPage";
 
-const TITLE = "Rovty Wed — Wedding Invitations Your Guests Actually Open";
+const TITLE = "Rovty Wed | Wedding Invitations Your Guests Actually Open";
 const DESCRIPTION =
-  "A designed invitation page, guest list, WhatsApp sending, RSVPs, and seating — all in one link, styled exactly like your wedding.";
+  "A designed invitation page, guest list, WhatsApp sending, RSVPs, and seating, all in one link, styled exactly like your wedding.";
 const CANONICAL = "https://wed.rovty.com/";
 
 export const Route = createFileRoute("/")({

@@ -31,7 +31,7 @@ export const FEATURES: { icon: LucideIcon; title: string; body: string }[] = [
   {
     icon: Sparkles,
     title: "14 designed templates",
-    body: "Classic, Poruwa, Nikkah, Chapel, Noir and more — each has its own hero layout and opening animation, not just a recolour of the same page.",
+    body: "Classic, Poruwa, Nikkah, Chapel, Noir and more, each with its own hero layout and opening animation, not just a recolour of the same page.",
   },
   {
     icon: MessageCircle,
@@ -41,12 +41,12 @@ export const FEATURES: { icon: LucideIcon; title: string; body: string }[] = [
   {
     icon: CalendarCheck,
     title: "RSVP right on the page",
-    body: "Guests reply on the invitation itself — no app to install, no account to create.",
+    body: "Guests reply on the invitation itself: no app to install, no account to create.",
   },
   {
     icon: Grid2x2,
     title: "Seating, sorted",
-    body: "Their link opens their invitation with their table already on it — no code to look up. You lay out the whole floor plan and assign tables from your dashboard.",
+    body: "Their link opens their invitation with their table already on it, so there's no code to look up. You lay out the whole floor plan and assign tables from your dashboard.",
   },
   {
     icon: CalendarClock,
@@ -56,7 +56,7 @@ export const FEATURES: { icon: LucideIcon; title: string; body: string }[] = [
   {
     icon: MapPin,
     title: "Everything in one link",
-    body: "Venue details, Google Maps directions, your own photos, and background music — all on the one page you share.",
+    body: "Venue details, Google Maps directions, your own photos, and background music, all on the one page you share.",
   },
 ];
 
@@ -69,7 +69,7 @@ export const STEPS = [
   {
     n: "02",
     title: "Add your guests",
-    body: "Add your guest list — Rovty Wed builds each guest their own personalised link.",
+    body: "Add your guest list, and Rovty Wed builds each guest their own personalised link.",
   },
   {
     n: "03",
@@ -165,7 +165,7 @@ export const PLANS: WedPlan[] = [
 export const FAQS = [
   {
     q: "Do our guests need to install anything?",
-    a: "No. The invitation is a web page — it opens in WhatsApp's browser, Safari or Chrome. Guests RSVP on the page itself, with no account and no app.",
+    a: "No. The invitation is a web page that opens in WhatsApp's browser, Safari or Chrome. Guests RSVP on the page itself, with no account and no app.",
   },
   {
     q: "How do the personalised links work?",
@@ -177,7 +177,7 @@ export const FAQS = [
   },
   {
     q: "Is it really one payment?",
-    a: "Yes — one-time, per wedding: Essential LKR 4,900, Complete LKR 7,900, Studio LKR 9,900. Hosting is included for 6, 12 or 24 months depending on the plan.",
+    a: "Yes. One-time, per wedding: Essential LKR 4,900, Complete LKR 7,900, Studio LKR 9,900. Hosting is included for 6, 12 or 24 months depending on the plan.",
   },
   {
     q: "Can we use our own domain?",
@@ -185,7 +185,7 @@ export const FAQS = [
   },
   {
     q: "What if details change after we've sent invitations?",
-    a: "Edit them in your dashboard — the invitation link stays the same, so the page your guests already have updates itself. Guest notifications keep everyone informed of the change.",
+    a: "Edit them in your dashboard. The invitation link stays the same, so the page your guests already have updates itself, and guest notifications keep everyone informed of the change.",
   },
   {
     q: "Do you work with wedding planners?",

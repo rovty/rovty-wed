@@ -87,7 +87,7 @@ export function SeatingDemo() {
         </h3>
         <p className="mt-2.5 text-sm leading-relaxed text-[#605d5d]">
           Every guest gets their own personalised link on WhatsApp. It opens the
-          invitation with their name on it and their table already on the page —
+          invitation with their name on it and their table already on the page:
           nothing to type, nothing to remember at the door.
         </p>
         <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#605d5d]">

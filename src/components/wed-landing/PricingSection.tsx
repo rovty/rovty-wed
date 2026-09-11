@@ -15,7 +15,7 @@ export function PricingSection() {
             One payment, per wedding
           </h2>
           <p className="m-0 max-w-[50ch] text-[15.5px] leading-relaxed text-[#3c3a39]">
-            No subscription and no per-guest fee. Hosting is included — 6, 12 or
+            No subscription and no per-guest fee. Hosting is included: 6, 12 or
             24 months depending on the plan.
           </p>
         </div>

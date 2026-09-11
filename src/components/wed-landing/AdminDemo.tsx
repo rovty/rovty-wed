@@ -13,7 +13,7 @@ const TARGET = new Date("2027-02-14T17:00:00+05:30");
 const BULLETS = [
   {
     n: "01",
-    text: "Add guests once — each one gets a code and a personal link automatically.",
+    text: "Add guests once: each one gets a code and a personal link automatically.",
   },
   {
     n: "02",

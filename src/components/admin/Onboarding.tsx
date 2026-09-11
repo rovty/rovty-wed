@@ -64,7 +64,7 @@ export function Onboarding({
     if (error) {
       setError(
         error.code === "23505"
-          ? "That link is already taken — try another."
+          ? "That link is already taken, try another."
           : error.message,
       );
       return;
@@ -210,7 +210,7 @@ export function Onboarding({
                   Choose a design
                 </h1>
                 <p className="mt-2 text-[13px] leading-relaxed text-[var(--admin-muted)]">
-                  Switch anytime from Design — nothing here is final.
+                  Switch anytime from Design; nothing here is final.
                 </p>
               </div>
               <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3">

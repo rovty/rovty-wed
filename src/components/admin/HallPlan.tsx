@@ -261,7 +261,7 @@ export function HallPlan({
         <span className="min-w-0 flex-1 truncate text-xs">
           {wedding.floor_plan_url
             ? "Floor plan uploaded"
-            : "No floor plan uploaded — using a blank grid"}
+            : "No floor plan uploaded, using a blank grid"}
         </span>
         <label className="shrink-0 cursor-pointer text-[10px] font-bold uppercase tracking-[0.1em] text-[var(--admin-accent-active)]">
           {uploading

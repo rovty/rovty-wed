@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign In — Rovty Wed" },
+      { title: "Sign In | Rovty Wed" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -39,11 +39,11 @@ export const Route = createFileRoute("/auth")({
 // copy here, and the fallback below is generic rather than an echo.
 const SSO_ERROR_MESSAGES: Record<string, string> = {
   missing_token:
-    "That link looks incomplete — try opening Rovty Wed from your dashboard again.",
+    "That link looks incomplete. Try opening Rovty Wed from your dashboard again.",
   "Invalid or expired token":
-    "That link has expired — go back to your dashboard and open Rovty Wed again.",
+    "That link has expired. Go back to your dashboard and open Rovty Wed again.",
   "Token already used":
-    "That link has already been used — go back to your dashboard and open Rovty Wed again.",
+    "That link has already been used. Go back to your dashboard and open Rovty Wed again.",
   "Not active for this product":
     "Your account doesn't currently have Rovty Wed access. Check your dashboard, or contact us if that looks wrong.",
   "User not found":
@@ -106,7 +106,7 @@ function AuthPage() {
             Sign in to your wedding
           </h1>
           <p className="mt-3 text-sm leading-relaxed text-[var(--admin-muted)]">
-            Rovty Wed accounts are managed through your Rovty dashboard —
+            Rovty Wed accounts are managed through your Rovty dashboard, so
             there's no separate sign-up here. Sign in there, then open Rovty Wed
             from your Products list.
           </p>
@@ -129,7 +129,7 @@ function AuthPage() {
             <p className="flex items-start gap-2 text-xs leading-relaxed text-[var(--admin-muted)]">
               <KeyRound className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               Invited by the couple as a planner or family member? Sign in with
-              the same email your invite was sent to — your access is already
+              the same email your invite was sent to: your access is already
               waiting.
             </p>
           </div>
