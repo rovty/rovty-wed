@@ -213,9 +213,8 @@ export function BuilderDemo() {
                   className="flex cursor-pointer flex-col gap-1.5 border-none bg-transparent p-0 text-left font-archivo transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-wed"
                 >
                   <span
-                    className="relative flex flex-col items-center justify-center gap-[3px] px-2 py-3"
+                    className="flex flex-col"
                     style={{
-                      background: k.bg,
                       border: on
                         ? "2px solid #201e1d"
                         : "1px solid rgba(32,30,29,.22)",
@@ -223,108 +222,104 @@ export function BuilderDemo() {
                       minHeight: 104,
                     }}
                   >
-                    {/* Each design's own gold/rose identity, up front — the
-                        page background (k.bg) below is deliberately subtle,
-                        so without this the picker tiles read as flat/solid
-                        rather than showing 14 distinct designs. */}
+                    {/* Each design's own gold/rose identity, up front as a
+                        real block of colour — the page background below
+                        (k.bg) is deliberately subtle (it's the actual
+                        invitation background), so without this band the
+                        picker tiles all read as flat off-white/black
+                        squares instead of showing 14 distinct designs. */}
                     <span
-                      className="absolute inset-x-0 top-0 h-[4px]"
-                      style={{
-                        background: `linear-gradient(90deg,${k.rose},${k.gold})`,
-                      }}
+                      className="h-[22px] w-full flex-shrink-0"
+                      style={{ background: k.grad }}
                     />
                     <span
-                      className="grid h-[18px] w-[18px] place-items-center rounded-full"
-                      style={{
-                        border: `1px solid ${k.gold}`,
-                        fontFamily: k.disp,
-                        fontWeight: k.dw,
-                        fontSize: 7,
-                        lineHeight: 1,
-                        color: k.rose,
-                      }}
+                      className="flex flex-1 flex-col items-center justify-center gap-[3px] px-2 py-2.5"
+                      style={{ background: k.bg }}
                     >
-                      {initials.replace(" & ", "&")}
-                    </span>
-                    <span
-                      style={{
-                        marginTop: 2,
-                        fontFamily: k.kf,
-                        fontSize: "4.6px",
-                        fontStyle: k.ki,
-                        textTransform: k.kt,
-                        letterSpacing: k.kt === "uppercase" ? ".2em" : ".02em",
-                        color: k.muted,
-                      }}
-                    >
-                      Together with
-                    </span>
-                    <span
-                      style={{
-                        width: 18,
-                        height: 1,
-                        background: k.gold,
-                        opacity: 0.75,
-                      }}
-                    />
-                    <span
-                      className="max-w-full break-words text-center"
-                      style={{
-                        display: "block",
-                        fontFamily: k.disp,
-                        fontWeight: k.dw,
-                        fontStyle: k.ditl || "normal",
-                        textTransform: k.dt,
-                        letterSpacing: k.dls,
-                        fontSize: `${nameSize}px`,
-                        lineHeight: 1.15,
-                        color: k.fg,
-                      }}
-                    >
-                      {groomOut}
-                      <br />
                       <span
+                        className="grid h-[18px] w-[18px] place-items-center rounded-full"
                         style={{
-                          fontFamily: k.scr,
-                          fontStyle: "italic",
-                          fontSize: 8,
+                          border: `1px solid ${k.gold}`,
+                          fontFamily: k.disp,
+                          fontWeight: k.dw,
+                          fontSize: 7,
                           lineHeight: 1,
                           color: k.rose,
                         }}
                       >
-                        &amp;
+                        {initials.replace(" & ", "&")}
                       </span>
-                      <br />
-                      {brideOut}
+                      <span
+                        style={{
+                          marginTop: 2,
+                          fontFamily: k.kf,
+                          fontSize: "4.6px",
+                          fontStyle: k.ki,
+                          textTransform: k.kt,
+                          letterSpacing:
+                            k.kt === "uppercase" ? ".2em" : ".02em",
+                          color: k.muted,
+                        }}
+                      >
+                        Together with
+                      </span>
+                      <span
+                        style={{
+                          width: 18,
+                          height: 1,
+                          background: k.gold,
+                          opacity: 0.75,
+                        }}
+                      />
+                      <span
+                        className="max-w-full break-words text-center"
+                        style={{
+                          display: "block",
+                          fontFamily: k.disp,
+                          fontWeight: k.dw,
+                          fontStyle: k.ditl || "normal",
+                          textTransform: k.dt,
+                          letterSpacing: k.dls,
+                          fontSize: `${nameSize}px`,
+                          lineHeight: 1.15,
+                          color: k.fg,
+                        }}
+                      >
+                        {groomOut}
+                        <br />
+                        <span
+                          style={{
+                            fontFamily: k.scr,
+                            fontStyle: "italic",
+                            fontSize: 8,
+                            lineHeight: 1,
+                            color: k.rose,
+                          }}
+                        >
+                          &amp;
+                        </span>
+                        <br />
+                        {brideOut}
+                      </span>
+                      <span
+                        style={{
+                          width: 18,
+                          height: 1,
+                          background: k.gold,
+                          opacity: 0.75,
+                        }}
+                      />
+                      <span
+                        style={{
+                          fontFamily: k.kf,
+                          fontSize: "4.6px",
+                          letterSpacing: ".16em",
+                          color: k.muted,
+                        }}
+                      >
+                        {dateShort}
+                      </span>
                     </span>
-                    <span
-                      style={{
-                        width: 18,
-                        height: 1,
-                        background: k.gold,
-                        opacity: 0.75,
-                      }}
-                    />
-                    <span
-                      style={{
-                        fontFamily: k.kf,
-                        fontSize: "4.6px",
-                        letterSpacing: ".16em",
-                        color: k.muted,
-                      }}
-                    >
-                      {dateShort}
-                    </span>
-                    <span
-                      style={{
-                        marginTop: 3,
-                        width: 26,
-                        height: 6,
-                        borderRadius:
-                          Math.min(k.brad, 999) === 999 ? 999 : k.brad,
-                        background: k.grad,
-                      }}
-                    />
                   </span>
                   <span
                     className="text-center text-[11px]"
