@@ -227,10 +227,17 @@ export function BuilderDemo() {
                         (k.bg) is deliberately subtle (it's the actual
                         invitation background), so without this band the
                         picker tiles all read as flat off-white/black
-                        squares instead of showing 14 distinct designs. */}
+                        squares instead of showing 14 distinct designs.
+                        rose→gold (not k.grad) on purpose: several themes'
+                        own button gradient (Chapel, Editorial, Quiet, ...)
+                        is two close shades of the same hue, which still
+                        reads as a flat block at this size — rose and gold
+                        are always two genuinely different hues per theme. */}
                     <span
                       className="h-[22px] w-full flex-shrink-0"
-                      style={{ background: k.grad }}
+                      style={{
+                        background: `linear-gradient(135deg,${k.rose},${k.gold})`,
+                      }}
                     />
                     <span
                       className="flex flex-1 flex-col items-center justify-center gap-[3px] px-2 py-2.5"
