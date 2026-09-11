@@ -71,7 +71,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "poruwa",
     label: "Poruwa",
-    desc: "Sri Lankan, antique gold.",
+    desc: "Traditional, antique gold.",
     bg: "linear-gradient(180deg,#fdf7ee,#f7ece0)",
     swatchBg: "#fdf7ee",
     fg: "#3a2b1e",

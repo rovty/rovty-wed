@@ -20,7 +20,7 @@ export function Footer() {
           </div>
           <p className="mt-3.5 max-w-[30ch] text-[13px] leading-relaxed text-wl-paper/70">
             Wedding invitations, guest lists, RSVPs and seating in one link. A
-            product by Rovty (Pvt) Ltd, Sri Lanka.
+            product by Rovty (Pvt) Ltd.
           </p>
         </div>
 

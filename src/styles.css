@@ -789,7 +789,7 @@
 .theme-classic .tpl-photo { border-radius: 24px; filter: none; }
 .theme-classic .tpl-band { background: linear-gradient(120deg, rgba(233,190,182,.55), rgba(233,201,138,.55)); color: #3c2f2b; }
 
-/* ── Poruwa — Sri Lankan, antique gold ──────────────────────────────── */
+/* ── Poruwa — Traditional, antique gold ─────────────────────────────── */
 .theme-poruwa {
   background: linear-gradient(180deg, #fdf7ee, #f7ece0);
   --foreground: #3a2b1e;

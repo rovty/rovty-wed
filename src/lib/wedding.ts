@@ -24,7 +24,7 @@ export const WEDDING_TEMPLATES = [
     label: "Classic",
     description: "Rose & gold, falling petals.",
   },
-  { id: "poruwa", label: "Poruwa", description: "Sri Lankan, antique gold." },
+  { id: "poruwa", label: "Poruwa", description: "Traditional, antique gold." },
   { id: "thali", label: "Thali", description: "Pastel marigold & gold." },
   { id: "chapel", label: "Chapel", description: "Powder blue & pearl." },
   { id: "nikkah", label: "Nikkah", description: "Pastel sage & gold." },
