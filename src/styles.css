@@ -44,10 +44,26 @@
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
 
+  /* "Modernist" tokens for the Wed marketing homepage (WedLandingPage and
+     src/components/wed-landing/*) — ink/paper/accent straight from the
+     "Rovty Wed Landing B" design canvas. Deliberately separate from
+     --ink/--gold/etc. above: those are the rose-and-gold *invitation*
+     palette, this is the product's own marketing shell, same idea as
+     .admin-portal's tokens in intent but a different (design-specified)
+     accent than admin's pink. */
+  --color-wl-ink: #201e1d;
+  --color-wl-paper: #f3f2f2;
+  --color-wed: #ec3013;
+  --color-wed-deep: #b3240c;
+  --color-wed-soft: #fbd9d3;
+
   --font-display: "Playfair Display", serif;
   --font-serif: "Cormorant Garamond", ui-serif, serif;
   --font-script: "Cormorant Garamond", serif;
   --font-sans: "Inter", system-ui, sans-serif;
+  /* Wed marketing homepage only (see --color-wl-* above) — Archivo, not
+     the invitation body font. */
+  --font-archivo: "Archivo", system-ui, sans-serif;
 
   --shadow-soft: 0 10px 40px -10px color-mix(in oklab, var(--rose) 25%, transparent);
   --shadow-gold: 0 8px 30px -8px color-mix(in oklab, var(--gold) 30%, transparent);

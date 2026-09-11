@@ -5,9 +5,10 @@
 // root showed a random real couple's private invitation, which is exactly
 // wrong for a URL that's meant to be indexable: Google would index whoever
 // won that query. There's no loader here now, and nothing on this page
-// reads from Supabase — see WedLanding.tsx for the actual page.
+// reads from Supabase — see components/wed-landing/WedLandingPage.tsx for
+// the actual page (implements the "Rovty Wed Landing B" design canvas).
 import { createFileRoute } from "@tanstack/react-router";
-import { WedLanding } from "@/components/WedLanding";
+import { WedLandingPage } from "@/components/wed-landing/WedLandingPage";
 
 const TITLE = "Rovty Wed — Wedding Invitations Your Guests Actually Open";
 const DESCRIPTION =
@@ -33,5 +34,5 @@ export const Route = createFileRoute("/")({
     ],
     links: [{ rel: "canonical", href: CANONICAL }],
   }),
-  component: WedLanding,
+  component: WedLandingPage,
 });
