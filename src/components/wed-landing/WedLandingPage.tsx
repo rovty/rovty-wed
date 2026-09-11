@@ -13,7 +13,6 @@
 // aspirational.
 import { Header } from "./Header";
 import { Hero } from "./Hero";
-import { DesignsSection } from "./DesignsSection";
 import { BuildSection } from "./BuildSection";
 import { FeaturesSection } from "./FeaturesSection";
 import { HowSection } from "./HowSection";
@@ -29,7 +28,6 @@ export function WedLandingPage() {
     <div className="overflow-x-hidden bg-wl-paper font-archivo text-wl-ink">
       <Header />
       <Hero />
-      <DesignsSection />
       <BuildSection />
       <FeaturesSection />
       <HowSection />

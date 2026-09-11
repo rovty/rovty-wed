@@ -9,7 +9,7 @@ export function HowSection() {
       <div className="mx-auto max-w-[1280px] px-5 pt-12 sm:px-7">
         <h2 className="font-archivo m-0 text-[30px] font-extrabold leading-[0.98] tracking-[-0.035em] text-wl-ink sm:text-5xl">
           <span className="mr-3.5 align-top text-[11px] font-bold tracking-[0.2em] text-wed">
-            04
+            03
           </span>
           Four steps, then you&rsquo;re sending
         </h2>

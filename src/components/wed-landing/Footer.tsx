@@ -30,12 +30,6 @@ export function Footer() {
           </div>
           <div className="mt-3.5 flex flex-col gap-2.5 text-[13.5px]">
             <a
-              href="#designs"
-              className="text-wl-paper no-underline hover:text-wed-soft"
-            >
-              Designs
-            </a>
-            <a
               href="#build"
               className="text-wl-paper no-underline hover:text-wed-soft"
             >

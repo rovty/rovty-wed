@@ -18,14 +18,13 @@ import {
 export const WHATSAPP_HREF = "https://wa.me/94783453456";
 
 export const PAGE_SECTIONS = [
-  { n: "01", label: "Fourteen designs", href: "#designs" },
-  { n: "02", label: "Build yours in the browser", href: "#build" },
-  { n: "03", label: "What's included", href: "#included" },
-  { n: "04", label: "How it works", href: "#how" },
-  { n: "05", label: "Find your seat", href: "#seat" },
-  { n: "06", label: "Your dashboard", href: "#dashboard" },
-  { n: "07", label: "Pricing", href: "#pricing" },
-  { n: "08", label: "Questions", href: "#faq" },
+  { n: "01", label: "Build yours in the browser", href: "#build" },
+  { n: "02", label: "What's included", href: "#included" },
+  { n: "03", label: "How it works", href: "#how" },
+  { n: "04", label: "Find your seat", href: "#seat" },
+  { n: "05", label: "Your dashboard", href: "#dashboard" },
+  { n: "06", label: "Pricing", href: "#pricing" },
+  { n: "07", label: "Questions", href: "#faq" },
 ];
 
 export const FEATURES: { icon: LucideIcon; title: string; body: string }[] = [
@@ -123,7 +122,7 @@ export const PLANS: WedPlan[] = [
     badge: "Most popular",
     description:
       "Everything you need to invite, manage, and arrange your guests.",
-    price: "LKR 9,900",
+    price: "LKR 7,900",
     priceNote: "One-time · one wedding",
     cta: "Get started",
     features: [
@@ -145,7 +144,7 @@ export const PLANS: WedPlan[] = [
     name: "Studio",
     description:
       "For couples who want a completely personalized wedding experience.",
-    price: "From LKR 14,900",
+    price: "LKR 9,900",
     priceNote: "One-time · one wedding",
     cta: "Talk to us",
     features: [
@@ -178,7 +177,7 @@ export const FAQS = [
   },
   {
     q: "Is it really one payment?",
-    a: "Yes — one-time, per wedding: Essential LKR 4,900, Complete LKR 9,900, Studio from LKR 14,900. Hosting is included for 6, 12 or 24 months depending on the plan.",
+    a: "Yes — one-time, per wedding: Essential LKR 4,900, Complete LKR 7,900, Studio LKR 9,900. Hosting is included for 6, 12 or 24 months depending on the plan.",
   },
   {
     q: "Can we use our own domain?",

@@ -10,7 +10,7 @@ export function BuildSection() {
         <div className="grid items-end gap-6 sm:grid-cols-[1fr,auto]">
           <h2 className="font-archivo m-0 text-[30px] font-extrabold leading-[0.98] tracking-[-0.035em] text-wl-ink sm:text-5xl">
             <span className="mr-3.5 align-top text-[11px] font-bold tracking-[0.2em] text-wed">
-              02
+              01
             </span>
             Build yours now
           </h2>

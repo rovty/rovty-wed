@@ -50,12 +50,14 @@
      --ink/--gold/etc. above: those are the rose-and-gold *invitation*
      palette, this is the product's own marketing shell, same idea as
      .admin-portal's tokens in intent but a different (design-specified)
-     accent than admin's pink. */
+     accent than admin's pink. Accent is deep plum/burgundy (swapped from
+     an earlier warm-red — same warm/romantic register, reads as
+     intentional rather than alarm-red). */
   --color-wl-ink: #201e1d;
   --color-wl-paper: #f3f2f2;
-  --color-wed: #ec3013;
-  --color-wed-deep: #b3240c;
-  --color-wed-soft: #fbd9d3;
+  --color-wed: #7a2048;
+  --color-wed-deep: #571530;
+  --color-wed-soft: #f0dce4;
 
   --font-display: "Playfair Display", serif;
   --font-serif: "Cormorant Garamond", ui-serif, serif;

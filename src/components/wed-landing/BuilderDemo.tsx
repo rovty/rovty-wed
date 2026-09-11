@@ -213,7 +213,7 @@ export function BuilderDemo() {
                   className="flex cursor-pointer flex-col gap-1.5 border-none bg-transparent p-0 text-left font-archivo transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-wed"
                 >
                   <span
-                    className="flex flex-col items-center justify-center gap-[3px] px-2 py-3"
+                    className="relative flex flex-col items-center justify-center gap-[3px] px-2 py-3"
                     style={{
                       background: k.bg,
                       border: on
@@ -223,6 +223,16 @@ export function BuilderDemo() {
                       minHeight: 104,
                     }}
                   >
+                    {/* Each design's own gold/rose identity, up front — the
+                        page background (k.bg) below is deliberately subtle,
+                        so without this the picker tiles read as flat/solid
+                        rather than showing 14 distinct designs. */}
+                    <span
+                      className="absolute inset-x-0 top-0 h-[4px]"
+                      style={{
+                        background: `linear-gradient(90deg,${k.rose},${k.gold})`,
+                      }}
+                    />
                     <span
                       className="grid h-[18px] w-[18px] place-items-center rounded-full"
                       style={{
