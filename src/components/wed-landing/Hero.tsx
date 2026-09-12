@@ -35,7 +35,12 @@ export function Hero() {
         </div>
 
         <div className="flex flex-col justify-between gap-7 border-t-2 border-wl-ink py-10 pb-14 md:border-l-2 md:border-t-0 md:py-[60px] md:pl-10">
-          <div>
+          {/* Jump-nav to the sections below. Only useful once the page is
+              wide enough to show it beside the hero copy instead of stacked
+              under it — on mobile it collapses into a plain list of the same
+              titles the actual sections repeat seconds later on scroll, so
+              it reads as a duplicated list rather than a nav aid. */}
+          <div className="hidden md:block">
             <p className="m-0 text-[10px] font-bold uppercase tracking-[0.22em] text-[#605d5d]">
               On this page
             </p>
