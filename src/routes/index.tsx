@@ -28,9 +28,12 @@ export const Route = createFileRoute("/")({
       { property: "og:url", content: CANONICAL },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
-      { property: "og:image", content: "https://wed.rovty.com/invite.jpg" },
+      // Deliberately the brand icon, not a real/sample invitation image:
+      // this is the bare-domain marketing page, not any one wedding's link,
+      // so its preview shouldn't imply it belongs to a specific couple.
+      { property: "og:image", content: "https://wed.rovty.com/wed-og.png" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: "https://wed.rovty.com/invite.jpg" },
+      { name: "twitter:image", content: "https://wed.rovty.com/wed-og.png" },
     ],
     links: [{ rel: "canonical", href: CANONICAL }],
   }),
