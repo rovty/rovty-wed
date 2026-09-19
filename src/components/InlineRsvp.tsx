@@ -73,7 +73,7 @@ export function InlineRsvp({
 
   if (!checked) {
     return (
-      <div className="glass-card rounded-3xl p-8 text-center text-sm text-muted-foreground">
+      <div className="tpl-card tpl-surface-body text-center text-sm text-muted-foreground">
         Loading your invitation…
       </div>
     );
@@ -81,7 +81,7 @@ export function InlineRsvp({
 
   if (!guest) {
     return (
-      <div className="glass-card rounded-3xl p-8 text-center">
+      <div className="tpl-card tpl-surface-body text-center">
         <Ornament />
         <h3 className="font-display text-2xl">Personal invitation required</h3>
         <p className="mt-3 text-sm text-muted-foreground">
@@ -94,7 +94,7 @@ export function InlineRsvp({
 
   if (submitted) {
     return (
-      <div className="glass-card rounded-3xl p-8 text-center animate-fade-up">
+      <div className="tpl-card tpl-surface-body text-center animate-fade-up">
         <div className="tpl-icon mx-auto grid h-16 w-16 place-items-center">
           <Heart className="h-7 w-7 animate-float-soft" />
         </div>
@@ -117,12 +117,10 @@ export function InlineRsvp({
   return (
     <form
       onSubmit={submit}
-      className="glass-card rounded-3xl p-7 animate-fade-up"
+      className="tpl-card tpl-surface-body animate-fade-up"
     >
       <div className="text-center">
-        <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground">
-          Dear
-        </p>
+        <p className="font-kicker text-muted-foreground">Dear</p>
         <h3 className="mt-1 font-display text-2xl leading-tight">
           {guest.title ? `${guest.title} ` : ""}
           {guest.name}
@@ -135,9 +133,7 @@ export function InlineRsvp({
       </div>
 
       <div className="mt-6">
-        <p className="mb-3 text-center text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-          Will you attend?
-        </p>
+        <p className="font-kicker mb-3 text-center text-muted-foreground">Will you attend?</p>
         <div className="grid grid-cols-2 gap-3">
           <Choice
             active={attending === "yes"}
@@ -156,7 +152,7 @@ export function InlineRsvp({
 
       {attending === "no" && (
         <div className="mt-4 animate-fade-up">
-          <label className="mb-1.5 block text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+          <label className="font-kicker mb-1.5 block text-muted-foreground">
             Message to the couple{" "}
             <span className="lowercase italic">(optional)</span>
           </label>
@@ -165,7 +161,7 @@ export function InlineRsvp({
             onChange={(e) => setMessage(e.target.value)}
             rows={3}
             placeholder="A sweet note or your blessings…"
-            className="w-full resize-none rounded-2xl border border-input bg-white/70 px-4 py-3 text-sm outline-none ring-ring/40 backdrop-blur transition focus:border-ring focus:ring-2"
+            className="tpl-input w-full resize-none px-4 py-3 text-sm outline-none transition"
           />
         </div>
       )}
@@ -177,7 +173,7 @@ export function InlineRsvp({
       <button
         type="submit"
         disabled={!attending || submitting}
-        className="tpl-btn mt-6 w-full min-h-[3.375rem] text-sm font-medium shadow-gold transition-transform hover:scale-[1.01] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+        className="tpl-btn mt-6 w-full min-h-[3.375rem] text-sm font-medium transition-transform hover:scale-[1.01] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
       >
         <Heart className="h-4 w-4" />{" "}
         {submitting ? "Sending…" : "Send Response"}
@@ -201,10 +197,9 @@ function Choice({
     <button
       type="button"
       onClick={onClick}
-      className={`relative flex items-center justify-center gap-2 rounded-2xl border px-3 py-4 text-sm font-medium transition-all ${
-        active
-          ? "border-transparent shadow-gold"
-          : "border-border bg-white/60 text-foreground backdrop-blur hover:bg-white"
+      aria-pressed={active}
+      className={`tpl-choice relative flex min-h-14 items-center justify-center gap-2 px-3 py-3 text-sm font-medium transition-all ${
+        active ? "tpl-choice--active" : ""
       }`}
       style={
         active

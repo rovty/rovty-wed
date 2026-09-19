@@ -2,13 +2,16 @@
 // now just the layout (`<Outlet />`) that this and $slug.seating.tsx both
 // sit under. See $slug.tsx's header comment for why that split exists.
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { WeddingSite, WeddingNotLive } from "@/components/WeddingSite";
 import {
   fetchWeddingBySlug,
   fontLinks,
   formatLongDate,
+  isWeddingTemplate,
   templateFontsHref,
   type PublicWedding,
+  type WeddingTemplate,
 } from "@/lib/wedding";
 
 export const Route = createFileRoute("/$slug/")({
@@ -74,5 +77,37 @@ export const Route = createFileRoute("/$slug/")({
 
 function SlugIndexPage() {
   const wedding = Route.useLoaderData();
-  return wedding ? <WeddingSite wedding={wedding} /> : <WeddingNotLive />;
+  const [preview, setPreview] = useState<WeddingTemplate | null>(null);
+
+  // `?preview=<template>` lets the admin's template picker (and anyone the
+  // couple sends the link to) see the invitation in a different design
+  // without saving it. Client-only so SSR/OG output always reflects the
+  // saved template; harmless if the value isn't a real template id.
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search).get("preview");
+    if (p && isWeddingTemplate(p)) setPreview(p);
+  }, []);
+
+  if (!wedding) return <WeddingNotLive />;
+  const shown = preview ? { ...wedding, template: preview } : wedding;
+  return (
+    <>
+      {preview && <TemplateFontLoader template={preview} />}
+      <WeddingSite key={shown.template} wedding={shown} />
+    </>
+  );
+}
+
+// Fonts are normally emitted server-side per saved template (head() above);
+// a client-side preview of a different template needs its fonts too.
+function TemplateFontLoader({ template }: { template: WeddingTemplate }) {
+  useEffect(() => {
+    const href = templateFontsHref(template);
+    if (document.querySelector(`link[href="${href}"]`)) return;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = href;
+    document.head.appendChild(link);
+  }, [template]);
+  return null;
 }

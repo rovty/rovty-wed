@@ -47,7 +47,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "classic",
     label: "Classic",
-    desc: "Rose & gold, falling petals.",
+    desc: "Rose & gold, soft cards, falling petals.",
     bg: "linear-gradient(180deg,#fdf9f4 0%,#f9ebe6 48%,#fcf6ec 100%)",
     swatchBg: "#fdf9f4",
     fg: "#3c2f2b",
@@ -73,7 +73,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "poruwa",
     label: "Poruwa",
-    desc: "Traditional, antique gold.",
+    desc: "Antique gold, double-ruled frame.",
     bg: "linear-gradient(180deg,#fdf7ee,#f7ece0)",
     swatchBg: "#fdf7ee",
     fg: "#3a2b1e",
@@ -99,7 +99,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "thali",
     label: "Thali",
-    desc: "Pastel marigold & gold.",
+    desc: "Marigold & vermilion, bold band.",
     bg: "linear-gradient(180deg,#fdf5ea,#fbeade)",
     swatchBg: "#fdf5ea",
     fg: "#3f291d",
@@ -125,7 +125,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "chapel",
     label: "Chapel",
-    desc: "Powder blue & pearl.",
+    desc: "Powder blue, arched photos.",
     bg: "linear-gradient(180deg,#fafbfd,#eef2f8)",
     swatchBg: "#fafbfd",
     fg: "#2b3550",
@@ -151,7 +151,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "nikkah",
     label: "Nikkah",
-    desc: "Pastel sage & gold.",
+    desc: "Sage & gold, geometric hairlines.",
     bg: "linear-gradient(180deg,#f7fbf8,#eef5f0)",
     swatchBg: "#f7fbf8",
     fg: "#26382f",
@@ -177,7 +177,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "noir",
     label: "Noir",
-    desc: "Champagne on charcoal.",
+    desc: "Champagne on charcoal, full-bleed.",
     bg: "linear-gradient(180deg,#17161a,#211f25)",
     swatchBg: "#17161a",
     fg: "#f3eee4",
@@ -204,7 +204,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "editorial",
     label: "Editorial",
-    desc: "Oat, clay & gold rules.",
+    desc: "Magazine layout, ink rules.",
     bg: "linear-gradient(180deg,#faf7f3,#f2ebe4)",
     swatchBg: "#faf7f3",
     fg: "#2a231e",
@@ -230,7 +230,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "quiet",
     label: "Quiet",
-    desc: "Pearl white, gold hairline.",
+    desc: "Pearl white, a single hairline.",
     bg: "linear-gradient(180deg,#ffffff,#f7f5f2)",
     swatchBg: "#ffffff",
     fg: "#211f1d",
@@ -256,7 +256,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "garden",
     label: "Garden",
-    desc: "Pastel sage & cream.",
+    desc: "Sage & cream, arched, italic serif.",
     bg: "linear-gradient(180deg,#f7faf3,#eef4e9)",
     swatchBg: "#f7faf3",
     fg: "#2c3626",
@@ -283,7 +283,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "shoreline",
     label: "Shoreline",
-    desc: "Pastel aqua & sand.",
+    desc: "Sea glass & sand, poster photo.",
     bg: "linear-gradient(180deg,#fcf8f1,#ecf5f5)",
     swatchBg: "#fcf8f1",
     fg: "#1f3c45",
@@ -309,7 +309,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "deco",
     label: "Deco",
-    desc: "Pastel jade & gilt.",
+    desc: "Jade, black & gilt, square.",
     bg: "linear-gradient(180deg,#f6f3ea,#eef0e7)",
     swatchBg: "#f6f3ea",
     fg: "#1f4241",
@@ -335,7 +335,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "film",
     label: "Film",
-    desc: "Warm sepia, photo-led.",
+    desc: "Warm sepia, photo-led, dark.",
     bg: "linear-gradient(180deg,#161311,#1e1a17)",
     swatchBg: "#161311",
     fg: "#f4ece1",
@@ -388,7 +388,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "bloom",
     label: "Bloom",
-    desc: "Blush rose-gold, arched.",
+    desc: "Blush & rose-gold, arched.",
     bg: "linear-gradient(180deg,#fdf8f6,#f7eee9)",
     swatchBg: "#fdf8f6",
     fg: "#3f2e2b",

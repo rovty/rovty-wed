@@ -22,25 +22,53 @@ export const WEDDING_TEMPLATES = [
   {
     id: "classic",
     label: "Classic",
-    description: "Rose & gold, falling petals.",
+    description: "Rose & gold, soft cards, falling petals.",
   },
-  { id: "poruwa", label: "Poruwa", description: "Traditional, antique gold." },
-  { id: "thali", label: "Thali", description: "Pastel marigold & gold." },
-  { id: "chapel", label: "Chapel", description: "Powder blue & pearl." },
-  { id: "nikkah", label: "Nikkah", description: "Pastel sage & gold." },
-  { id: "noir", label: "Noir", description: "Champagne on charcoal." },
+  {
+    id: "poruwa",
+    label: "Poruwa",
+    description: "Antique gold, double-ruled frame.",
+  },
+  {
+    id: "thali",
+    label: "Thali",
+    description: "Marigold & vermilion, bold band.",
+  },
+  { id: "chapel", label: "Chapel", description: "Powder blue, arched photos." },
+  {
+    id: "nikkah",
+    label: "Nikkah",
+    description: "Sage & gold, geometric hairlines.",
+  },
+  {
+    id: "noir",
+    label: "Noir",
+    description: "Champagne on charcoal, full-bleed.",
+  },
   {
     id: "editorial",
     label: "Editorial",
-    description: "Oat, clay & gold rules.",
+    description: "Magazine layout, ink rules.",
   },
-  { id: "quiet", label: "Quiet", description: "Pearl white, gold hairline." },
-  { id: "garden", label: "Garden", description: "Pastel sage & cream." },
-  { id: "shoreline", label: "Shoreline", description: "Pastel aqua & sand." },
-  { id: "deco", label: "Deco", description: "Pastel jade & gilt." },
-  { id: "film", label: "Film", description: "Warm sepia, photo-led." },
+  {
+    id: "quiet",
+    label: "Quiet",
+    description: "Pearl white, a single hairline.",
+  },
+  {
+    id: "garden",
+    label: "Garden",
+    description: "Sage & cream, arched, italic serif.",
+  },
+  {
+    id: "shoreline",
+    label: "Shoreline",
+    description: "Sea glass & sand, poster photo.",
+  },
+  { id: "deco", label: "Deco", description: "Jade, black & gilt, square." },
+  { id: "film", label: "Film", description: "Warm sepia, photo-led, dark." },
   { id: "lotus", label: "Lotus", description: "Ivory & gold, falling lotus." },
-  { id: "bloom", label: "Bloom", description: "Blush rose-gold, arched." },
+  { id: "bloom", label: "Bloom", description: "Blush & rose-gold, arched." },
 ] as const;
 export type WeddingTemplate = (typeof WEDDING_TEMPLATES)[number]["id"];
 const TEMPLATE_IDS = WEDDING_TEMPLATES.map((t) => t.id);
@@ -52,24 +80,132 @@ export type OpenerKind =
 export type Motif =
   "diamond" | "geo" | "line" | "leaf" | "wave" | "deco" | "squiggle" | "lotus";
 
+// How the couple photo is framed in the body of the page. This — together
+// with `.theme-*`'s card/radius tokens — is what makes the templates differ
+// below the hero rather than only in it.
+//   portrait  tall 4:5 image with soft corners (romantic templates)
+//   arch      Roman-arch top (chapel/bloom/garden — the "wedding arch" cliché
+//             done well: one shape, not a frame-of-frames)
+//   editorial full-bleed to the section edge, hard corners, caption rule
+//   framed    thin double gold rule around a 4:5 image (traditional)
+//   film      3:2 landscape with grain/sepia (photo-led templates)
+//   circle    round medallion (quiet/shoreline — small, precious)
+export type PhotoFrame =
+  "portrait" | "arch" | "editorial" | "framed" | "film" | "circle";
+
+// Whether body sections read as cards on the background ("card"), as
+// hairline-ruled blocks with no fill ("rule"), or as filled bands that
+// alternate with the page background ("band").
+export type SectionStyle = "card" | "rule" | "band";
+
 export const TEMPLATE_META: Record<
   WeddingTemplate,
-  { hero: HeroLayout; opener: OpenerKind; motif: Motif }
+  {
+    hero: HeroLayout;
+    opener: OpenerKind;
+    motif: Motif;
+    photo: PhotoFrame;
+    sections: SectionStyle;
+  }
 > = {
-  classic: { hero: "centered", opener: "envelope", motif: "diamond" },
-  poruwa: { hero: "framed", opener: "ring", motif: "diamond" },
-  thali: { hero: "band", opener: "veil", motif: "geo" },
-  chapel: { hero: "centered", opener: "curtain", motif: "diamond" },
-  nikkah: { hero: "framed", opener: "ring", motif: "geo" },
-  noir: { hero: "typo", opener: "curtain", motif: "line" },
-  editorial: { hero: "split", opener: "veil", motif: "line" },
-  quiet: { hero: "typo", opener: "petals", motif: "line" },
-  garden: { hero: "centered", opener: "petals", motif: "leaf" },
-  shoreline: { hero: "photoTop", opener: "curtain", motif: "wave" },
-  deco: { hero: "framed", opener: "gate", motif: "deco" },
-  film: { hero: "photoTop", opener: "curtain", motif: "line" },
-  lotus: { hero: "lotus", opener: "lotus", motif: "lotus" },
-  bloom: { hero: "split", opener: "ring", motif: "leaf" },
+  classic: {
+    hero: "centered",
+    opener: "envelope",
+    motif: "diamond",
+    photo: "portrait",
+    sections: "card",
+  },
+  poruwa: {
+    hero: "framed",
+    opener: "ring",
+    motif: "diamond",
+    photo: "framed",
+    sections: "rule",
+  },
+  thali: {
+    hero: "band",
+    opener: "veil",
+    motif: "geo",
+    photo: "arch",
+    sections: "band",
+  },
+  chapel: {
+    hero: "centered",
+    opener: "curtain",
+    motif: "diamond",
+    photo: "arch",
+    sections: "card",
+  },
+  nikkah: {
+    hero: "framed",
+    opener: "ring",
+    motif: "geo",
+    photo: "framed",
+    sections: "rule",
+  },
+  noir: {
+    hero: "typo",
+    opener: "curtain",
+    motif: "line",
+    photo: "editorial",
+    sections: "rule",
+  },
+  editorial: {
+    hero: "split",
+    opener: "veil",
+    motif: "line",
+    photo: "editorial",
+    sections: "rule",
+  },
+  quiet: {
+    hero: "typo",
+    opener: "petals",
+    motif: "line",
+    photo: "circle",
+    sections: "rule",
+  },
+  garden: {
+    hero: "centered",
+    opener: "petals",
+    motif: "leaf",
+    photo: "arch",
+    sections: "card",
+  },
+  shoreline: {
+    hero: "photoTop",
+    opener: "curtain",
+    motif: "wave",
+    photo: "circle",
+    sections: "band",
+  },
+  deco: {
+    hero: "framed",
+    opener: "gate",
+    motif: "deco",
+    photo: "framed",
+    sections: "band",
+  },
+  film: {
+    hero: "photoTop",
+    opener: "curtain",
+    motif: "line",
+    photo: "film",
+    sections: "rule",
+  },
+  lotus: {
+    hero: "lotus",
+    opener: "lotus",
+    motif: "lotus",
+    photo: "portrait",
+    sections: "card",
+  },
+  bloom: {
+    hero: "split",
+    opener: "ring",
+    motif: "leaf",
+    photo: "arch",
+    sections: "card",
+  },
 };
 
 // Google Fonts families each template actually uses (display / script /
@@ -166,7 +302,7 @@ const LOTUS_PETAL_TEMPLATE_IDS = new Set<WeddingTemplate>(["lotus"]);
 export function hasLotusPetals(template: WeddingTemplate): boolean {
   return LOTUS_PETAL_TEMPLATE_IDS.has(template);
 }
-function isWeddingTemplate(v: string): v is WeddingTemplate {
+export function isWeddingTemplate(v: string): v is WeddingTemplate {
   return (TEMPLATE_IDS as string[]).includes(v);
 }
 

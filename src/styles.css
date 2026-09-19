@@ -158,8 +158,7 @@
     scroll-behavior: smooth;
   }
   body {
-    background: var(--gradient-hero);
-    background-attachment: fixed;
+    background: var(--background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -309,6 +308,326 @@
   100% {
     background-position: 200% center;
   }
+}
+
+/* ── Template body primitives ─────────────────────────────────────────
+   Every guest-page section below the hero is built from these. They read
+   the per-template tokens set on `.theme-*` (below) — --tpl-radius,
+   --tpl-surface, --tpl-surface-border, --tpl-shadow, --tpl-rule — so a
+   template changes its body character by changing tokens, not markup.
+   ─────────────────────────────────────────────────────────────────── */
+
+/* Card surface (sections: "card") */
+.tpl-card {
+  background: var(--tpl-surface);
+  border: 1px solid var(--tpl-surface-border);
+  border-radius: var(--tpl-radius);
+  box-shadow: var(--tpl-shadow);
+  overflow: hidden;
+}
+/* Ruled surface (sections: "rule") — no fill, hairlines top and bottom */
+.tpl-rule-surface {
+  border-top: 1px solid var(--tpl-rule);
+  border-bottom: 1px solid var(--tpl-rule);
+  overflow: hidden;
+}
+/* Band surface (sections: "band") — a soft filled block, square-ish */
+.tpl-band-surface {
+  background: var(--tpl-band-surface);
+  border-radius: var(--tpl-radius);
+  overflow: hidden;
+}
+.tpl-surface-body {
+  padding: 1.5rem 1.375rem;
+}
+@media (min-width: 640px) {
+  .tpl-surface-body {
+    padding: 1.75rem;
+  }
+}
+
+/* Schedule list (Details section) */
+.tpl-schedule {
+  margin: 0;
+}
+.tpl-schedule__row {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, 9.5rem) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: baseline;
+  padding: 1.125rem 1.375rem;
+  border-top: 1px solid var(--tpl-rule);
+}
+.tpl-schedule__row:first-child {
+  border-top: 0;
+}
+.tpl-rule-surface .tpl-schedule__row {
+  padding-left: 0;
+  padding-right: 0;
+}
+.tpl-schedule__row dt {
+  padding-top: 0.2rem;
+  overflow-wrap: normal;
+  hyphens: none;
+}
+@media (min-width: 640px) {
+  .tpl-schedule__row {
+    grid-template-columns: minmax(9rem, 12rem) minmax(0, 1fr);
+    padding: 1.25rem 1.75rem;
+  }
+  .tpl-rule-surface .tpl-schedule__row {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/* Row list (calendar links) */
+.tpl-rows > .tpl-row {
+  border-top: 1px solid var(--tpl-rule);
+}
+.tpl-rows > .tpl-row:first-child {
+  border-top: 0;
+}
+.tpl-row {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.95rem 1.375rem;
+  transition: background-color 0.2s ease;
+}
+.tpl-rule-surface .tpl-row {
+  padding-left: 0;
+  padding-right: 0;
+}
+.tpl-card .tpl-row:hover,
+.tpl-band-surface .tpl-row:hover {
+  background: color-mix(in oklab, var(--gold) 8%, transparent);
+}
+
+/* Countdown — numbers separated by hairlines, no boxes */
+.tpl-countdown {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+}
+.tpl-countdown__cell {
+  position: relative;
+  padding: 0.25rem 0.25rem;
+  text-align: center;
+}
+.tpl-countdown__rule {
+  position: absolute;
+  left: 0;
+  top: 18%;
+  bottom: 18%;
+  width: 1px;
+  background: var(--tpl-rule);
+}
+.tpl-countdown__num {
+  font-size: clamp(1.7rem, 7.5vw, 3rem);
+  line-height: 1;
+  color: var(--foreground);
+  font-variant-numeric: tabular-nums;
+  /* Display faces with wide tracking (Deco, Noir, Shoreline) must not
+     inherit it here or two digits wrap inside a 25%-wide cell. */
+  letter-spacing: 0 !important;
+  text-transform: none;
+  white-space: nowrap;
+}
+.tpl-countdown__label {
+  margin-top: 0.45rem;
+  color: var(--muted-foreground);
+}
+
+/* RSVP choice buttons + inputs */
+.tpl-choice {
+  border: 1px solid var(--tpl-surface-border);
+  border-radius: var(--tpl-radius-sm);
+  background: var(--tpl-input-bg);
+  color: var(--foreground);
+}
+.tpl-choice:hover {
+  border-color: var(--gold);
+}
+.tpl-choice--active {
+  background: var(--gradient-gold);
+  color: var(--btn-ink);
+  border-color: transparent;
+}
+.tpl-input {
+  border: 1px solid var(--tpl-surface-border);
+  border-radius: var(--tpl-radius-sm);
+  background: var(--tpl-input-bg);
+  color: var(--foreground);
+}
+.tpl-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--gold) 25%, transparent);
+}
+.tpl-input::placeholder {
+  color: var(--muted-foreground);
+  opacity: 0.8;
+}
+
+/* Secondary button: outlined in the accent */
+.tpl-btn--secondary {
+  background: transparent !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--gold);
+}
+.tpl-btn--secondary:hover {
+  background: color-mix(in oklab, var(--gold) 10%, transparent) !important;
+}
+
+/* Photo frames */
+.tpl-photo-arch {
+  border-radius: 999px 999px var(--tpl-radius) var(--tpl-radius);
+  box-shadow: var(--tpl-shadow);
+}
+.tpl-photo-circle {
+  border-radius: 999px;
+  box-shadow: var(--tpl-shadow);
+  border: 6px solid var(--tpl-surface);
+}
+.tpl-photo-framed {
+  border: 1px solid var(--gold);
+  border-radius: var(--tpl-radius-sm);
+}
+.tpl-photo-framed__inner {
+  border: 1px solid color-mix(in oklab, var(--gold) 45%, transparent);
+  border-radius: calc(var(--tpl-radius-sm) - 2px);
+}
+
+/* Content column: phone-first, but on laptops the invitation reads as a
+   generous centred sheet rather than a phone column floating in space. */
+.tpl-col {
+  width: 100%;
+  max-width: 36rem;
+}
+.tpl-col-wide {
+  width: 100%;
+  max-width: 48rem;
+}
+@media (min-width: 1024px) {
+  .tpl-col {
+    max-width: 44rem;
+  }
+  .tpl-col-wide {
+    max-width: 60rem;
+  }
+}
+
+/* Hero type + entrance */
+.tpl-names {
+  font-size: clamp(2.6rem, 11.5vw, 5.25rem);
+  line-height: 0.98;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.tpl-names--left {
+  font-size: clamp(2.6rem, 11vw, 4.75rem);
+  line-height: 1.02;
+}
+.tpl-names--split {
+  font-size: clamp(2.4rem, 9vw, 4rem);
+  line-height: 1.02;
+}
+@media (min-width: 768px) {
+  .tpl-names {
+    font-size: clamp(3.5rem, 6vw, 5.5rem);
+  }
+  .tpl-names--left {
+    font-size: clamp(3.25rem, 5.5vw, 5rem);
+  }
+  .tpl-names--split {
+    font-size: clamp(2.75rem, 4.2vw, 3.75rem);
+  }
+}
+
+/* Double gold rule frame (framed hero) */
+.tpl-frame {
+  border: 1px solid var(--gold);
+  border-radius: var(--tpl-radius-sm);
+  background: var(--tpl-surface);
+  box-shadow: var(--tpl-shadow);
+}
+.tpl-frame__inner {
+  border: 1px solid color-mix(in oklab, var(--gold) 45%, transparent);
+  border-radius: calc(var(--tpl-radius-sm) - 2px);
+}
+
+/* Staggered entrance for hero children — one smooth sequence rather than
+   a single block popping in. Runs once, GPU-only. */
+@keyframes tpl-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.tpl-stagger > * {
+  animation: tpl-rise 0.9s cubic-bezier(0.2, 0.65, 0.2, 1) both;
+}
+.tpl-stagger > *:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.tpl-stagger > *:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.tpl-stagger > *:nth-child(3) {
+  animation-delay: 0.25s;
+}
+.tpl-stagger > *:nth-child(4) {
+  animation-delay: 0.35s;
+}
+.tpl-stagger > *:nth-child(5) {
+  animation-delay: 0.45s;
+}
+.tpl-stagger > *:nth-child(6) {
+  animation-delay: 0.55s;
+}
+.tpl-stagger > *:nth-child(n + 7) {
+  animation-delay: 0.65s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tpl-stagger > * {
+    animation: none;
+  }
+}
+
+/* Hero photo (photoTop) — never inherits a template's photo filter fully;
+   keep faces readable. */
+.tpl-photo--hero {
+  filter: none !important;
+}
+
+/* Defaults so a template that forgets a token still renders sanely */
+.theme-classic,
+.theme-poruwa,
+.theme-thali,
+.theme-chapel,
+.theme-nikkah,
+.theme-noir,
+.theme-editorial,
+.theme-quiet,
+.theme-garden,
+.theme-shoreline,
+.theme-deco,
+.theme-film,
+.theme-lotus,
+.theme-bloom {
+  --tpl-radius: 16px;
+  --tpl-radius-sm: 10px;
+  --tpl-surface: rgba(255, 255, 255, 0.72);
+  --tpl-surface-border: rgba(255, 255, 255, 0.85);
+  --tpl-shadow: 0 18px 44px -28px rgba(60, 40, 30, 0.35);
+  --tpl-rule: color-mix(in oklab, var(--gold) 35%, transparent);
+  --tpl-band-surface: color-mix(in oklab, var(--gold) 12%, transparent);
+  --tpl-input-bg: rgba(255, 255, 255, 0.7);
+  min-height: 100svh;
 }
 
 /* ── Seating map marker ───────────────────────────────────────── */
@@ -970,9 +1289,11 @@
    `background` on itself directly instead.
    ─────────────────────────────────────────────────────────────────────── */
 
-/* ── Classic — rose & gold, falling petals ─────────────────────────── */
+/* ── Classic — rose & gold, falling petals ── */
 .theme-classic {
-  background: linear-gradient(180deg, #fdf9f4 0%, #f9ebe6 48%, #fcf6ec 100%);
+  background:
+    radial-gradient(120% 80% at 50% -10%, #fbeee9 0%, transparent 60%),
+    linear-gradient(180deg, #fdf9f4 0%, #f8ece7 55%, #fcf6ec 100%);
   --foreground: #3c2f2b;
   --muted-foreground: #7d6a63;
   --border: rgba(201, 151, 79, 0.26);
@@ -980,6 +1301,22 @@
   --rose: #a06c33;
   --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
   --btn-ink: #3a2e1c;
+  --tpl-radius: 22px;
+  --tpl-radius-sm: 14px;
+  --tpl-surface: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.88),
+    rgba(255, 255, 255, 0.62)
+  );
+  --tpl-surface-border: rgba(255, 255, 255, 0.9);
+  --tpl-shadow: 0 24px 50px -30px rgba(214, 163, 150, 0.6);
+  --tpl-rule: rgba(201, 151, 79, 0.28);
+  --tpl-band-surface: linear-gradient(
+    120deg,
+    rgba(233, 190, 182, 0.5),
+    rgba(233, 201, 138, 0.5)
+  );
+  --tpl-input-bg: rgba(255, 255, 255, 0.78);
 }
 .theme-classic h1,
 .theme-classic h2,
@@ -1001,16 +1338,18 @@
   text-transform: none;
   letter-spacing: 0.01em;
   font-style: italic;
+  font-weight: 400;
 }
 .theme-classic .glass-card {
   background: linear-gradient(
     160deg,
-    rgba(255, 255, 255, 0.82),
-    rgba(255, 255, 255, 0.52)
+    rgba(255, 255, 255, 0.88),
+    rgba(255, 255, 255, 0.62)
   );
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 20px 46px -26px rgba(214, 163, 150, 0.55);
-  border-radius: 24px !important;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 24px 50px -30px rgba(214, 163, 150, 0.6);
+  border-radius: 22px !important;
+  backdrop-filter: none;
 }
 .theme-classic .tpl-btn,
 .theme-classic .tpl-icon {
@@ -1019,28 +1358,41 @@
   border-radius: 999px;
 }
 .theme-classic .tpl-photo {
-  border-radius: 24px;
+  border-radius: 22px;
   filter: none;
 }
 .theme-classic .tpl-band {
   background: linear-gradient(
     120deg,
-    rgba(233, 190, 182, 0.55),
-    rgba(233, 201, 138, 0.55)
+    rgba(233, 190, 182, 0.5),
+    rgba(233, 201, 138, 0.5)
   );
   color: #3c2f2b;
+  border-radius: 22px;
 }
 
-/* ── Poruwa — Traditional, antique gold ─────────────────────────────── */
+/* ── Poruwa — traditional, antique gold ── */
 .theme-poruwa {
-  background: linear-gradient(180deg, #fdf7ee, #f7ece0);
+  background: linear-gradient(180deg, #fbf4e8, #f4e7d6);
   --foreground: #3a2b1e;
   --muted-foreground: #82705c;
-  --border: rgba(181, 137, 63, 0.24);
-  --gold: #b5893f;
-  --rose: #8a6428;
-  --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
-  --btn-ink: #3a2e1c;
+  --border: rgba(160, 116, 45, 0.3);
+  --gold: #a8792c;
+  --rose: #7f5a1f;
+  --gradient-gold: linear-gradient(135deg, #e6c98a, #b8893a);
+  --btn-ink: #2e2210;
+  --tpl-radius: 2px;
+  --tpl-radius-sm: 2px;
+  --tpl-surface: rgba(255, 250, 242, 0.7);
+  --tpl-surface-border: rgba(160, 116, 45, 0.35);
+  --tpl-shadow: none;
+  --tpl-rule: rgba(160, 116, 45, 0.4);
+  --tpl-band-surface: linear-gradient(
+    120deg,
+    rgba(213, 178, 124, 0.45),
+    rgba(168, 121, 44, 0.35)
+  );
+  --tpl-input-bg: rgba(255, 250, 242, 0.8);
 }
 .theme-poruwa h1,
 .theme-poruwa h2,
@@ -1058,58 +1410,65 @@
 }
 .theme-poruwa .font-kicker {
   font-family: "Mukta", sans-serif !important;
-  font-size: 10px;
+  font-size: 10.5px;
   text-transform: uppercase;
   letter-spacing: 0.34em;
   font-style: normal;
+  font-weight: 500;
 }
 .theme-poruwa .glass-card {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.78),
-    rgba(255, 255, 255, 0.46)
-  );
-  border: 1px solid rgba(181, 137, 63, 0.28);
-  box-shadow: 0 20px 44px -28px rgba(138, 100, 40, 0.42);
-  border-radius: 4px !important;
+  background: rgba(255, 250, 242, 0.7);
+  border: 1px solid rgba(160, 116, 45, 0.35);
+  box-shadow: none;
+  border-radius: 2px !important;
+  backdrop-filter: none;
 }
 .theme-poruwa .tpl-btn,
 .theme-poruwa .tpl-icon {
-  background: linear-gradient(135deg, #ebd3a0, #c9a45c);
-  color: #3a2e1c;
-  border-radius: 4px;
+  background: linear-gradient(135deg, #e6c98a, #b8893a);
+  color: #2e2210;
+  border-radius: 2px;
 }
 .theme-poruwa .tpl-photo {
-  border-radius: 4px;
+  border-radius: 2px;
   filter: none;
 }
 .theme-poruwa .tpl-band {
   background: linear-gradient(
     120deg,
-    rgba(213, 178, 124, 0.5),
-    rgba(181, 137, 63, 0.42)
+    rgba(213, 178, 124, 0.45),
+    rgba(168, 121, 44, 0.35)
   );
   color: #3a2b1e;
+  border-radius: 2px;
 }
 .theme-poruwa .tpl-pattern {
   background-image: radial-gradient(
-    circle at 10px 10px,
-    rgba(181, 137, 63, 0.1) 1.5px,
+    circle at 12px 12px,
+    rgba(168, 121, 44, 0.12) 1.5px,
     transparent 1.5px
   );
-  background-size: 24px 24px;
+  background-size: 28px 28px;
 }
 
-/* ── Thali — pastel marigold & gold ─────────────────────────────────── */
+/* ── Thali — marigold & vermilion ── */
 .theme-thali {
-  background: linear-gradient(180deg, #fdf5ea, #fbeade);
-  --foreground: #3f291d;
-  --muted-foreground: #8a6b57;
-  --border: rgba(217, 154, 91, 0.26);
-  --gold: #d99a5b;
-  --rose: #a2612f;
-  --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
-  --btn-ink: #3a2e1c;
+  background: linear-gradient(180deg, #fff6ea 0%, #fbe9d3 100%);
+  --foreground: #4a2a1a;
+  --muted-foreground: #8f6a52;
+  --border: rgba(214, 120, 40, 0.3);
+  --gold: #d28a2c;
+  --rose: #b7441f;
+  --gradient-gold: linear-gradient(135deg, #f2c065, #d98a2c);
+  --btn-ink: #3a2010;
+  --tpl-radius: 10px;
+  --tpl-radius-sm: 8px;
+  --tpl-surface: rgba(255, 250, 243, 0.85);
+  --tpl-surface-border: rgba(214, 120, 40, 0.25);
+  --tpl-shadow: 0 18px 40px -28px rgba(183, 68, 31, 0.35);
+  --tpl-rule: rgba(214, 120, 40, 0.35);
+  --tpl-band-surface: linear-gradient(120deg, #f6cf8a, #efb46a);
+  --tpl-input-bg: rgba(255, 255, 255, 0.8);
 }
 .theme-thali h1,
 .theme-thali h2,
@@ -1127,58 +1486,65 @@
 }
 .theme-thali .font-kicker {
   font-family: "Mukta", sans-serif !important;
-  font-size: 10px;
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.3em;
   font-style: normal;
+  font-weight: 500;
 }
 .theme-thali .glass-card {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.8),
-    rgba(255, 255, 255, 0.5)
-  );
-  border: 1px solid rgba(217, 154, 91, 0.26);
-  box-shadow: 0 20px 46px -28px rgba(180, 110, 60, 0.4);
-  border-radius: 14px !important;
+  background: rgba(255, 250, 243, 0.85);
+  border: 1px solid rgba(214, 120, 40, 0.25);
+  box-shadow: 0 18px 40px -28px rgba(183, 68, 31, 0.35);
+  border-radius: 10px !important;
+  backdrop-filter: none;
 }
 .theme-thali .tpl-btn,
 .theme-thali .tpl-icon {
-  background: linear-gradient(135deg, #ebd3a0, #c9a45c);
-  color: #3a2e1c;
+  background: linear-gradient(135deg, #f2c065, #d98a2c);
+  color: #3a2010;
   border-radius: 999px;
 }
 .theme-thali .tpl-photo {
-  border-radius: 14px;
+  border-radius: 10px;
   filter: none;
 }
 .theme-thali .tpl-band {
-  background: linear-gradient(
-    120deg,
-    rgba(240, 196, 140, 0.6),
-    rgba(226, 163, 148, 0.5)
-  );
-  color: #3f291d;
+  background: linear-gradient(120deg, #f6cf8a, #efb46a);
+  color: #4a2a1a;
+  border-radius: 10px;
 }
 .theme-thali .tpl-pattern {
-  background-image: radial-gradient(
-    circle at 12px 12px,
-    rgba(217, 154, 91, 0.1) 2px,
-    transparent 2px
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(210, 138, 44, 0.06) 0 2px,
+    transparent 2px 14px
   );
-  background-size: 28px 28px;
+  background-size: auto;
 }
 
-/* ── Chapel — powder blue & pearl ───────────────────────────────────── */
+/* ── Chapel — powder blue & pearl ── */
 .theme-chapel {
-  background: linear-gradient(180deg, #fafbfd, #eef2f8);
-  --foreground: #2b3550;
-  --muted-foreground: #6c7793;
-  --border: rgba(43, 53, 80, 0.14);
-  --gold: #b99a5b;
-  --rose: #4a5876;
-  --gradient-gold: linear-gradient(135deg, #5b6a8c, #33405e);
-  --btn-ink: #f8fafd;
+  background: linear-gradient(180deg, #fbfcfe 0%, #eef2f8 100%);
+  --foreground: #2f3a4d;
+  --muted-foreground: #6f7b90;
+  --border: rgba(120, 140, 175, 0.28);
+  --gold: #8fa3c4;
+  --rose: #5e739a;
+  --gradient-gold: linear-gradient(135deg, #c9d6ea, #8fa3c4);
+  --btn-ink: #1f2a3d;
+  --tpl-radius: 18px;
+  --tpl-radius-sm: 12px;
+  --tpl-surface: rgba(255, 255, 255, 0.9);
+  --tpl-surface-border: rgba(120, 140, 175, 0.22);
+  --tpl-shadow: 0 22px 48px -32px rgba(60, 80, 120, 0.35);
+  --tpl-rule: rgba(120, 140, 175, 0.3);
+  --tpl-band-surface: linear-gradient(
+    120deg,
+    rgba(201, 214, 234, 0.7),
+    rgba(226, 233, 244, 0.7)
+  );
+  --tpl-input-bg: rgba(255, 255, 255, 0.9);
 }
 .theme-chapel h1,
 .theme-chapel h2,
@@ -1189,57 +1555,68 @@
   font-weight: 500;
   font-style: normal;
   text-transform: none;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
 }
 .theme-chapel .font-script {
   font-family: "Cormorant Garamond", serif !important;
 }
 .theme-chapel .font-kicker {
   font-family: "Lato", sans-serif !important;
-  font-size: 10px;
+  font-size: 10.5px;
   text-transform: uppercase;
-  letter-spacing: 0.36em;
+  letter-spacing: 0.28em;
   font-style: normal;
+  font-weight: 500;
 }
 .theme-chapel .glass-card {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.86),
-    rgba(255, 255, 255, 0.58)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 22px 46px -30px rgba(43, 53, 80, 0.32);
-  border-radius: 6px !important;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(120, 140, 175, 0.22);
+  box-shadow: 0 22px 48px -32px rgba(60, 80, 120, 0.35);
+  border-radius: 18px !important;
+  backdrop-filter: none;
 }
 .theme-chapel .tpl-btn,
 .theme-chapel .tpl-icon {
-  background: linear-gradient(135deg, #5b6a8c, #33405e);
-  color: #f8fafd;
-  border-radius: 6px;
+  background: linear-gradient(135deg, #c9d6ea, #8fa3c4);
+  color: #1f2a3d;
+  border-radius: 10px;
 }
 .theme-chapel .tpl-photo {
-  border-radius: 170px 170px 6px 6px;
+  border-radius: 18px;
   filter: none;
 }
 .theme-chapel .tpl-band {
   background: linear-gradient(
     120deg,
-    rgba(198, 210, 230, 0.6),
-    rgba(229, 214, 182, 0.5)
+    rgba(201, 214, 234, 0.7),
+    rgba(226, 233, 244, 0.7)
   );
-  color: #2b3550;
+  color: #2f3a4d;
+  border-radius: 18px;
 }
 
-/* ── Nikkah — pastel sage & gold ─────────────────────────────────────── */
+/* ── Nikkah — sage & gold ── */
 .theme-nikkah {
-  background: linear-gradient(180deg, #f7fbf8, #eef5f0);
-  --foreground: #26382f;
-  --muted-foreground: #6d8177;
-  --border: rgba(38, 56, 47, 0.14);
-  --gold: #a98f4e;
-  --rose: #4f6b58;
-  --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
-  --btn-ink: #3a2e1c;
+  background: linear-gradient(180deg, #f6faf6, #e9f1ea);
+  --foreground: #2b3a30;
+  --muted-foreground: #6c7d70;
+  --border: rgba(120, 150, 125, 0.3);
+  --gold: #b39a5b;
+  --rose: #5f7f68;
+  --gradient-gold: linear-gradient(135deg, #e3d3a2, #b39a5b);
+  --btn-ink: #2a2412;
+  --tpl-radius: 4px;
+  --tpl-radius-sm: 4px;
+  --tpl-surface: rgba(255, 255, 255, 0.65);
+  --tpl-surface-border: rgba(179, 154, 91, 0.4);
+  --tpl-shadow: none;
+  --tpl-rule: rgba(179, 154, 91, 0.45);
+  --tpl-band-surface: linear-gradient(
+    120deg,
+    rgba(200, 214, 202, 0.6),
+    rgba(227, 211, 162, 0.45)
+  );
+  --tpl-input-bg: rgba(255, 255, 255, 0.8);
 }
 .theme-nikkah h1,
 .theme-nikkah h2,
@@ -1247,7 +1624,7 @@
 .theme-nikkah h4,
 .theme-nikkah .font-display {
   font-family: "Amiri", serif !important;
-  font-weight: 700;
+  font-weight: 400;
   font-style: normal;
   text-transform: none;
   letter-spacing: 0;
@@ -1257,57 +1634,82 @@
 }
 .theme-nikkah .font-kicker {
   font-family: "Jost", sans-serif !important;
-  font-size: 10px;
+  font-size: 10.5px;
   text-transform: uppercase;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.32em;
   font-style: normal;
+  font-weight: 500;
 }
 .theme-nikkah .glass-card {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.84),
-    rgba(255, 255, 255, 0.54)
-  );
-  border: 1px solid rgba(169, 143, 78, 0.24);
-  box-shadow: 0 20px 44px -30px rgba(40, 70, 55, 0.35);
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(179, 154, 91, 0.4);
+  box-shadow: none;
   border-radius: 4px !important;
+  backdrop-filter: none;
 }
 .theme-nikkah .tpl-btn,
 .theme-nikkah .tpl-icon {
-  background: linear-gradient(135deg, #ebd3a0, #c9a45c);
-  color: #3a2e1c;
+  background: linear-gradient(135deg, #e3d3a2, #b39a5b);
+  color: #2a2412;
   border-radius: 4px;
 }
 .theme-nikkah .tpl-photo {
-  border-radius: 6px;
+  border-radius: 4px;
   filter: none;
 }
 .theme-nikkah .tpl-band {
   background: linear-gradient(
     120deg,
-    rgba(186, 208, 193, 0.55),
-    rgba(224, 206, 158, 0.5)
+    rgba(200, 214, 202, 0.6),
+    rgba(227, 211, 162, 0.45)
   );
-  color: #26382f;
+  color: #2b3a30;
+  border-radius: 4px;
 }
 .theme-nikkah .tpl-pattern {
-  background-image: repeating-linear-gradient(
-    45deg,
-    rgba(169, 143, 78, 0.05) 0 2px,
-    transparent 2px 16px
-  );
+  background-image:
+    linear-gradient(
+      30deg,
+      rgba(179, 154, 91, 0.08) 12%,
+      transparent 12.5%,
+      transparent 87%,
+      rgba(179, 154, 91, 0.08) 87.5%
+    ),
+    linear-gradient(
+      150deg,
+      rgba(179, 154, 91, 0.08) 12%,
+      transparent 12.5%,
+      transparent 87%,
+      rgba(179, 154, 91, 0.08) 87.5%
+    );
+  background-size: 40px 70px;
 }
 
-/* ── Noir — champagne on charcoal ───────────────────────────────────── */
+/* ── Noir — champagne on charcoal ── */
 .theme-noir {
-  background: linear-gradient(180deg, #17161a, #211f25);
+  background:
+    radial-gradient(90% 60% at 50% 0%, #2a2730 0%, transparent 70%),
+    linear-gradient(180deg, #17161a, #1f1d23);
   --foreground: #f3eee4;
   --muted-foreground: #a9a196;
-  --border: rgba(243, 238, 228, 0.18);
+  --border: rgba(243, 238, 228, 0.16);
   --gold: #d8b877;
   --rose: #e8cd94;
   --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
   --btn-ink: #20190f;
+  --tpl-radius: 0px;
+  --tpl-radius-sm: 0px;
+  --tpl-surface: rgba(255, 255, 255, 0.04);
+  --tpl-surface-border: rgba(216, 184, 119, 0.22);
+  --tpl-shadow: none;
+  --tpl-rule: rgba(216, 184, 119, 0.28);
+  --tpl-band-surface: linear-gradient(
+    120deg,
+    rgba(216, 184, 119, 0.22),
+    rgba(255, 255, 255, 0.04)
+  );
+  --tpl-input-bg: rgba(255, 255, 255, 0.06);
+  color-scheme: dark;
 }
 .theme-noir h1,
 .theme-noir h2,
@@ -1318,7 +1720,7 @@
   font-weight: 500;
   font-style: normal;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 .theme-noir .font-script {
   font-family: "Bodoni Moda", serif !important;
@@ -1329,46 +1731,53 @@
   text-transform: uppercase;
   letter-spacing: 0.42em;
   font-style: normal;
+  font-weight: 500;
 }
 .theme-noir .glass-card {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.1),
-    rgba(255, 255, 255, 0.03)
-  );
-  border: 1px solid rgba(216, 184, 119, 0.26);
-  box-shadow: 0 24px 50px -34px rgba(0, 0, 0, 0.7);
-  border-radius: 4px !important;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(216, 184, 119, 0.22);
+  box-shadow: none;
+  border-radius: 0px !important;
+  backdrop-filter: none;
 }
 .theme-noir .tpl-btn,
 .theme-noir .tpl-icon {
   background: linear-gradient(135deg, #ebd3a0, #c9a45c);
   color: #20190f;
-  border-radius: 4px;
+  border-radius: 0px;
 }
 .theme-noir .tpl-photo {
-  border-radius: 4px;
+  border-radius: 0px;
   filter: none;
 }
 .theme-noir .tpl-band {
   background: linear-gradient(
     120deg,
-    rgba(216, 184, 119, 0.24),
-    rgba(255, 255, 255, 0.06)
+    rgba(216, 184, 119, 0.22),
+    rgba(255, 255, 255, 0.04)
   );
-  color: #f6f0e4;
+  color: #f3eee4;
+  border-radius: 0px;
 }
 
-/* ── Editorial — oat, clay & gold rules ─────────────────────────────── */
+/* ── Editorial — oat, clay & ink rules ── */
 .theme-editorial {
-  background: linear-gradient(180deg, #faf7f3, #f2ebe4);
+  background: linear-gradient(180deg, #faf7f3, #f1eae2);
   --foreground: #2a231e;
   --muted-foreground: #786a5f;
-  --border: rgba(42, 35, 30, 0.16);
-  --gold: #c08e6d;
-  --rose: #95604a;
+  --border: rgba(42, 35, 30, 0.18);
+  --gold: #b07a56;
+  --rose: #8c5a42;
   --gradient-gold: linear-gradient(135deg, #3a302a, #221c18);
   --btn-ink: #faf7f3;
+  --tpl-radius: 0px;
+  --tpl-radius-sm: 0px;
+  --tpl-surface: transparent;
+  --tpl-surface-border: rgba(42, 35, 30, 0.2);
+  --tpl-shadow: none;
+  --tpl-rule: rgba(42, 35, 30, 0.22);
+  --tpl-band-surface: #e8dccd;
+  --tpl-input-bg: rgba(255, 255, 255, 0.55);
 }
 .theme-editorial h1,
 .theme-editorial h2,
@@ -1388,48 +1797,51 @@
   font-family: "Archivo", sans-serif !important;
   font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.24em;
   font-style: normal;
+  font-weight: 500;
 }
 .theme-editorial .glass-card {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.8),
-    rgba(255, 255, 255, 0.5)
-  );
-  border: 1px solid rgba(42, 35, 30, 0.14);
-  box-shadow: 0 20px 44px -30px rgba(90, 70, 55, 0.35);
-  border-radius: 2px !important;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(42, 35, 30, 0.2);
+  box-shadow: none;
+  border-radius: 0px !important;
+  backdrop-filter: none;
 }
 .theme-editorial .tpl-btn,
 .theme-editorial .tpl-icon {
   background: linear-gradient(135deg, #3a302a, #221c18);
   color: #faf7f3;
-  border-radius: 2px;
+  border-radius: 0px;
 }
 .theme-editorial .tpl-photo {
-  border-radius: 2px;
+  border-radius: 0px;
   filter: none;
 }
 .theme-editorial .tpl-band {
-  background: linear-gradient(
-    120deg,
-    rgba(214, 176, 150, 0.5),
-    rgba(228, 207, 170, 0.5)
-  );
+  background: #e8dccd;
   color: #2a231e;
+  border-radius: 0px;
 }
 
-/* ── Quiet — pearl white, gold hairline ─────────────────────────────── */
+/* ── Quiet — pearl white, single hairline ── */
 .theme-quiet {
-  background: linear-gradient(180deg, #ffffff, #f7f5f2);
-  --foreground: #211f1d;
-  --muted-foreground: #7b756e;
-  --border: rgba(33, 31, 29, 0.12);
-  --gold: #c0a878;
-  --rose: #8a7748;
-  --gradient-gold: linear-gradient(135deg, #2c2926, #181614);
-  --btn-ink: #fbfaf8;
+  background: linear-gradient(180deg, #ffffff, #f6f4f1);
+  --foreground: #1f1d1b;
+  --muted-foreground: #7a746e;
+  --border: rgba(31, 29, 27, 0.14);
+  --gold: #b9a37a;
+  --rose: #8c8172;
+  --gradient-gold: linear-gradient(135deg, #1f1d1b, #3a3633);
+  --btn-ink: #ffffff;
+  --tpl-radius: 6px;
+  --tpl-radius-sm: 6px;
+  --tpl-surface: transparent;
+  --tpl-surface-border: rgba(31, 29, 27, 0.14);
+  --tpl-shadow: none;
+  --tpl-rule: rgba(31, 29, 27, 0.14);
+  --tpl-band-surface: #f0ede8;
+  --tpl-input-bg: #ffffff;
 }
 .theme-quiet h1,
 .theme-quiet h2,
@@ -1437,10 +1849,10 @@
 .theme-quiet h4,
 .theme-quiet .font-display {
   font-family: "Manrope", sans-serif !important;
-  font-weight: 800;
+  font-weight: 500;
   font-style: normal;
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
+  text-transform: none;
+  letter-spacing: -0.03em;
 }
 .theme-quiet .font-script {
   font-family: "Cormorant Garamond", serif !important;
@@ -1451,46 +1863,55 @@
   text-transform: uppercase;
   letter-spacing: 0.3em;
   font-style: normal;
+  font-weight: 500;
 }
 .theme-quiet .glass-card {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.9),
-    rgba(250, 248, 245, 0.7)
-  );
-  border: 1px solid rgba(192, 168, 120, 0.24);
-  box-shadow: 0 18px 40px -30px rgba(60, 50, 35, 0.25);
-  border-radius: 2px !important;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(31, 29, 27, 0.14);
+  box-shadow: none;
+  border-radius: 6px !important;
+  backdrop-filter: none;
 }
 .theme-quiet .tpl-btn,
 .theme-quiet .tpl-icon {
-  background: linear-gradient(135deg, #2c2926, #181614);
-  color: #fbfaf8;
-  border-radius: 2px;
+  background: linear-gradient(135deg, #1f1d1b, #3a3633);
+  color: #ffffff;
+  border-radius: 999px;
 }
 .theme-quiet .tpl-photo {
-  border-radius: 2px;
-  filter: grayscale(0.85);
+  border-radius: 6px;
+  filter: none;
 }
 .theme-quiet .tpl-band {
-  background: linear-gradient(
-    120deg,
-    rgba(233, 226, 212, 0.7),
-    rgba(246, 243, 238, 0.7)
-  );
-  color: #211f1d;
+  background: #f0ede8;
+  color: #1f1d1b;
+  border-radius: 6px;
 }
 
-/* ── Garden — pastel sage & cream ───────────────────────────────────── */
+/* ── Garden — sage, cream & a hint of blush ── */
 .theme-garden {
-  background: linear-gradient(180deg, #f7faf3, #eef4e9);
-  --foreground: #2c3626;
-  --muted-foreground: #6c7c60;
-  --border: rgba(44, 54, 38, 0.13);
-  --gold: #8fa673;
-  --rose: #55703f;
-  --gradient-gold: linear-gradient(135deg, #7c9761, #4e6b3b);
-  --btn-ink: #f7faf2;
+  background:
+    radial-gradient(90% 50% at 50% 0%, #eef6ea 0%, transparent 70%),
+    linear-gradient(180deg, #f8fbf4, #eef4e9);
+  --foreground: #2f3d2f;
+  --muted-foreground: #6f7f6a;
+  --border: rgba(100, 140, 100, 0.28);
+  --gold: #8fae86;
+  --rose: #c48f8c;
+  --gradient-gold: linear-gradient(135deg, #b7d1ad, #8fae86);
+  --btn-ink: #1f2d1f;
+  --tpl-radius: 26px;
+  --tpl-radius-sm: 16px;
+  --tpl-surface: rgba(255, 255, 255, 0.82);
+  --tpl-surface-border: rgba(255, 255, 255, 0.95);
+  --tpl-shadow: 0 22px 50px -32px rgba(60, 90, 60, 0.35);
+  --tpl-rule: rgba(100, 140, 100, 0.3);
+  --tpl-band-surface: linear-gradient(
+    120deg,
+    rgba(183, 209, 173, 0.5),
+    rgba(240, 225, 222, 0.5)
+  );
+  --tpl-input-bg: rgba(255, 255, 255, 0.85);
 }
 .theme-garden h1,
 .theme-garden h2,
@@ -1501,7 +1922,7 @@
   font-weight: 400;
   font-style: italic;
   text-transform: none;
-  letter-spacing: 0;
+  letter-spacing: -0.015em;
 }
 .theme-garden .font-script {
   font-family: "Newsreader", serif !important;
@@ -1510,61 +1931,55 @@
   font-family: "Newsreader", serif !important;
   font-size: 15px;
   text-transform: none;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
   font-style: italic;
+  font-weight: 400;
 }
 .theme-garden .glass-card {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.85),
-    rgba(255, 255, 255, 0.55)
-  );
-  border: 1px solid rgba(143, 166, 115, 0.24);
-  box-shadow: 0 22px 46px -30px rgba(70, 95, 55, 0.35);
-  border-radius: 22px !important;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 22px 50px -32px rgba(60, 90, 60, 0.35);
+  border-radius: 26px !important;
+  backdrop-filter: none;
 }
 .theme-garden .tpl-btn,
 .theme-garden .tpl-icon {
-  background: linear-gradient(135deg, #7c9761, #4e6b3b);
-  color: #f7faf2;
+  background: linear-gradient(135deg, #b7d1ad, #8fae86);
+  color: #1f2d1f;
   border-radius: 999px;
 }
 .theme-garden .tpl-photo {
-  border-radius: 22px;
+  border-radius: 26px;
   filter: none;
 }
 .theme-garden .tpl-band {
   background: linear-gradient(
     120deg,
-    rgba(196, 214, 175, 0.6),
-    rgba(232, 224, 190, 0.5)
+    rgba(183, 209, 173, 0.5),
+    rgba(240, 225, 222, 0.5)
   );
-  color: #2c3626;
-}
-@keyframes leafSway {
-  0%,
-  100% {
-    transform: rotate(-2deg) translateY(0);
-  }
-  50% {
-    transform: rotate(2deg) translateY(-3px);
-  }
-}
-.theme-garden img[alt=""]:not(.animate-petal) {
-  animation: leafSway 7s ease-in-out infinite;
-  transform-origin: 30% 20%;
+  color: #2f3d2f;
+  border-radius: 26px;
 }
 
-/* ── Shoreline — pastel aqua & sand ─────────────────────────────────── */
+/* ── Shoreline — sea glass & sand ── */
 .theme-shoreline {
-  background: linear-gradient(180deg, #fcf8f1, #ecf5f5);
-  --foreground: #1f3c45;
-  --muted-foreground: #65838b;
-  --border: rgba(31, 60, 69, 0.13);
-  --gold: #8bb6bd;
-  --rose: #3a6d78;
-  --gradient-gold: linear-gradient(135deg, #7fadb6, #39707c);
-  --btn-ink: #f7fbfb;
+  background: linear-gradient(180deg, #fbf8f1 0%, #e9f3f2 100%);
+  --foreground: #233b3f;
+  --muted-foreground: #5f7a7d;
+  --border: rgba(70, 140, 140, 0.28);
+  --gold: #5aa3a1;
+  --rose: #2e6b6b;
+  --gradient-gold: linear-gradient(135deg, #8fd0cd, #5aa3a1);
+  --btn-ink: #0f2a2b;
+  --tpl-radius: 20px;
+  --tpl-radius-sm: 12px;
+  --tpl-surface: rgba(255, 255, 255, 0.75);
+  --tpl-surface-border: rgba(255, 255, 255, 0.9);
+  --tpl-shadow: 0 20px 48px -30px rgba(40, 90, 90, 0.3);
+  --tpl-rule: rgba(70, 140, 140, 0.3);
+  --tpl-band-surface: linear-gradient(120deg, #d9eeed, #f3ebd9);
+  --tpl-input-bg: rgba(255, 255, 255, 0.85);
 }
 .theme-shoreline h1,
 .theme-shoreline h2,
@@ -1574,58 +1989,61 @@
   font-family: "Tenor Sans", sans-serif !important;
   font-weight: 400;
   font-style: normal;
-  text-transform: none;
-  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
 }
 .theme-shoreline .font-script {
   font-family: "Cormorant Garamond", serif !important;
 }
 .theme-shoreline .font-kicker {
   font-family: "Nunito Sans", sans-serif !important;
-  font-size: 10px;
+  font-size: 10.5px;
   text-transform: uppercase;
   letter-spacing: 0.3em;
   font-style: normal;
+  font-weight: 500;
 }
 .theme-shoreline .glass-card {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.82),
-    rgba(255, 255, 255, 0.5)
-  );
-  border: 1px solid rgba(139, 182, 189, 0.28);
-  box-shadow: 0 22px 44px -30px rgba(35, 80, 90, 0.35);
-  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 20px 48px -30px rgba(40, 90, 90, 0.3);
+  border-radius: 20px !important;
+  backdrop-filter: none;
 }
 .theme-shoreline .tpl-btn,
 .theme-shoreline .tpl-icon {
-  background: linear-gradient(135deg, #7fadb6, #39707c);
-  color: #f7fbfb;
+  background: linear-gradient(135deg, #8fd0cd, #5aa3a1);
+  color: #0f2a2b;
   border-radius: 999px;
 }
 .theme-shoreline .tpl-photo {
-  border-radius: 18px;
+  border-radius: 20px;
   filter: none;
 }
 .theme-shoreline .tpl-band {
-  background: linear-gradient(
-    120deg,
-    rgba(178, 212, 216, 0.6),
-    rgba(238, 224, 199, 0.55)
-  );
-  color: #1f3c45;
+  background: linear-gradient(120deg, #d9eeed, #f3ebd9);
+  color: #233b3f;
+  border-radius: 20px;
 }
 
-/* ── Deco — pastel jade & gilt ───────────────────────────────────────── */
+/* ── Deco — jade, black & gilt ── */
 .theme-deco {
-  background: linear-gradient(180deg, #f6f3ea, #eef0e7);
-  --foreground: #1f4241;
-  --muted-foreground: #5f7b7a;
-  --border: rgba(31, 66, 65, 0.18);
-  --gold: #c2a15c;
-  --rose: #7d6528;
-  --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
-  --btn-ink: #3a2e1c;
+  background: linear-gradient(180deg, #f4f1e8, #ebeee4);
+  --foreground: #1d221f;
+  --muted-foreground: #5e6a63;
+  --border: rgba(29, 34, 31, 0.25);
+  --gold: #b99a4a;
+  --rose: #2f6b5b;
+  --gradient-gold: linear-gradient(135deg, #d9c27a, #b99a4a);
+  --btn-ink: #1a1608;
+  --tpl-radius: 0px;
+  --tpl-radius-sm: 0px;
+  --tpl-surface: rgba(255, 255, 255, 0.55);
+  --tpl-surface-border: rgba(29, 34, 31, 0.35);
+  --tpl-shadow: none;
+  --tpl-rule: rgba(29, 34, 31, 0.3);
+  --tpl-band-surface: linear-gradient(120deg, #cfe0d6, #e3d9b8);
+  --tpl-input-bg: rgba(255, 255, 255, 0.8);
 }
 .theme-deco h1,
 .theme-deco h2,
@@ -1636,7 +2054,7 @@
   font-weight: 400;
   font-style: normal;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
 }
 .theme-deco .font-script {
   font-family: "Poiret One", sans-serif !important;
@@ -1645,55 +2063,60 @@
   font-family: "Josefin Sans", sans-serif !important;
   font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.4em;
+  letter-spacing: 0.36em;
   font-style: normal;
+  font-weight: 500;
 }
 .theme-deco .glass-card {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.82),
-    rgba(255, 255, 255, 0.5)
-  );
-  border: 1px solid rgba(194, 161, 92, 0.3);
-  box-shadow: 0 20px 44px -30px rgba(35, 70, 68, 0.35);
-  border-radius: 0 !important;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(29, 34, 31, 0.35);
+  box-shadow: none;
+  border-radius: 0px !important;
+  backdrop-filter: none;
 }
 .theme-deco .tpl-btn,
 .theme-deco .tpl-icon {
-  background: linear-gradient(135deg, #ebd3a0, #c9a45c);
-  color: #3a2e1c;
-  border-radius: 0;
+  background: linear-gradient(135deg, #d9c27a, #b99a4a);
+  color: #1a1608;
+  border-radius: 0px;
 }
 .theme-deco .tpl-photo {
-  border-radius: 0;
+  border-radius: 0px;
   filter: none;
 }
 .theme-deco .tpl-band {
-  background: linear-gradient(
-    120deg,
-    rgba(176, 201, 197, 0.55),
-    rgba(224, 201, 146, 0.55)
-  );
-  color: #1f4241;
+  background: linear-gradient(120deg, #cfe0d6, #e3d9b8);
+  color: #1d221f;
+  border-radius: 0px;
 }
 .theme-deco .tpl-pattern {
   background-image: repeating-linear-gradient(
     90deg,
-    rgba(194, 161, 92, 0.08) 0 1px,
-    transparent 1px 14px
+    rgba(185, 154, 74, 0.09) 0 1px,
+    transparent 1px 22px
   );
+  background-size: auto;
 }
 
-/* ── Film — warm sepia, photo-led ───────────────────────────────────── */
+/* ── Film — warm sepia, photo-led ── */
 .theme-film {
-  background: linear-gradient(180deg, #161311, #1e1a17);
-  --foreground: #f4ece1;
-  --muted-foreground: #a89c8d;
-  --border: rgba(244, 236, 225, 0.18);
-  --gold: #d9c3a0;
-  --rose: #f0e3cf;
-  --gradient-gold: linear-gradient(135deg, #efe3d1, #cdb494);
-  --btn-ink: #241d16;
+  background: linear-gradient(180deg, #171310, #1d1814);
+  --foreground: #efe6d9;
+  --muted-foreground: #a79b8b;
+  --border: rgba(239, 230, 217, 0.16);
+  --gold: #c9a97a;
+  --rose: #d6b48a;
+  --gradient-gold: linear-gradient(135deg, #e0c79b, #b8955f);
+  --btn-ink: #1e160e;
+  --tpl-radius: 3px;
+  --tpl-radius-sm: 3px;
+  --tpl-surface: rgba(255, 255, 255, 0.04);
+  --tpl-surface-border: rgba(239, 230, 217, 0.14);
+  --tpl-shadow: none;
+  --tpl-rule: rgba(239, 230, 217, 0.16);
+  --tpl-band-surface: rgba(201, 169, 122, 0.16);
+  --tpl-input-bg: rgba(255, 255, 255, 0.06);
+  color-scheme: dark;
 }
 .theme-film h1,
 .theme-film h2,
@@ -1702,9 +2125,9 @@
 .theme-film .font-display {
   font-family: "Crimson Pro", serif !important;
   font-weight: 400;
-  font-style: normal;
+  font-style: italic;
   text-transform: none;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.01em;
 }
 .theme-film .font-script {
   font-family: "Crimson Pro", serif !important;
@@ -1715,131 +2138,127 @@
   text-transform: uppercase;
   letter-spacing: 0.28em;
   font-style: normal;
+  font-weight: 500;
 }
 .theme-film .glass-card {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.1),
-    rgba(255, 255, 255, 0.03)
-  );
-  border: 1px solid rgba(217, 195, 160, 0.24);
-  box-shadow: 0 24px 50px -34px rgba(0, 0, 0, 0.7);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(239, 230, 217, 0.14);
+  box-shadow: none;
   border-radius: 3px !important;
+  backdrop-filter: none;
 }
 .theme-film .tpl-btn,
 .theme-film .tpl-icon {
-  background: linear-gradient(135deg, #efe3d1, #cdb494);
-  color: #241d16;
+  background: linear-gradient(135deg, #e0c79b, #b8955f);
+  color: #1e160e;
   border-radius: 3px;
 }
 .theme-film .tpl-photo {
   border-radius: 3px;
-  filter: sepia(0.18) contrast(1.04);
+  filter: sepia(0.35) contrast(1.05);
 }
 .theme-film .tpl-band {
-  background: linear-gradient(
-    120deg,
-    rgba(217, 195, 160, 0.24),
-    rgba(255, 255, 255, 0.06)
-  );
-  color: #f7efe3;
+  background: rgba(201, 169, 122, 0.16);
+  color: #efe6d9;
+  border-radius: 3px;
 }
 
-/* ── Lotus — ivory & gold, falling lotus ────────────────────────────── */
+/* ── Lotus — ivory & gold, falling lotus ── */
 .theme-lotus {
   background: linear-gradient(180deg, #fdf9f0 0%, #f6eddc 52%, #fbf5e8 100%);
-  --foreground: #2f2a22;
-  --muted-foreground: #8a7b60;
-  --border: rgba(192, 153, 63, 0.28);
-  --gold: #c0993f;
-  --rose: #96712a;
-  --gradient-gold: linear-gradient(135deg, #e8cf95, #c0993f);
-  --btn-ink: #2f2a22;
-  /* --gradient-hero (:root) is never re-themed by any other .theme-* block
-     either — it's what .invite-opener's own background is built from, so
-     every opener shows this same generic pink-toned gradient underneath
-     its own graphics. Every other template's opener content (envelope,
-     veil/gate panels, curtain photo) is opaque enough to hide it almost
-     entirely; the lotus opener's silk panels part to a real gap down the
-     middle with nothing else covering most of it below the vine, so the
-     mismatch — pink showing through an ivory/gold template — was actually
-     visible instead of just theoretical. Matches this theme's own page
-     background exactly, so the opener and the page it fades into agree. */
-  --gradient-hero: linear-gradient(
-    180deg,
-    #fdf9f0 0%,
-    #f6eddc 52%,
-    #fbf5e8 100%
+  --foreground: #4a3a2a;
+  --muted-foreground: #8a7761;
+  --border: rgba(196, 150, 74, 0.3);
+  --gold: #c4964a;
+  --rose: #9a6a2a;
+  --gradient-gold: linear-gradient(135deg, #ead7a2, #c4964a);
+  --btn-ink: #3a2a12;
+  --tpl-radius: 8px;
+  --tpl-radius-sm: 6px;
+  --tpl-surface: rgba(255, 252, 245, 0.86);
+  --tpl-surface-border: rgba(196, 150, 74, 0.3);
+  --tpl-shadow: 0 18px 44px -30px rgba(150, 110, 50, 0.35);
+  --tpl-rule: rgba(196, 150, 74, 0.35);
+  --tpl-band-surface: linear-gradient(
+    120deg,
+    rgba(234, 215, 162, 0.55),
+    rgba(255, 243, 220, 0.55)
   );
+  --tpl-input-bg: rgba(255, 252, 245, 0.9);
 }
 .theme-lotus h1,
 .theme-lotus h2,
 .theme-lotus h3,
 .theme-lotus h4,
 .theme-lotus .font-display {
-  font-family: "Playfair Display", serif !important;
-  font-weight: 500;
+  font-family: "Cinzel", serif !important;
+  font-weight: 600;
   font-style: normal;
   text-transform: none;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.04em;
 }
 .theme-lotus .font-script {
   font-family: "Cormorant Garamond", serif !important;
 }
 .theme-lotus .font-kicker {
   font-family: "Lato", sans-serif !important;
-  font-size: 10px;
+  font-size: 10.5px;
   text-transform: uppercase;
   letter-spacing: 0.3em;
   font-style: normal;
+  font-weight: 500;
 }
 .theme-lotus .glass-card {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 253, 247, 0.86),
-    rgba(255, 251, 240, 0.54)
-  );
-  border: 1px solid rgba(192, 153, 63, 0.3);
-  box-shadow: 0 22px 48px -28px rgba(150, 113, 42, 0.4);
-  border-radius: 6px !important;
+  background: rgba(255, 252, 245, 0.86);
+  border: 1px solid rgba(196, 150, 74, 0.3);
+  box-shadow: 0 18px 44px -30px rgba(150, 110, 50, 0.35);
+  border-radius: 8px !important;
+  backdrop-filter: none;
 }
 .theme-lotus .tpl-btn,
 .theme-lotus .tpl-icon {
-  background: linear-gradient(135deg, #e8cf95, #c0993f);
-  color: #2f2a22;
+  background: linear-gradient(135deg, #ead7a2, #c4964a);
+  color: #3a2a12;
   border-radius: 6px;
 }
 .theme-lotus .tpl-photo {
-  border-radius: 6px;
+  border-radius: 8px;
   filter: none;
 }
 .theme-lotus .tpl-band {
   background: linear-gradient(
     120deg,
-    rgba(232, 207, 149, 0.55),
-    rgba(246, 237, 220, 0.7)
+    rgba(234, 215, 162, 0.55),
+    rgba(255, 243, 220, 0.55)
   );
-  color: #2f2a22;
-}
-.theme-lotus .tpl-pattern {
-  background-image: radial-gradient(
-    circle at 14px 14px,
-    rgba(192, 153, 63, 0.07) 1.6px,
-    transparent 1.6px
-  );
-  background-size: 30px 30px;
+  color: #4a3a2a;
+  border-radius: 8px;
 }
 
-/* ── Bloom — blush rose-gold, arched ────────────────────────────────── */
+/* ── Bloom — blush & rose-gold, arched ── */
 .theme-bloom {
-  background: linear-gradient(180deg, #fdf8f6, #f7eee9);
+  background:
+    radial-gradient(100% 60% at 50% -5%, #fbe9ea 0%, transparent 65%),
+    linear-gradient(180deg, #fdf8f6, #f6ecea);
   --foreground: #3f2e2b;
-  --muted-foreground: #8b736e;
-  --border: rgba(63, 46, 43, 0.12);
-  --gold: #d3a293;
-  --rose: #a06455;
-  --gradient-gold: linear-gradient(135deg, #e2b6a4, #b07463);
-  --btn-ink: #fff8f5;
+  --muted-foreground: #8a7370;
+  --border: rgba(196, 120, 120, 0.28);
+  --gold: #c98a80;
+  --rose: #a85f5a;
+  --gradient-gold: linear-gradient(135deg, #f0c4b8, #c98a80);
+  --btn-ink: #3a1f1c;
+  --tpl-radius: 28px;
+  --tpl-radius-sm: 16px;
+  --tpl-surface: rgba(255, 255, 255, 0.85);
+  --tpl-surface-border: rgba(255, 255, 255, 0.95);
+  --tpl-shadow: 0 24px 54px -32px rgba(168, 95, 90, 0.35);
+  --tpl-rule: rgba(196, 120, 120, 0.3);
+  --tpl-band-surface: linear-gradient(
+    120deg,
+    rgba(240, 196, 184, 0.55),
+    rgba(251, 233, 234, 0.6)
+  );
+  --tpl-input-bg: rgba(255, 255, 255, 0.88);
 }
 .theme-bloom h1,
 .theme-bloom h2,
@@ -1850,43 +2269,42 @@
   font-weight: 400;
   font-style: normal;
   text-transform: none;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
 }
 .theme-bloom .font-script {
   font-family: "Cormorant Garamond", serif !important;
 }
 .theme-bloom .font-kicker {
   font-family: "Outfit", sans-serif !important;
-  font-size: 10px;
+  font-size: 10.5px;
   text-transform: uppercase;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.26em;
   font-style: normal;
+  font-weight: 500;
 }
 .theme-bloom .glass-card {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.85),
-    rgba(255, 255, 255, 0.55)
-  );
-  border: 1px solid rgba(211, 162, 147, 0.26);
-  box-shadow: 0 24px 50px -32px rgba(140, 90, 78, 0.4);
-  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 24px 54px -32px rgba(168, 95, 90, 0.35);
+  border-radius: 28px !important;
+  backdrop-filter: none;
 }
 .theme-bloom .tpl-btn,
 .theme-bloom .tpl-icon {
-  background: linear-gradient(135deg, #e2b6a4, #b07463);
-  color: #fff8f5;
+  background: linear-gradient(135deg, #f0c4b8, #c98a80);
+  color: #3a1f1c;
   border-radius: 999px;
 }
 .theme-bloom .tpl-photo {
-  border-radius: 200px 200px 18px 18px;
+  border-radius: 28px;
   filter: none;
 }
 .theme-bloom .tpl-band {
   background: linear-gradient(
     120deg,
-    rgba(232, 197, 185, 0.6),
-    rgba(233, 201, 138, 0.55)
+    rgba(240, 196, 184, 0.55),
+    rgba(251, 233, 234, 0.6)
   );
   color: #3f2e2b;
+  border-radius: 28px;
 }

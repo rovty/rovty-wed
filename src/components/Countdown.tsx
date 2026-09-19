@@ -11,34 +11,43 @@ function diff(target: Date) {
   return { days, hours, minutes, seconds };
 }
 
+// Quiet, typographic countdown: four numbers separated by hairline rules,
+// styled entirely by the template's tokens (.tpl-countdown in styles.css).
+// No boxes — boxes were what made every template look like the same
+// dashboard widget.
 export function Countdown({ target }: { target: Date }) {
-  const [t, setT] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [t, setT] = useState(() => diff(target));
+  const [live, setLive] = useState(false);
   useEffect(() => {
     setT(diff(target));
+    setLive(true);
     const id = setInterval(() => setT(diff(target)), 1000);
     return () => clearInterval(id);
   }, [target]);
 
+  const past = t.days === 0 && t.hours === 0 && t.minutes === 0 && t.seconds === 0 && live;
+  if (past) {
+    return (
+      <p className="font-kicker text-rose" aria-live="polite">
+        Today is the day
+      </p>
+    );
+  }
+
   const items: [string, number][] = [
     ["Days", t.days],
     ["Hours", t.hours],
-    ["Minutes", t.minutes],
-    ["Seconds", t.seconds],
+    ["Min", t.minutes],
+    ["Sec", t.seconds],
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-2 sm:gap-4">
-      {items.map(([label, value]) => (
-        <div
-          key={label}
-          className="glass-card rounded-2xl px-2 py-4 text-center sm:py-6"
-        >
-          <div className="font-display text-3xl text-gradient-gold tabular-nums sm:text-5xl">
-            {String(value).padStart(2, "0")}
-          </div>
-          <div className="mt-1 text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground sm:text-xs">
-            {label}
-          </div>
+    <div className="tpl-countdown" role="timer" aria-live="off" aria-label="Countdown to the wedding">
+      {items.map(([label, value], i) => (
+        <div key={label} className="tpl-countdown__cell">
+          {i > 0 && <span className="tpl-countdown__rule" aria-hidden="true" />}
+          <div className="tpl-countdown__num font-display tabular-nums">{String(value).padStart(2, "0")}</div>
+          <div className="tpl-countdown__label font-kicker">{label}</div>
         </div>
       ))}
     </div>

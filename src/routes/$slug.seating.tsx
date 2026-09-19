@@ -135,7 +135,7 @@ function SeatingPage() {
       <main
         className={`theme-${wedding.template} grid min-h-[100svh] place-items-center px-5`}
       >
-        <div className="glass-card max-w-sm rounded-3xl p-8 text-center">
+        <div className="tpl-card tpl-surface-body max-w-sm text-center">
           <Ornament />
           <h2 className="font-display text-2xl">Invitation Required</h2>
           <p className="mt-3 text-sm text-muted-foreground">
@@ -152,7 +152,7 @@ function SeatingPage() {
       <main
         className={`theme-${wedding.template} grid min-h-[100svh] place-items-center px-5`}
       >
-        <div className="glass-card relative max-w-sm rounded-3xl p-8 text-center">
+        <div className="tpl-card tpl-surface-body relative max-w-sm text-center">
           {decorative && (
             <>
               <RoseCorner position="tl" size={80} opacity={0.6} />
@@ -223,7 +223,7 @@ function SeatingPage() {
 
         {/* Table number card */}
         <Reveal delay={450} className="mt-8 w-full">
-          <div className="glass-card rounded-3xl p-6 text-center sm:p-8">
+          <div className="tpl-card tpl-surface-body text-center">
             <p className="text-[0.65rem] font-medium uppercase tracking-[0.35em] text-muted-foreground">
               Your Table
             </p>
@@ -249,7 +249,7 @@ function SeatingPage() {
 
         {/* Tablemates */}
         <Reveal delay={550} className="mt-6 w-full">
-          <div className="glass-card rounded-3xl p-6 sm:p-8">
+          <div className="tpl-card tpl-surface-body">
             <p className="text-center text-[0.65rem] font-medium uppercase tracking-[0.35em] text-muted-foreground">
               You're seated with
             </p>
@@ -288,7 +288,7 @@ function SeatingPage() {
           <p className="mb-3 text-center text-[0.65rem] font-medium uppercase tracking-[0.35em] text-muted-foreground">
             Your Location
           </p>
-          <div className="glass-card overflow-hidden rounded-3xl p-2 sm:p-3">
+          <div className="tpl-card p-2 sm:p-3">
             <div className="relative">
               {w.floorPlanUrl ? (
                 <img
@@ -336,7 +336,7 @@ function SeatingPage() {
               href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(w.address ?? w.venue ?? "")}`}
               target="_blank"
               rel="noreferrer"
-              className="glass-card flex items-center gap-3 rounded-2xl p-4 transition-transform hover:-translate-y-0.5 active:scale-[0.98]"
+              className="tpl-card tpl-row"
             >
               <div className="tpl-icon grid h-10 w-10 shrink-0 place-items-center">
                 <MapPin className="h-5 w-5" />

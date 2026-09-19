@@ -2,7 +2,6 @@
 // link" and personalised WhatsApp link the admin hands out points here.
 import {
   Calendar,
-  Clock,
   MapPin,
   Heart,
   ChevronRight,
@@ -20,8 +19,8 @@ import { InlineRsvp } from "@/components/InlineRsvp";
 import { InvitationOpener } from "@/components/InvitationOpener";
 import { Monogram } from "@/components/Monogram";
 import { Motif } from "@/components/Motif";
+import { Reveal } from "@/components/wedding/Reveal";
 import {
-  formatDayMonth,
   formatWeekdayYear,
   formatTime,
   formatScriptDate,
@@ -32,7 +31,9 @@ import {
   familyLine,
   TEMPLATE_META,
   type Motif as MotifKind,
+  type PhotoFrame,
   type PublicWedding,
+  type SectionStyle,
 } from "@/lib/wedding";
 import { supabase } from "@/integrations/supabase/client";
 import coupleImg from "@/assets/couple.webp";
@@ -41,7 +42,7 @@ import venueImg from "@/assets/venue.webp";
 export function WeddingNotLive() {
   return (
     <main className="grid min-h-[100svh] place-items-center px-5 text-center">
-      <div className="glass-card max-w-sm rounded-3xl p-8">
+      <div className="tpl-card tpl-surface-body max-w-sm">
         <h1 className="font-display text-2xl">
           This invitation isn't live yet
         </h1>
@@ -111,217 +112,224 @@ function Hero({
 }) {
   const { hero, motif } = TEMPLATE_META[wedding.template];
   const initials = `${wedding.groom.charAt(0)} & ${wedding.bride.charAt(0)}`;
+  const photo = wedding.couplePhotoUrl ?? coupleImg;
+  const names = `${wedding.groom} & ${wedding.bride}`;
+  const dateLine = formatLongDate(wedding.date);
+  const placeLine = [wedding.venue, wedding.hall].filter(Boolean).join(" · ");
 
   return (
     <section className="relative">
+      {/* ── centered: classic / chapel / garden — monogram, family line,
+          names stacked large, motif. The most "invitation card" layout. */}
       {hero === "centered" && (
-        <div className="relative px-5 pt-12 pb-2">
+        <div className="relative px-5 pt-14 pb-2 sm:pt-20">
           {decorative && <RoseCorner position="tl" size={140} opacity={0.2} />}
-          <div className="relative z-20 mx-auto flex max-w-xl flex-col items-center text-center animate-fade-up">
-            <Monogram initials={initials} size={74} />
-            <p className="font-kicker mt-5 whitespace-pre-line text-rose">
+          <div className="tpl-stagger relative z-20 mx-auto flex tpl-col flex-col items-center text-center">
+            <Monogram initials={initials} size={72} />
+            <p className="font-kicker mt-6 whitespace-pre-line text-rose">
               {familyLine(wedding)}
             </p>
-            <div className="mt-3.5">
-              <Motif motif={motif} />
-            </div>
-            <h1 className="mt-3.5 font-display text-6xl leading-[0.95] text-foreground sm:text-7xl md:text-8xl">
-              {wedding.groom}
-              <span className="mx-2 font-script italic text-gradient-gold">
-                &
+            <h1 className="tpl-names mt-5 font-display text-foreground">
+              <span className="block">{wedding.groom}</span>
+              <span className="font-script my-1 block text-[0.55em] italic leading-none text-gradient-gold">
+                &amp;
               </span>
-              {wedding.bride}
+              <span className="block">{wedding.bride}</span>
             </h1>
-            <div className="mt-4">
+            <div className="mt-6">
               <Motif motif={motif} />
             </div>
+            <p className="font-kicker mt-5 text-muted-foreground">{dateLine}</p>
           </div>
         </div>
       )}
 
+      {/* ── framed: poruwa / nikkah / deco — a double gold rule frames the
+          names; formal, traditional, symmetrical. */}
       {hero === "framed" && (
-        <div className="relative px-5 pt-12 pb-2 animate-fade-up">
-          {decorative && <RoseCorner position="tl" size={140} opacity={0.2} />}
-          <div
-            className="relative z-20 mx-auto max-w-xl p-1.5"
-            style={{
-              border: "1px solid var(--gold)",
-              background:
-                "linear-gradient(160deg, rgba(255,255,255,.5), rgba(255,255,255,.12))",
-            }}
-          >
-            <div
-              className="flex flex-col items-center px-6 py-9 text-center"
-              style={{ border: "1px solid var(--border)" }}
-            >
-              <Monogram initials={initials} size={70} />
-              <p className="font-kicker mt-4.5 whitespace-pre-line text-muted-foreground">
-                {familyLine(wedding)}
-              </p>
-              <h1 className="mt-4 font-display text-5xl leading-[1.06] text-foreground sm:text-6xl">
-                {wedding.groom}
-                <br />
-                <span className="font-script italic text-gradient-gold text-[0.8em]">
-                  &
-                </span>
-                <br />
-                {wedding.bride}
-              </h1>
-              <div className="mt-5">
-                <Motif motif={motif} />
+        <div className="relative px-5 pt-12 pb-2 sm:pt-16">
+          <div className="tpl-stagger relative z-20 mx-auto tpl-col">
+            <div className="tpl-frame p-1.5">
+              <div className="tpl-frame__inner flex flex-col items-center px-6 py-10 text-center sm:px-10 sm:py-14">
+                <Monogram initials={initials} size={64} />
+                <p className="font-kicker mt-6 whitespace-pre-line text-muted-foreground">
+                  {familyLine(wedding)}
+                </p>
+                <h1 className="tpl-names mt-5 font-display text-foreground">
+                  <span className="block">{wedding.groom}</span>
+                  <span className="font-script my-1 block text-[0.5em] italic leading-none text-gradient-gold">
+                    &amp;
+                  </span>
+                  <span className="block">{wedding.bride}</span>
+                </h1>
+                <div className="mt-6">
+                  <Motif motif={motif} />
+                </div>
+                <p className="font-kicker mt-5 text-muted-foreground">
+                  {dateLine}
+                </p>
               </div>
             </div>
           </div>
         </div>
       )}
 
+      {/* ── band: thali — a full-width coloured band carries the names;
+          celebratory, saturated. */}
       {hero === "band" && (
-        <div className="tpl-band relative overflow-hidden px-5 py-14 text-center animate-fade-up">
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(255,255,255,.35), transparent 60%)",
-            }}
-          />
-          <div className="relative z-10 mx-auto flex max-w-xl flex-col items-center">
-            <Monogram initials={initials} size={74} />
+        <div
+          className="tpl-band relative overflow-hidden px-5 py-16 text-center sm:py-20"
+          style={{ borderRadius: 0 }}
+        >
+          <div className="tpl-stagger relative z-10 mx-auto flex tpl-col flex-col items-center">
+            <Monogram initials={initials} size={72} />
             <p
-              className="font-kicker mt-5 whitespace-pre-line"
-              style={{ opacity: 0.85, color: "inherit" }}
+              className="font-kicker mt-6 whitespace-pre-line"
+              style={{ opacity: 0.85 }}
             >
               {familyLine(wedding)}
             </p>
-            <h1 className="mt-3.5 font-display text-6xl leading-[0.95] sm:text-7xl">
-              {wedding.groom} &amp; {wedding.bride}
+            <h1 className="tpl-names mt-5 font-display">
+              {wedding.groom} <span className="font-script italic">&amp;</span>{" "}
+              {wedding.bride}
             </h1>
-            <p
-              className="mt-3.5 text-xs uppercase tracking-[0.24em]"
-              style={{ opacity: 0.8 }}
-            >
-              {formatLongDate(wedding.date)}
+            <div className="mt-6" style={{ color: "inherit" }}>
+              <Motif motif={motif} />
+            </div>
+            <p className="font-kicker mt-5" style={{ opacity: 0.8 }}>
+              {dateLine}
             </p>
           </div>
         </div>
       )}
 
+      {/* ── typo: noir / quiet — left-aligned, typographic, editorial rule
+          under the names, date and venue as a small row. */}
       {hero === "typo" && (
-        <div className="relative px-5 pt-12 pb-2 animate-fade-up">
-          <div className="relative z-20 mx-auto max-w-xl">
+        <div className="relative px-5 pt-14 pb-2 sm:pt-20">
+          <div className="tpl-stagger relative z-20 mx-auto tpl-col">
             <div className="flex items-center gap-4">
-              <Monogram initials={initials} size={56} />
+              <Monogram initials={initials} size={52} />
               <div
                 className="h-px flex-1"
-                style={{
-                  background:
-                    "linear-gradient(90deg, var(--gold), transparent)",
-                }}
+                style={{ background: "var(--tpl-rule)" }}
               />
             </div>
-            <p className="font-kicker mt-5 text-muted-foreground">
+            <p className="font-kicker mt-8 text-muted-foreground">
               The wedding of
             </p>
-            <h1 className="mt-3 font-display text-6xl leading-[0.96] text-foreground sm:text-7xl">
-              {wedding.groom}
-              <br />
-              &amp; {wedding.bride}
+            <h1 className="tpl-names tpl-names--left mt-3 font-display text-foreground">
+              <span className="block">{wedding.groom}</span>
+              <span className="block">&amp; {wedding.bride}</span>
             </h1>
             <div
-              className="mt-5 flex items-end justify-between gap-4 border-t pt-3.5"
-              style={{ borderColor: "var(--border)" }}
+              className="mt-7 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t pt-4"
+              style={{ borderColor: "var(--tpl-rule)" }}
             >
-              <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-                {formatLongDate(wedding.date)}
-              </p>
-              {wedding.venue && (
-                <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-                  {wedding.venue}
-                </p>
+              <p className="font-kicker text-muted-foreground">{dateLine}</p>
+              {placeLine && (
+                <p className="font-kicker text-muted-foreground">{placeLine}</p>
               )}
             </div>
           </div>
         </div>
       )}
 
+      {/* ── photoTop: shoreline / film — the photo *is* the hero, edge to
+          edge, names set into a gradient at its foot. Tall on phones so it
+          fills the first screen like a poster. */}
       {hero === "photoTop" && (
-        <div className="relative animate-fade-up">
-          <img
-            src={wedding.couplePhotoUrl ?? coupleImg}
-            alt={`${wedding.groom} & ${wedding.bride}`}
-            loading="eager"
-            className="tpl-photo block h-[280px] w-full object-cover sm:h-[380px]"
-          />
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(0,0,0,.12) 0%, rgba(0,0,0,.04) 38%, rgba(0,0,0,.72) 100%)",
-            }}
-          />
-          <div className="absolute inset-x-0 bottom-0 px-5 pb-6 text-center text-white">
-            <div className="flex justify-center">
-              <Monogram initials={initials} size={64} />
-            </div>
-            <p
-              className="font-kicker mt-4.5 whitespace-pre-line"
-              style={{ color: "#fff", opacity: 0.86, fontStyle: "normal" }}
-            >
-              {familyLine(wedding)}
-            </p>
-            <h1 className="mt-3 font-display text-5xl leading-none sm:text-6xl">
-              {wedding.groom} &amp; {wedding.bride}
-            </h1>
-          </div>
-        </div>
-      )}
-
-      {hero === "split" && (
-        <div className="relative px-5 pt-12 pb-2 animate-fade-up">
-          <div className="relative z-20 mx-auto grid max-w-3xl items-center gap-8 md:grid-cols-2 md:gap-11">
-            <div className="text-center md:text-left">
-              <div className="flex justify-center md:justify-start">
-                <Monogram initials={initials} size={64} />
-              </div>
-              <p className="font-kicker mt-4.5 whitespace-pre-line text-rose">
+        <div className="relative">
+          <div className="relative h-[78svh] min-h-[520px] w-full overflow-hidden sm:h-[72vh]">
+            <img
+              src={photo}
+              alt={names}
+              loading="eager"
+              fetchPriority="high"
+              className="tpl-photo tpl-photo--hero block h-full w-full object-cover"
+              style={{ borderRadius: 0 }}
+            />
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(0,0,0,.18) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,.15) 55%, rgba(0,0,0,.78) 100%)",
+              }}
+            />
+            <div className="tpl-stagger absolute inset-x-0 bottom-0 px-6 pb-9 text-center text-white sm:pb-14">
+              <p
+                className="font-kicker whitespace-pre-line"
+                style={{ color: "#fff", opacity: 0.85 }}
+              >
                 {familyLine(wedding)}
               </p>
-              <h1 className="mt-3 font-display text-5xl leading-[0.99] text-foreground sm:text-6xl">
-                {wedding.groom} &amp; {wedding.bride}
-              </h1>
-              <p className="mt-4.5 max-w-[34ch] text-sm leading-relaxed text-muted-foreground">
-                Request the pleasure of your company as we celebrate our
-                wedding.
-              </p>
-              <p
-                className="mt-4.5 border-t pt-3.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground"
-                style={{ borderColor: "var(--border)" }}
+              <h1
+                className="tpl-names mt-3 font-display"
+                style={{ color: "#fff" }}
               >
-                {formatLongDate(wedding.date)}
-                {wedding.venue ? ` · ${wedding.venue}` : ""}
+                {wedding.groom}{" "}
+                <span className="font-script italic">&amp;</span>{" "}
+                {wedding.bride}
+              </h1>
+              <p
+                className="font-kicker mt-4"
+                style={{ color: "#fff", opacity: 0.8 }}
+              >
+                {dateLine}
               </p>
             </div>
-            <img
-              src={wedding.couplePhotoUrl ?? coupleImg}
-              alt={`${wedding.groom} & ${wedding.bride}`}
-              loading="eager"
-              className="tpl-photo block w-full object-cover"
-            />
           </div>
         </div>
       )}
 
+      {/* ── split: editorial / bloom — photo beside the words on desktop,
+          photo then words on phones. Magazine opener. */}
+      {hero === "split" && (
+        <div className="relative px-5 pt-8 pb-2 sm:pt-14">
+          <div className="tpl-stagger relative z-20 mx-auto grid tpl-col-wide items-center gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] md:gap-12">
+            <Photo
+              src={photo}
+              alt={names}
+              frame={TEMPLATE_META[wedding.template].photo}
+              priority
+            />
+            <div className="text-center md:text-left">
+              <div className="flex justify-center md:justify-start">
+                <Monogram initials={initials} size={60} />
+              </div>
+              <p className="font-kicker mt-6 whitespace-pre-line text-rose">
+                {familyLine(wedding)}
+              </p>
+              <h1 className="tpl-names tpl-names--split mt-4 font-display text-foreground md:text-left">
+                <span className="block">{wedding.groom}</span>
+                <span className="block">
+                  <span className="font-script italic text-gradient-gold">
+                    &amp;
+                  </span>{" "}
+                  {wedding.bride}
+                </span>
+              </h1>
+              <div className="mt-6 flex justify-center md:justify-start">
+                <Motif motif={motif} />
+              </div>
+              <p className="font-kicker mt-5 text-muted-foreground">
+                {dateLine}
+                {placeLine ? ` · ${placeLine}` : ""}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── lotus — its own ceremonial layout with the vine band and the
+          lotus monogram. */}
       {hero === "lotus" && (
-        <div className="relative px-5 pt-12 pb-2 text-center animate-fade-up">
+        <div className="relative px-5 pt-24 pb-2 text-center sm:pt-28">
           {hasLotusPetals(wedding.template) && <LotusVineBand />}
-          <div className="relative z-20 mx-auto flex max-w-xl flex-col items-center">
+          <div className="tpl-stagger relative z-20 mx-auto flex tpl-col flex-col items-center">
             <Monogram variant="lotus" initials={initials} size={104} />
-            {/* text-rose (not the usual text-muted-foreground) plus a soft
-                halo — this line sits right where the vine band's flowers
-                hang, and once it's real parents' names rather than the
-                short generic fallback, low-contrast muted text got lost
-                against that busier background. */}
             <p
-              className="font-kicker mt-6 max-w-[36ch] whitespace-pre-line text-rose"
+              className="font-kicker mt-7 max-w-[36ch] whitespace-pre-line text-rose"
               style={{
                 textShadow:
                   "0 0 10px var(--background), 0 0 4px var(--background)",
@@ -329,85 +337,191 @@ function Hero({
             >
               {familyLine(wedding, "With the blessings of their families")}
             </p>
-            <h1
-              className="mt-4 leading-[1.2] text-foreground"
-              style={{
-                fontFamily: "'Cinzel', serif",
-                fontSize: "clamp(2.2rem, 8vw, 3.4rem)",
-                fontWeight: 600,
-              }}
-            >
-              {wedding.groom}
+            <h1 className="tpl-names mt-5 font-display text-foreground">
+              <span className="block">{wedding.groom}</span>
+              <span className="font-script my-1 block text-[0.55em] italic leading-none text-gradient-gold">
+                &amp;
+              </span>
+              <span className="block">{wedding.bride}</span>
             </h1>
-            <p className="my-2.5 font-script text-3xl italic text-gradient-gold">
-              &amp;
-            </p>
-            <h1
-              className="leading-[1.2] text-foreground"
-              style={{
-                fontFamily: "'Cinzel', serif",
-                fontSize: "clamp(2.2rem, 8vw, 3.4rem)",
-                fontWeight: 600,
-              }}
-            >
-              {wedding.bride}
-            </h1>
-            <div className="mt-6 mb-5">
+            <div className="mt-7 mb-1">
               <Motif motif={motif} />
             </div>
-            <p className="text-xs uppercase tracking-[0.3em] text-rose">
-              {formatLongDate(wedding.date)}
-            </p>
+            <p className="font-kicker mt-5 text-rose">{dateLine}</p>
           </div>
         </div>
       )}
 
       {/* Shared across every layout: the line, countdown, and RSVP CTA. */}
-      <div className="relative z-20 mx-auto max-w-xl px-5 pt-6 pb-6 text-center">
-        <p className="mx-auto max-w-[42ch] text-sm leading-relaxed text-muted-foreground text-balance">
-          Request the pleasure of your company as we celebrate our wedding
+      <div className="relative z-20 mx-auto tpl-col px-5 pt-8 pb-8 text-center">
+        <p className="mx-auto max-w-[40ch] text-[15px] leading-relaxed text-muted-foreground text-balance">
+          {wedding.description}
         </p>
-        <p className="mt-4.5 font-script text-xl italic text-foreground/80">
+        <p className="mt-5 font-script text-2xl italic text-foreground/85">
           {formatScriptDate(wedding.date)}
         </p>
-        <div className="mt-5 w-full">
+        <div className="mt-7 w-full">
           <Countdown target={wedding.date} />
         </div>
         <a
           href="#rsvp"
-          className="tpl-btn mt-8 min-h-12 px-7 text-sm font-medium"
+          className="tpl-btn mt-8 min-h-12 px-8 text-sm font-medium"
         >
-          <Heart className="h-4 w-4" /> RSVP Now
+          <Heart className="h-4 w-4" /> RSVP
         </a>
       </div>
     </section>
   );
 }
 
-function DetailCard({
-  icon: Icon,
-  label,
-  value,
-  sub,
+/* ────────────────────────────────────────────────────────────────────────
+   Shared body primitives. The hero above is already per-template; these
+   make the *body* differ too, driven by TEMPLATE_META.photo/.sections and
+   the .theme-* tokens — so "Noir" is hairline rules on charcoal, "Chapel"
+   is arched photos on pale cards, "Editorial" is full-bleed with captions,
+   rather than every template sharing the same glass tiles.
+   ──────────────────────────────────────────────────────────────────────── */
+
+function SectionHead({
+  kicker,
+  title,
+  motif,
+  align = "center",
 }: {
-  icon: typeof Calendar;
-  label: string;
-  value: string;
-  sub?: string;
+  kicker: string;
+  title: string;
+  motif: MotifKind;
+  align?: "center" | "left";
 }) {
   return (
-    <div className="glass-card group rounded-3xl p-5 text-center transition-transform hover:-translate-y-1">
-      <div className="tpl-icon mx-auto grid h-12 w-12 place-items-center">
-        <Icon className="h-5 w-5" />
+    <header className={align === "center" ? "text-center" : "text-left"}>
+      <p className="font-kicker text-rose">{kicker}</p>
+      <h2 className="mt-1.5 font-display text-[2rem] leading-[1.05] text-foreground sm:text-4xl">
+        {title}
+      </h2>
+      <div
+        className={`mt-4 flex ${align === "center" ? "justify-center" : "justify-start"}`}
+      >
+        <Motif motif={motif} />
       </div>
-      <p className="mt-3 text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground">
-        {label}
-      </p>
-      <p className="mt-1 font-display text-xl text-foreground">{value}</p>
-      {sub && <p className="mt-1 text-xs text-muted-foreground">{sub}</p>}
+    </header>
+  );
+}
+
+/** A section body surface whose treatment follows the template. */
+function Surface({
+  sections,
+  className = "",
+  children,
+}: {
+  sections: SectionStyle;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const base =
+    sections === "card"
+      ? "tpl-card"
+      : sections === "band"
+        ? "tpl-band-surface"
+        : "tpl-rule-surface";
+  return <div className={`${base} ${className}`}>{children}</div>;
+}
+
+/** The couple photo, framed per template. */
+function Photo({
+  src,
+  alt,
+  frame,
+  priority = false,
+}: {
+  src: string;
+  alt: string;
+  frame: PhotoFrame;
+  priority?: boolean;
+}) {
+  const loading = priority ? "eager" : "lazy";
+  if (frame === "circle") {
+    return (
+      <div className="tpl-photo-circle mx-auto aspect-square w-[min(72vw,20rem)] overflow-hidden">
+        <img
+          src={src}
+          alt={alt}
+          loading={loading}
+          className="h-full w-full object-cover"
+        />
+      </div>
+    );
+  }
+  if (frame === "arch") {
+    return (
+      <div className="tpl-photo-arch mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden">
+        <img
+          src={src}
+          alt={alt}
+          loading={loading}
+          className="h-full w-full object-cover"
+        />
+      </div>
+    );
+  }
+  if (frame === "framed") {
+    return (
+      <div className="tpl-photo-framed mx-auto w-full max-w-sm p-2">
+        <div className="tpl-photo-framed__inner aspect-[4/5] overflow-hidden">
+          <img
+            src={src}
+            alt={alt}
+            loading={loading}
+            className="h-full w-full object-cover"
+          />
+        </div>
+      </div>
+    );
+  }
+  if (frame === "film") {
+    return (
+      <figure className="mx-auto w-full max-w-2xl">
+        <div className="tpl-photo aspect-[3/2] w-full overflow-hidden">
+          <img
+            src={src}
+            alt={alt}
+            loading={loading}
+            className="h-full w-full object-cover"
+          />
+        </div>
+      </figure>
+    );
+  }
+  if (frame === "editorial") {
+    return (
+      <figure className="-mx-5 sm:mx-0">
+        <div className="tpl-photo aspect-[4/5] w-full overflow-hidden sm:aspect-[3/4]">
+          <img
+            src={src}
+            alt={alt}
+            loading={loading}
+            className="h-full w-full object-cover"
+          />
+        </div>
+        <figcaption className="font-kicker mt-3 px-5 text-muted-foreground sm:px-0">
+          {alt}
+        </figcaption>
+      </figure>
+    );
+  }
+  return (
+    <div className="tpl-photo mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden">
+      <img
+        src={src}
+        alt={alt}
+        loading={loading}
+        className="h-full w-full object-cover"
+      />
     </div>
   );
 }
+
+/* ── Details: a proper schedule, not four tiles ───────────────────────── */
 
 function Details({
   wedding,
@@ -416,115 +530,117 @@ function Details({
   wedding: PublicWedding;
   decorative: boolean;
 }) {
-  const { motif } = TEMPLATE_META[wedding.template];
-  return (
-    <section className="relative px-5 pt-4 pb-10">
-      {decorative && <RoseCorner position="tr" size={140} opacity={0.25} />}
-      <div className="relative z-20 mx-auto max-w-xl text-center">
-        <p className="font-kicker text-rose">Save the date</p>
-        <h2 className="mt-1 font-display text-4xl text-foreground">
-          Wedding Details
-        </h2>
-        <div className="mt-3.5 flex justify-center">
-          <Motif motif={motif} />
-        </div>
+  const { motif, sections } = TEMPLATE_META[wedding.template];
+  const rows: { label: string; value: string; sub?: string }[] = [
+    {
+      label: "The day",
+      value: formatLongDate(wedding.date),
+      sub: formatWeekdayYear(wedding.date).split(" ")[0],
+    },
+    {
+      label: "Ceremony",
+      value: formatTime(wedding.date),
+      sub: wedding.endDate
+        ? `until ${formatTime(wedding.endDate)}`
+        : "Auspicious time",
+    },
+  ];
+  if (wedding.receptionDate)
+    rows.push({
+      label: "Reception",
+      value: formatTime(wedding.receptionDate),
+      sub: wedding.receptionEnd
+        ? `until ${formatTime(wedding.receptionEnd)}`
+        : "Onwards",
+    });
+  if (wedding.venue)
+    rows.push({
+      label: "Venue",
+      value: wedding.venue,
+      sub: wedding.hall ?? undefined,
+    });
 
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4">
-          <DetailCard
-            icon={Calendar}
-            label="Date"
-            value={formatDayMonth(wedding.date)}
-            sub={formatWeekdayYear(wedding.date)}
-          />
-          <DetailCard
-            icon={Clock}
-            label="Ceremony"
-            value={formatTime(wedding.date)}
-            sub="Auspicious time"
-          />
-          {wedding.receptionDate && (
-            <DetailCard
-              icon={Heart}
-              label="Reception"
-              value={formatTime(wedding.receptionDate)}
-              sub="Onwards"
-            />
-          )}
-          {wedding.venue && (
-            <DetailCard
-              icon={MapPin}
-              label="Venue"
-              value={wedding.venue}
-              sub={wedding.hall ?? undefined}
-            />
-          )}
-        </div>
-      </div>
+  return (
+    <section className="relative px-5 py-14 sm:py-20">
+      {decorative && <RoseCorner position="tr" size={140} opacity={0.25} />}
+      <Reveal className="relative z-20 mx-auto tpl-col">
+        <SectionHead kicker="Save the date" title="The Details" motif={motif} />
+        <Surface sections={sections} className="mt-8">
+          <dl className="tpl-schedule">
+            {rows.map((r) => (
+              <div key={r.label} className="tpl-schedule__row">
+                <dt className="font-kicker text-muted-foreground">{r.label}</dt>
+                <dd>
+                  <span className="font-display text-xl text-foreground sm:text-2xl">
+                    {r.value}
+                  </span>
+                  {r.sub && (
+                    <span className="mt-0.5 block text-sm text-muted-foreground">
+                      {r.sub}
+                    </span>
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </Surface>
+      </Reveal>
     </section>
   );
 }
 
+/* ── Gallery: the couple photo, framed per template ──────────────────── */
+
 function Gallery({ wedding }: { wedding: PublicWedding }) {
-  const { hero } = TEMPLATE_META[wedding.template];
-  // The photoTop/split hero layouts already show the couple's photo up top —
-  // showing it again here would be redundant.
+  const { hero, photo } = TEMPLATE_META[wedding.template];
+  // photoTop/split heroes already lead with the photo.
   if (hero === "photoTop" || hero === "split") return null;
   return (
     <section className="relative px-5 py-4">
-      <div className="relative z-20 mx-auto max-w-xl">
-        <img
+      <Reveal className="relative z-20 mx-auto tpl-col">
+        <Photo
           src={wedding.couplePhotoUrl ?? coupleImg}
-          alt="The couple"
-          loading="lazy"
-          className="tpl-photo mx-auto w-full max-w-md object-contain drop-shadow-[0_16px_32px_rgba(0,0,0,0.12)]"
+          alt={`${wedding.groom} & ${wedding.bride}`}
+          frame={photo}
         />
-      </div>
+      </Reveal>
     </section>
   );
 }
 
-function CalButton({
+/* ── Calendar ─────────────────────────────────────────────────────────── */
+
+function CalRow({
   icon: Icon,
   label,
-  onClick,
   href,
   sameTab,
 }: {
   icon: typeof Calendar;
   label: string;
-  onClick?: () => void;
-  href?: string;
+  href: string;
   sameTab?: boolean;
 }) {
-  const cls =
-    "glass-card flex items-center gap-3 rounded-2xl p-4 text-left transition-transform hover:-translate-y-0.5 active:scale-[0.98]";
-  const inner = (
-    <>
-      <div className="tpl-icon grid h-10 w-10 shrink-0 place-items-center">
-        <Icon className="h-5 w-5" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium">{label}</p>
-        <p className="text-[11px] text-muted-foreground">Add to calendar</p>
-      </div>
-      <ChevronRight className="h-4 w-4 text-muted-foreground" />
-    </>
-  );
-  if (href)
-    return (
-      <a
-        href={href}
-        target={sameTab ? undefined : "_blank"}
-        rel={sameTab ? undefined : "noreferrer"}
-        className={cls}
-      >
-        {inner}
-      </a>
-    );
   return (
-    <button onClick={onClick} className={cls}>
-      {inner}
-    </button>
+    <a
+      href={href}
+      target={sameTab ? undefined : "_blank"}
+      rel={sameTab ? undefined : "noreferrer"}
+      className="tpl-row group"
+    >
+      <span className="tpl-icon grid h-10 w-10 shrink-0 place-items-center">
+        <Icon className="h-[18px] w-[18px]" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-[15px] font-medium text-foreground">
+          {label}
+        </span>
+        <span className="block text-xs text-muted-foreground">
+          Add to calendar
+        </span>
+      </span>
+      <ChevronRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+    </a>
   );
 }
 
@@ -535,36 +651,37 @@ function CalendarSection({
   wedding: PublicWedding;
   decorative: boolean;
 }) {
-  const { motif } = TEMPLATE_META[wedding.template];
+  const { motif, sections } = TEMPLATE_META[wedding.template];
   return (
-    <section className="relative px-5 py-10">
+    <section className="relative px-5 py-14 sm:py-20">
       {decorative && <RoseCorner position="tl" size={140} opacity={0.25} />}
-      <div className="relative z-20 mx-auto max-w-xl">
-        <div className="text-center">
-          <p className="font-kicker text-rose">Save the moment</p>
-          <h2 className="mt-1 font-display text-4xl">Add to Calendar</h2>
-          <div className="mt-3.5 flex justify-center">
-            <Motif motif={motif} />
+      <Reveal className="relative z-20 mx-auto tpl-col">
+        <SectionHead
+          kicker="Save the moment"
+          title="Add to Calendar"
+          motif={motif}
+        />
+        <Surface sections={sections} className="mt-8">
+          <div className="tpl-rows">
+            <CalRow
+              icon={Apple}
+              label="Apple Calendar"
+              href={`/${wedding.slug}/calendar.ics`}
+              sameTab
+            />
+            <CalRow
+              icon={Calendar}
+              label="Google Calendar"
+              href={googleCalendarUrl(wedding)}
+            />
           </div>
-        </div>
-
-        <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <CalButton
-            icon={Apple}
-            label="Apple Calendar"
-            href={`/${wedding.slug}/calendar.ics`}
-            sameTab
-          />
-          <CalButton
-            icon={Calendar}
-            label="Google Calendar"
-            href={googleCalendarUrl(wedding)}
-          />
-        </div>
-      </div>
+        </Surface>
+      </Reveal>
     </section>
   );
 }
+
+/* ── RSVP ─────────────────────────────────────────────────────────────── */
 
 function RsvpCta({
   wedding,
@@ -574,22 +691,16 @@ function RsvpCta({
   motif: MotifKind;
 }) {
   return (
-    <section id="rsvp" className="relative px-5 py-10">
-      <div className="relative z-20 mx-auto max-w-xl">
-        <div className="text-center">
-          <p className="font-kicker text-rose">Kindly respond</p>
-          <h2 className="mt-1 font-display text-4xl">RSVP</h2>
-          <div className="mt-3.5 flex justify-center">
-            <Motif motif={motif} />
-          </div>
-        </div>
-        <div className="mt-6">
+    <section id="rsvp" className="relative scroll-mt-6 px-5 py-14 sm:py-20">
+      <Reveal className="relative z-20 mx-auto tpl-col">
+        <SectionHead kicker="Kindly respond" title="RSVP" motif={motif} />
+        <div className="mt-8">
           <InlineRsvp
             slug={wedding.slug}
             coupleNames={`${wedding.groom} & ${wedding.bride}`}
           />
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }
@@ -618,40 +729,35 @@ function SeatingCta({
   if (!hasSeating || !code) return null;
 
   return (
-    <section className="relative px-5 py-10">
-      <div className="relative z-20 mx-auto max-w-xl">
-        <div className="tpl-band relative overflow-hidden rounded-3xl px-6 py-9 text-center">
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(255,255,255,.3), transparent 65%)",
-            }}
-          />
+    <section className="relative px-5 py-6">
+      <Reveal className="relative z-20 mx-auto tpl-col">
+        <div className="tpl-band relative overflow-hidden px-6 py-10 text-center sm:px-10">
           <div className="relative z-10">
             <p className="font-kicker" style={{ opacity: 0.85 }}>
               Reception
             </p>
-            <h2 className="mt-2.5 font-display text-4xl">Your Seating</h2>
+            <h2 className="mt-2 font-display text-[2rem] leading-[1.05] sm:text-4xl">
+              Your Seating
+            </h2>
+            <div className="mt-4 flex justify-center">
+              <Motif motif={motif} />
+            </div>
             <p
-              className="mt-3 max-w-[38ch] text-sm leading-relaxed mx-auto"
+              className="mx-auto mt-4 max-w-[38ch] text-[15px] leading-relaxed"
               style={{ opacity: 0.9 }}
             >
-              Your table has been assigned. View your seating details and find
-              your table on the ballroom map.
+              Your table has been assigned. See who you're sitting with and
+              where your table is in the hall.
             </p>
             <a
               href={`/${wedding.slug}/seating?code=${encodeURIComponent(code)}`}
-              className="tpl-btn mt-5 min-h-12 px-7 text-sm font-medium"
+              className="tpl-btn mt-6 min-h-12 px-7 text-sm font-medium"
             >
-              <Users className="h-4 w-4" /> View Your Table
+              <Users className="h-4 w-4" /> View your table
             </a>
           </div>
         </div>
-        <div className="sr-only">
-          <Motif motif={motif} />
-        </div>
-      </div>
+      </Reveal>
     </section>
   );
 }
@@ -670,49 +776,50 @@ function Location({
     !wedding.venuePhotoUrl
   )
     return null;
-  // A custom maps link (Details tab) always wins — it's a real link to the
-  // actual place, not a guess. The search-query fallback only exists for
-  // weddings that haven't set one.
+  const { sections, photo } = TEMPLATE_META[wedding.template];
   const mapsHref =
     wedding.mapsUrl ||
     `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(wedding.address ?? wedding.venue ?? "")}`;
+  const landscape = photo === "film" || photo === "editorial";
   return (
-    <section className="relative px-5 py-10">
-      <div className="relative z-20 mx-auto max-w-xl">
-        <div className="text-center">
-          <p className="font-kicker text-rose">Find us</p>
-          <h2 className="mt-1 font-display text-4xl">Location</h2>
-          <div className="mt-3.5 flex justify-center">
-            <Motif motif={motif} />
+    <section className="relative px-5 py-14 sm:py-20">
+      <Reveal className="relative z-20 mx-auto tpl-col">
+        <SectionHead kicker="Find us" title="Location" motif={motif} />
+        <Surface sections={sections} className="mt-8">
+          <a href={mapsHref} target="_blank" rel="noreferrer" className="block">
+            <div
+              className={`tpl-photo w-full overflow-hidden ${landscape ? "aspect-[3/2]" : "aspect-[16/10]"}`}
+            >
+              <img
+                src={wedding.venuePhotoUrl ?? venueImg}
+                alt={wedding.venue ?? "The venue"}
+                loading="lazy"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </a>
+          <div className="tpl-surface-body">
+            {wedding.venue && (
+              <p className="font-display text-xl text-foreground sm:text-2xl">
+                {wedding.venue}
+              </p>
+            )}
+            {(wedding.hall || wedding.address) && (
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                {[wedding.hall, wedding.address].filter(Boolean).join(" · ")}
+              </p>
+            )}
+            <a
+              href={mapsHref}
+              target="_blank"
+              rel="noreferrer"
+              className="tpl-btn tpl-btn--secondary mt-5 min-h-12 w-full px-6 text-sm font-medium sm:w-auto"
+            >
+              <MapPin className="h-4 w-4" /> Open in Google Maps
+            </a>
           </div>
-          <p className="mt-2 text-sm text-muted-foreground">
-            {[wedding.venue, wedding.hall].filter(Boolean).join(" · ")}
-          </p>
-        </div>
-
-        <a
-          href={mapsHref}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-6 block overflow-hidden shadow-soft glass-card p-1.5"
-        >
-          <img
-            src={wedding.venuePhotoUrl ?? venueImg}
-            alt={wedding.venue ?? "The venue"}
-            loading="lazy"
-            className="tpl-photo h-72 w-full object-cover"
-          />
-        </a>
-
-        <a
-          href={mapsHref}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border border-border bg-white/60 px-5 py-3 text-sm font-medium text-foreground backdrop-blur hover:bg-white"
-        >
-          <MapPin className="h-4 w-4" /> Open in Google Maps
-        </a>
-      </div>
+        </Surface>
+      </Reveal>
     </section>
   );
 }
@@ -726,7 +833,7 @@ function Footer({
 }) {
   const lotusDecor = hasLotusPetals(wedding.template);
   return (
-    <footer className="relative px-5 pb-16 pt-8 text-center">
+    <footer className="relative px-5 pb-20 pt-10 text-center">
       {decorative && (
         <>
           <RoseCorner position="bl" size={150} opacity={0.6} />
@@ -734,7 +841,7 @@ function Footer({
         </>
       )}
       {lotusDecor && <LotusStemsCorner opacity={0.6} />}
-      <div className="relative z-20 mx-auto max-w-md">
+      <Reveal className="relative z-20 mx-auto max-w-md">
         <div className="flex justify-center">
           <Monogram
             variant={lotusDecor ? "lotus" : "disc"}
@@ -742,22 +849,22 @@ function Footer({
             size={66}
           />
         </div>
-        <h3 className="mt-5 font-script text-3xl italic text-gradient-gold">
-          With love & gratitude
+        <h3 className="mt-6 font-script text-3xl italic text-gradient-gold">
+          With love &amp; gratitude
         </h3>
-        <p className="mt-3 text-sm text-muted-foreground">
+        <p className="mx-auto mt-3 max-w-[36ch] text-[15px] leading-relaxed text-muted-foreground">
           Thank you for being part of our story. We can't wait to celebrate with
           you.
         </p>
-        <p className="mt-6 font-display text-xl">
+        <p className="mt-7 font-display text-xl text-foreground">
           {wedding.groom}{" "}
-          <span className="font-script italic text-rose">&</span>{" "}
+          <span className="font-script italic text-rose">&amp;</span>{" "}
           {wedding.bride}
         </p>
-        <p className="mt-2 text-xs text-muted-foreground">
+        <p className="font-kicker mt-2 text-muted-foreground">
           {formatLongDate(wedding.date)}
         </p>
-      </div>
+      </Reveal>
     </footer>
   );
 }
