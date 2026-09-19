@@ -202,6 +202,7 @@ export type Database = {
           wedding_id: string;
           attending: boolean;
           created_at: string;
+          updated_at: string;
           guest_code: string;
           message: string | null;
         };
@@ -210,6 +211,7 @@ export type Database = {
           wedding_id: string;
           attending: boolean;
           created_at?: string;
+          updated_at?: string;
           guest_code: string;
           message?: string | null;
         };
@@ -218,6 +220,7 @@ export type Database = {
           wedding_id?: string;
           attending?: boolean;
           created_at?: string;
+          updated_at?: string;
           guest_code?: string;
           message?: string | null;
         };

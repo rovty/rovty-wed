@@ -1,4 +1,4 @@
-import roses from "@/assets/roses-corner.png";
+import roses from "@/assets/roses-corner.webp";
 
 type Pos = "tl" | "tr" | "bl" | "br";
 

@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowRight, KeyRound } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { UI_FONTS_HREF, fontLinks } from "@/lib/wedding";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -9,6 +10,7 @@ export const Route = createFileRoute("/auth")({
       { title: "Sign In | Rovty Wed" },
       { name: "robots", content: "noindex" },
     ],
+    links: fontLinks(UI_FONTS_HREF),
   }),
   component: AuthPage,
 });

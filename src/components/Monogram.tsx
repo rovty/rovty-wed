@@ -1,4 +1,4 @@
-import lotusBloom from "@/assets/lotus-bloom-sm.png";
+import lotusBloom from "@/assets/lotus-bloom-sm.webp";
 
 // A circular initials badge — used across the opener, hero, seating, and
 // footer sections of every template. Colors come from the theme tokens

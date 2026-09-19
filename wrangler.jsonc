@@ -6,6 +6,11 @@
   // your Cloudflare account this build targets) comes from. Without a
   // `name` here, Nitro invents one itself ("rovty-rovty-wed") instead.
   "name": "rovty-wed",
+  // Pinned (same as rovty.com / rovty-dashboard) so builds are reproducible
+  // and `wrangler dev` on the Nitro output works on a local workerd binary —
+  // without this Nitro stamps the build date, which a slightly-older local
+  // runtime refuses to start.
+  "compatibility_date": "2026-06-07",
   // Non-secret — same value as .env's SUPABASE_URL / VITE_SUPABASE_URL, just
   // also readable by server routes (client.server.ts's supabaseAdmin reads
   // process.env directly, it doesn't see Vite's import.meta.env). Was

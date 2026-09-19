@@ -1,5 +1,5 @@
-import lotusVine from "@/assets/lotus-vine-sm.png";
-import lotusStems from "@/assets/lotus-stems-sm.png";
+import lotusVine from "@/assets/lotus-vine-sm.webp";
+import lotusStems from "@/assets/lotus-stems-sm.webp";
 
 // Unlike RoseCorner (one image, scaled into all four corners), the lotus
 // template's own decoration is two distinct, asymmetric pieces — a vine

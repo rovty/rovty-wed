@@ -1,5 +1,5 @@
 import { useState } from "react";
-import seatingImg from "@/assets/seating.png";
+import seatingImg from "@/assets/seating-demo.webp";
 
 interface Seat {
   id: string;

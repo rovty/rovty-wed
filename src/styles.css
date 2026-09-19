@@ -67,8 +67,10 @@
      the invitation body font. */
   --font-archivo: "Archivo", system-ui, sans-serif;
 
-  --shadow-soft: 0 10px 40px -10px color-mix(in oklab, var(--rose) 25%, transparent);
-  --shadow-gold: 0 8px 30px -8px color-mix(in oklab, var(--gold) 30%, transparent);
+  --shadow-soft: 0 10px 40px -10px
+    color-mix(in oklab, var(--rose) 25%, transparent);
+  --shadow-gold: 0 8px 30px -8px
+    color-mix(in oklab, var(--gold) 30%, transparent);
 }
 
 :root {
@@ -113,12 +115,22 @@
   --input: oklch(0.92 0.02 60);
   --ring: oklch(0.78 0.09 15);
 
-  --gradient-hero: linear-gradient(180deg,
+  --gradient-hero: linear-gradient(
+    180deg,
     oklch(0.985 0.008 80) 0%,
     oklch(0.96 0.025 20) 50%,
-    oklch(0.98 0.015 70) 100%);
-  --gradient-gold: linear-gradient(135deg, oklch(0.84 0.09 80), oklch(0.7 0.12 65));
-  --gradient-blush: linear-gradient(135deg, oklch(0.96 0.025 15), oklch(0.9 0.05 20));
+    oklch(0.98 0.015 70) 100%
+  );
+  --gradient-gold: linear-gradient(
+    135deg,
+    oklch(0.84 0.09 80),
+    oklch(0.7 0.12 65)
+  );
+  --gradient-blush: linear-gradient(
+    135deg,
+    oklch(0.96 0.025 15),
+    oklch(0.9 0.05 20)
+  );
 
   /* Text/icon color on top of --gradient-gold — white by default, but a
      handful of templates use a light gold/champagne button that needs dark
@@ -152,7 +164,10 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-display);
     letter-spacing: -0.01em;
   }
@@ -244,48 +259,95 @@
 @utility divider-line {
   height: 1px;
   width: 3rem;
-  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-gold),
+    transparent
+  );
 }
 
 @keyframes petal-fall {
-  0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
-  10% { opacity: 0.8; }
-  90% { opacity: 0.6; }
-  100% { transform: translateY(110vh) translateX(40px) rotate(360deg); opacity: 0; }
+  0% {
+    transform: translateY(-10vh) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(110vh) translateX(40px) rotate(360deg);
+    opacity: 0;
+  }
 }
 @keyframes float-soft {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
 }
 
 /* ── Seating map marker ───────────────────────────────────────── */
 @keyframes seating-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--gold) 40%, transparent); }
-  50% { box-shadow: 0 0 0 8px color-mix(in oklab, var(--gold) 0%, transparent); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--gold) 40%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 8px color-mix(in oklab, var(--gold) 0%, transparent);
+  }
 }
 .seating-marker > div {
   animation: seating-pulse 2.5s ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  .seating-marker > div { animation: none; }
+  .seating-marker > div {
+    animation: none;
+  }
 }
 
-.animate-petal { animation: petal-fall linear infinite; }
-.animate-float-soft { animation: float-soft 4s ease-in-out infinite; }
-.animate-fade-up { animation: fade-up 0.9s ease-out both; }
+.animate-petal {
+  animation: petal-fall linear infinite;
+}
+.animate-float-soft {
+  animation: float-soft 4s ease-in-out infinite;
+}
+.animate-fade-up {
+  animation: fade-up 0.9s ease-out both;
+}
 
 /* ── Invitation opener ─────────────────────────────────────────── */
 .invite-opener {
   background:
-    radial-gradient(120% 80% at 50% -10%, color-mix(in oklab, var(--rose) 22%, transparent), transparent 60%),
+    radial-gradient(
+      120% 80% at 50% -10%,
+      color-mix(in oklab, var(--rose) 22%, transparent),
+      transparent 60%
+    ),
     var(--gradient-hero);
   background-attachment: fixed;
   opacity: 1;
@@ -293,7 +355,9 @@
   animation: fade-up 0.6s ease-out both;
   /* Hold fully visible while the envelope opens, then fade out gently
      to reveal the page underneath — no jump, no "new page" flash. */
-  transition: opacity 1.2s ease-in-out 0.7s, visibility 0s linear 1.9s;
+  transition:
+    opacity 1.2s ease-in-out 0.7s,
+    visibility 0s linear 1.9s;
 }
 .invite-opener--opening {
   opacity: 0;
@@ -317,14 +381,20 @@
 }
 /* Keep the falling petals behind the envelope so they fill the empty
    background without covering the invitation. */
-.invite-opener__petals { position: absolute; inset: 0; z-index: 0; }
+.invite-opener__petals {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
 
 /* Envelope shell — fixed 3:2 landscape ratio so it always looks like an envelope */
 .invite-envelope {
   position: relative;
   width: min(90vw, 420px);
   aspect-ratio: 3 / 2;
-  filter: drop-shadow(0 24px 50px color-mix(in oklab, var(--rose) 30%, transparent));
+  filter: drop-shadow(
+    0 24px 50px color-mix(in oklab, var(--rose) 30%, transparent)
+  );
 }
 
 /* Envelope body — clips all pieces to a single evenly-rounded rectangle */
@@ -340,7 +410,8 @@
   -webkit-mask-image: -webkit-radial-gradient(white, black);
   mask-image: radial-gradient(white, black);
   isolation: isolate;
-  box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--gold) 45%, transparent);
+  box-shadow: inset 0 0 0 1.5px
+    color-mix(in oklab, var(--gold) 45%, transparent);
 }
 
 /* Envelope back (base rectangle) */
@@ -349,10 +420,16 @@
   inset: 0;
   z-index: 1;
   background:
-    radial-gradient(120% 90% at 50% 0%, color-mix(in oklab, white 55%, transparent), transparent 55%),
-    linear-gradient(155deg,
+    radial-gradient(
+      120% 90% at 50% 0%,
+      color-mix(in oklab, white 55%, transparent),
+      transparent 55%
+    ),
+    linear-gradient(
+      155deg,
       color-mix(in oklab, var(--ivory) 82%, white),
-      color-mix(in oklab, var(--champagne) 55%, var(--ivory)));
+      color-mix(in oklab, var(--champagne) 55%, var(--ivory))
+    );
   box-shadow: inset 0 0 24px color-mix(in oklab, var(--gold) 12%, transparent);
 }
 
@@ -369,7 +446,9 @@
   border-radius: 1rem;
   padding: 1.5rem 1.25rem;
   text-align: center;
-  transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease;
+  transition:
+    transform 1s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.6s ease;
 }
 .invite-card h2 {
   font-size: clamp(1.9rem, 8vw, 3rem);
@@ -386,10 +465,11 @@
   position: absolute;
   inset: 0;
   z-index: 3;
-  background:
-    linear-gradient(155deg,
-      color-mix(in oklab, var(--ivory) 72%, white),
-      color-mix(in oklab, var(--champagne) 62%, var(--ivory)));
+  background: linear-gradient(
+    155deg,
+    color-mix(in oklab, var(--ivory) 72%, white),
+    color-mix(in oklab, var(--champagne) 62%, var(--ivory))
+  );
   box-shadow:
     inset 0 1px 0 color-mix(in oklab, white 65%, transparent),
     0 -2px 10px -6px color-mix(in oklab, var(--gold) 40%, transparent);
@@ -402,12 +482,20 @@
   position: absolute;
   inset: 0;
   clip-path: polygon(
-    0 40.6%, 49.4% 99%, 50% 100%, 0 41.8%,
-    100% 41.8%, 50% 100%, 50.6% 99%, 100% 40.6%
+    0 40.6%,
+    49.4% 99%,
+    50% 100%,
+    0 41.8%,
+    100% 41.8%,
+    50% 100%,
+    50.6% 99%,
+    100% 40.6%
   );
-  background: linear-gradient(180deg,
+  background: linear-gradient(
+    180deg,
     color-mix(in oklab, var(--gold) 55%, transparent),
-    color-mix(in oklab, var(--gold) 20%, transparent));
+    color-mix(in oklab, var(--gold) 20%, transparent)
+  );
   opacity: 0.7;
 }
 
@@ -418,13 +506,21 @@
   height: 62%;
   z-index: 5;
   background:
-    radial-gradient(90% 120% at 50% 0%, color-mix(in oklab, white 45%, transparent), transparent 60%),
-    linear-gradient(160deg,
+    radial-gradient(
+      90% 120% at 50% 0%,
+      color-mix(in oklab, white 45%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(
+      160deg,
       color-mix(in oklab, var(--ivory) 78%, white),
-      color-mix(in oklab, var(--champagne) 70%, var(--gold)));
+      color-mix(in oklab, var(--champagne) 70%, var(--gold))
+    );
   clip-path: polygon(0 0, 100% 0, 50% 100%);
   transform-origin: top center;
-  transition: transform 0.75s ease-in, opacity 0.3s ease 0.55s;
+  transition:
+    transform 0.75s ease-in,
+    opacity 0.3s ease 0.55s;
   /* box-shadow (not filter) so the rounded-corner clip on mobile still works */
   box-shadow: 0 6px 14px -8px color-mix(in oklab, var(--gold) 55%, transparent);
 }
@@ -433,12 +529,12 @@
   content: "";
   position: absolute;
   inset: 0;
-  clip-path: polygon(
-    0 0, 1.5% 0, 50% 97%, 98.5% 0, 100% 0, 50% 100%
-  );
-  background: linear-gradient(180deg,
+  clip-path: polygon(0 0, 1.5% 0, 50% 97%, 98.5% 0, 100% 0, 50% 100%);
+  background: linear-gradient(
+    180deg,
     color-mix(in oklab, var(--gold) 65%, transparent),
-    color-mix(in oklab, var(--gold) 25%, transparent));
+    color-mix(in oklab, var(--gold) 25%, transparent)
+  );
   opacity: 0.75;
 }
 .invite-opener--opening .invite-envelope__flap {
@@ -463,17 +559,27 @@
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   background:
-    radial-gradient(circle at 34% 30%, color-mix(in oklab, white 55%, transparent), transparent 45%),
+    radial-gradient(
+      circle at 34% 30%,
+      color-mix(in oklab, white 55%, transparent),
+      transparent 45%
+    ),
     var(--gradient-gold);
   box-shadow:
     var(--shadow-gold),
     inset 0 0 0 2px color-mix(in oklab, white 45%, transparent),
     inset 0 0 0 5px color-mix(in oklab, var(--gold) 55%, transparent);
   animation: seal-pulse 2.4s ease-in-out infinite;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
 }
-.invite-seal:hover { transform: translate(-50%, -50%) scale(1.08); }
-.invite-seal:active { transform: translate(-50%, -50%) scale(0.94); }
+.invite-seal:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+.invite-seal:active {
+  transform: translate(-50%, -50%) scale(0.94);
+}
 .invite-opener--opening .invite-seal {
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.2);
@@ -484,15 +590,30 @@
 }
 
 @keyframes seal-pulse {
-  0%, 100% { box-shadow: var(--shadow-gold), inset 0 0 0 2px color-mix(in oklab, white 40%, transparent), 0 0 0 0 color-mix(in oklab, var(--gold) 45%, transparent); }
-  50% { box-shadow: var(--shadow-gold), inset 0 0 0 2px color-mix(in oklab, white 40%, transparent), 0 0 0 14px transparent; }
+  0%,
+  100% {
+    box-shadow:
+      var(--shadow-gold),
+      inset 0 0 0 2px color-mix(in oklab, white 40%, transparent),
+      0 0 0 0 color-mix(in oklab, var(--gold) 45%, transparent);
+  }
+  50% {
+    box-shadow:
+      var(--shadow-gold),
+      inset 0 0 0 2px color-mix(in oklab, white 40%, transparent),
+      0 0 0 14px transparent;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .invite-card,
   .invite-envelope__flap,
-  .invite-seal { transition: none; }
-  .invite-seal { animation: none; }
+  .invite-seal {
+    transition: none;
+  }
+  .invite-seal {
+    animation: none;
+  }
 }
 
 /* ── Ring opener (poruwa/nikkah/bloom) — pulsing rings around a monogram,
@@ -502,65 +623,110 @@
   inset: 0;
   border-radius: 999px;
   border: 1px solid var(--gold);
-  opacity: .45;
-  transition: transform .9s cubic-bezier(.22,1,.36,1), opacity .8s ease;
+  opacity: 0.45;
+  transition:
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.8s ease;
 }
-.invite-ring__outer--open { opacity: 0; transform: scale(1.9); }
+.invite-ring__outer--open {
+  opacity: 0;
+  transform: scale(1.9);
+}
 .invite-ring__inner {
   position: absolute;
   inset: 22%;
   border-radius: 999px;
   background: var(--gradient-gold);
-  opacity: .14;
+  opacity: 0.14;
   animation: tPulse 3s ease-in-out infinite;
-  transition: transform .9s cubic-bezier(.22,1,.36,1), opacity .8s ease;
+  transition:
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.8s ease;
 }
-.invite-ring__inner--open { opacity: 0; transform: scale(2.4); }
+.invite-ring__inner--open {
+  opacity: 0;
+  transform: scale(2.4);
+}
 @keyframes tPulse {
-  0%, 100% { box-shadow: 0 0 0 0 currentColor; }
-  50% { box-shadow: 0 0 0 12px transparent; }
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 currentColor;
+  }
+  50% {
+    box-shadow: 0 0 0 12px transparent;
+  }
 }
 
 /* ── Veil opener (editorial) — two translucent panels slide apart ──────── */
 .invite-veil {
   position: absolute;
-  top: 0; bottom: 0;
+  top: 0;
+  bottom: 0;
   width: 50%;
   backdrop-filter: blur(6px);
-  transition: transform .95s cubic-bezier(.22,1,.36,1);
+  transition: transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .invite-veil--left {
   left: 0;
-  background: linear-gradient(120deg, rgba(255,255,255,.9), rgba(255,255,255,.45));
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0.45)
+  );
   border-right: 1px solid var(--border);
 }
 .invite-veil--right {
   right: 0;
-  background: linear-gradient(240deg, rgba(255,255,255,.9), rgba(255,255,255,.45));
+  background: linear-gradient(
+    240deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0.45)
+  );
 }
-.invite-veil--left.invite-veil--open { transform: translateX(-102%); }
-.invite-veil--right.invite-veil--open { transform: translateX(102%); }
+.invite-veil--left.invite-veil--open {
+  transform: translateX(-102%);
+}
+.invite-veil--right.invite-veil--open {
+  transform: translateX(102%);
+}
 
 /* ── Gate opener (deco) — two panels rotate open like double doors ─────── */
 .invite-gate {
   position: absolute;
-  top: 0; bottom: 0;
+  top: 0;
+  bottom: 0;
   width: 50%;
-  transition: transform .95s cubic-bezier(.22,1,.36,1), opacity .8s ease;
+  transition:
+    transform 0.95s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.8s ease;
 }
 .invite-gate--left {
   left: 0;
-  background: linear-gradient(120deg, rgba(255,255,255,.86), rgba(194,161,92,.28));
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.86),
+    rgba(194, 161, 92, 0.28)
+  );
   border-right: 1px solid var(--gold);
   transform-origin: left center;
 }
 .invite-gate--right {
   right: 0;
-  background: linear-gradient(240deg, rgba(255,255,255,.86), rgba(194,161,92,.28));
+  background: linear-gradient(
+    240deg,
+    rgba(255, 255, 255, 0.86),
+    rgba(194, 161, 92, 0.28)
+  );
   transform-origin: right center;
 }
-.invite-gate--left.invite-gate--open { transform: perspective(900px) rotateY(-88deg); opacity: 0; }
-.invite-gate--right.invite-gate--open { transform: perspective(900px) rotateY(88deg); opacity: 0; }
+.invite-gate--left.invite-gate--open {
+  transform: perspective(900px) rotateY(-88deg);
+  opacity: 0;
+}
+.invite-gate--right.invite-gate--open {
+  transform: perspective(900px) rotateY(88deg);
+  opacity: 0;
+}
 
 /* ── Curtain opener (chapel/noir/shoreline/film) — full-bleed photo fades
    and scales away ──────────────────────────────────────────────────────── */
@@ -568,33 +734,54 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  transition: transform 1s cubic-bezier(.22,1,.36,1), opacity .9s ease;
+  transition:
+    transform 1s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.9s ease;
 }
-.invite-curtain--open { transform: scale(1.1); opacity: 0; }
+.invite-curtain--open {
+  transform: scale(1.1);
+  opacity: 0;
+}
 
 /* ── Soft/petals opener (quiet/garden) — content sharpens into focus ───── */
 .invite-soft {
-  transition: filter .8s ease, transform .9s cubic-bezier(.22,1,.36,1);
+  transition:
+    filter 0.8s ease,
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.invite-soft--open { filter: blur(6px); transform: scale(1.04); }
+.invite-soft--open {
+  filter: blur(6px);
+  transform: scale(1.04);
+}
 
 /* ── Lotus opener (lotus) — two silk panels part while the monogram and
    names fade in underneath, echoing the veil opener but in the theme's own
    ivory-and-gold palette instead of a neutral white ─────────────────────── */
 .invite-lotus {
   position: absolute;
-  top: 0; bottom: 0;
+  top: 0;
+  bottom: 0;
   width: 50%;
-  background: linear-gradient(160deg, rgba(253,249,240,.95), rgba(246,237,220,.6));
-  transition: transform 1s cubic-bezier(.22,1,.36,1);
+  background: linear-gradient(
+    160deg,
+    rgba(253, 249, 240, 0.95),
+    rgba(246, 237, 220, 0.6)
+  );
+  transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .invite-lotus--left {
   left: 0;
   border-right: 1px solid var(--border);
 }
-.invite-lotus--right { right: 0; }
-.invite-lotus--left.invite-lotus--open { transform: translateX(-102%); }
-.invite-lotus--right.invite-lotus--open { transform: translateX(102%); }
+.invite-lotus--right {
+  right: 0;
+}
+.invite-lotus--left.invite-lotus--open {
+  transform: translateX(-102%);
+}
+.invite-lotus--right.invite-lotus--open {
+  transform: translateX(102%);
+}
 
 /* The shared .invite-opener transition (above) delays 0.7s before the
    overlay even starts fading, while these silk panels start sliding
@@ -606,9 +793,13 @@
    scene lift, and silk slide all start together and land together.
    LOTUS_DISMISS_MS (InvitationOpener.tsx) is kept matched to this 1.6s by
    hand — see that constant's own comment. */
-.theme-lotus .invite-lotus { transition: transform 1.5s cubic-bezier(.22,1,.36,1); }
+.theme-lotus .invite-lotus {
+  transition: transform 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
 .theme-lotus .invite-opener {
-  transition: opacity 1.6s ease-in-out, visibility 0s linear 1.6s;
+  transition:
+    opacity 1.6s ease-in-out,
+    visibility 0s linear 1.6s;
 }
 .theme-lotus .invite-opener--opening .invite-opener__scene {
   transform: translateY(-24px) scale(0.98);
@@ -616,19 +807,39 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .invite-ring__outer, .invite-ring__inner,
-  .invite-veil, .invite-gate, .invite-curtain, .invite-soft,
-  .invite-lotus { transition: none; }
-  .invite-ring__inner { animation: none; }
+  .invite-ring__outer,
+  .invite-ring__inner,
+  .invite-veil,
+  .invite-gate,
+  .invite-curtain,
+  .invite-soft,
+  .invite-lotus {
+    transition: none;
+  }
+  .invite-ring__inner {
+    animation: none;
+  }
 }
 
 /* ---------- Wedding thank-you card ---------- */
 .wedding-bg {
   background-color: var(--ivory);
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% 0%, color-mix(in oklab, var(--blush) 38%, transparent), transparent 70%),
-    radial-gradient(ellipse 80% 45% at 50% 100%, color-mix(in oklab, var(--champagne) 22%, transparent), transparent 70%),
-    radial-gradient(circle at 50% 38%, color-mix(in oklab, var(--blush-soft) 50%, transparent), transparent 60%);
+    radial-gradient(
+      ellipse 80% 50% at 50% 0%,
+      color-mix(in oklab, var(--blush) 38%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 80% 45% at 50% 100%,
+      color-mix(in oklab, var(--champagne) 22%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      circle at 50% 38%,
+      color-mix(in oklab, var(--blush-soft) 50%, transparent),
+      transparent 60%
+    );
 }
 
 .wedding-names {
@@ -764,276 +975,580 @@
   background: linear-gradient(180deg, #fdf9f4 0%, #f9ebe6 48%, #fcf6ec 100%);
   --foreground: #3c2f2b;
   --muted-foreground: #7d6a63;
-  --border: rgba(201, 151, 79, .26);
+  --border: rgba(201, 151, 79, 0.26);
   --gold: #c9974f;
   --rose: #a06c33;
   --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
   --btn-ink: #3a2e1c;
 }
-.theme-classic h1, .theme-classic h2, .theme-classic h3, .theme-classic h4, .theme-classic .font-display {
+.theme-classic h1,
+.theme-classic h2,
+.theme-classic h3,
+.theme-classic h4,
+.theme-classic .font-display {
   font-family: "Playfair Display", serif !important;
-  font-weight: 500; font-style: normal; text-transform: none; letter-spacing: -0.01em;
+  font-weight: 500;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: -0.01em;
 }
-.theme-classic .font-script { font-family: "Cormorant Garamond", serif !important; }
+.theme-classic .font-script {
+  font-family: "Cormorant Garamond", serif !important;
+}
 .theme-classic .font-kicker {
   font-family: "Cormorant Garamond", serif !important;
-  font-size: 17px; text-transform: none; letter-spacing: .01em; font-style: italic;
+  font-size: 17px;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  font-style: italic;
 }
 .theme-classic .glass-card {
-  background: linear-gradient(160deg, rgba(255,255,255,.82), rgba(255,255,255,.52));
-  border: 1px solid rgba(255,255,255,.8);
-  box-shadow: 0 20px 46px -26px rgba(214,163,150,.55);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.82),
+    rgba(255, 255, 255, 0.52)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 20px 46px -26px rgba(214, 163, 150, 0.55);
   border-radius: 24px !important;
 }
-.theme-classic .tpl-btn, .theme-classic .tpl-icon { background: linear-gradient(135deg, #ebd3a0, #c9a45c); color: #3a2e1c; border-radius: 999px; }
-.theme-classic .tpl-photo { border-radius: 24px; filter: none; }
-.theme-classic .tpl-band { background: linear-gradient(120deg, rgba(233,190,182,.55), rgba(233,201,138,.55)); color: #3c2f2b; }
+.theme-classic .tpl-btn,
+.theme-classic .tpl-icon {
+  background: linear-gradient(135deg, #ebd3a0, #c9a45c);
+  color: #3a2e1c;
+  border-radius: 999px;
+}
+.theme-classic .tpl-photo {
+  border-radius: 24px;
+  filter: none;
+}
+.theme-classic .tpl-band {
+  background: linear-gradient(
+    120deg,
+    rgba(233, 190, 182, 0.55),
+    rgba(233, 201, 138, 0.55)
+  );
+  color: #3c2f2b;
+}
 
 /* ── Poruwa — Traditional, antique gold ─────────────────────────────── */
 .theme-poruwa {
   background: linear-gradient(180deg, #fdf7ee, #f7ece0);
   --foreground: #3a2b1e;
   --muted-foreground: #82705c;
-  --border: rgba(181, 137, 63, .24);
+  --border: rgba(181, 137, 63, 0.24);
   --gold: #b5893f;
   --rose: #8a6428;
   --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
   --btn-ink: #3a2e1c;
 }
-.theme-poruwa h1, .theme-poruwa h2, .theme-poruwa h3, .theme-poruwa h4, .theme-poruwa .font-display {
+.theme-poruwa h1,
+.theme-poruwa h2,
+.theme-poruwa h3,
+.theme-poruwa h4,
+.theme-poruwa .font-display {
   font-family: "Cinzel", serif !important;
-  font-weight: 600; font-style: normal; text-transform: none; letter-spacing: .06em;
+  font-weight: 600;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0.06em;
 }
-.theme-poruwa .font-script { font-family: "Cormorant Garamond", serif !important; }
+.theme-poruwa .font-script {
+  font-family: "Cormorant Garamond", serif !important;
+}
 .theme-poruwa .font-kicker {
   font-family: "Mukta", sans-serif !important;
-  font-size: 10px; text-transform: uppercase; letter-spacing: .34em; font-style: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.34em;
+  font-style: normal;
 }
 .theme-poruwa .glass-card {
-  background: linear-gradient(160deg, rgba(255,255,255,.78), rgba(255,255,255,.46));
-  border: 1px solid rgba(181,137,63,.28);
-  box-shadow: 0 20px 44px -28px rgba(138,100,40,.42);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.78),
+    rgba(255, 255, 255, 0.46)
+  );
+  border: 1px solid rgba(181, 137, 63, 0.28);
+  box-shadow: 0 20px 44px -28px rgba(138, 100, 40, 0.42);
   border-radius: 4px !important;
 }
-.theme-poruwa .tpl-btn, .theme-poruwa .tpl-icon { background: linear-gradient(135deg, #ebd3a0, #c9a45c); color: #3a2e1c; border-radius: 4px; }
-.theme-poruwa .tpl-photo { border-radius: 4px; filter: none; }
-.theme-poruwa .tpl-band { background: linear-gradient(120deg, rgba(213,178,124,.5), rgba(181,137,63,.42)); color: #3a2b1e; }
-.theme-poruwa .tpl-pattern { background-image: radial-gradient(circle at 10px 10px, rgba(181,137,63,.1) 1.5px, transparent 1.5px); background-size: 24px 24px; }
+.theme-poruwa .tpl-btn,
+.theme-poruwa .tpl-icon {
+  background: linear-gradient(135deg, #ebd3a0, #c9a45c);
+  color: #3a2e1c;
+  border-radius: 4px;
+}
+.theme-poruwa .tpl-photo {
+  border-radius: 4px;
+  filter: none;
+}
+.theme-poruwa .tpl-band {
+  background: linear-gradient(
+    120deg,
+    rgba(213, 178, 124, 0.5),
+    rgba(181, 137, 63, 0.42)
+  );
+  color: #3a2b1e;
+}
+.theme-poruwa .tpl-pattern {
+  background-image: radial-gradient(
+    circle at 10px 10px,
+    rgba(181, 137, 63, 0.1) 1.5px,
+    transparent 1.5px
+  );
+  background-size: 24px 24px;
+}
 
 /* ── Thali — pastel marigold & gold ─────────────────────────────────── */
 .theme-thali {
   background: linear-gradient(180deg, #fdf5ea, #fbeade);
   --foreground: #3f291d;
   --muted-foreground: #8a6b57;
-  --border: rgba(217, 154, 91, .26);
+  --border: rgba(217, 154, 91, 0.26);
   --gold: #d99a5b;
   --rose: #a2612f;
   --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
   --btn-ink: #3a2e1c;
 }
-.theme-thali h1, .theme-thali h2, .theme-thali h3, .theme-thali h4, .theme-thali .font-display {
+.theme-thali h1,
+.theme-thali h2,
+.theme-thali h3,
+.theme-thali h4,
+.theme-thali .font-display {
   font-family: "Rozha One", serif !important;
-  font-weight: 400; font-style: normal; text-transform: none; letter-spacing: 0;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
 }
-.theme-thali .font-script { font-family: "Cormorant Garamond", serif !important; }
+.theme-thali .font-script {
+  font-family: "Cormorant Garamond", serif !important;
+}
 .theme-thali .font-kicker {
   font-family: "Mukta", sans-serif !important;
-  font-size: 10px; text-transform: uppercase; letter-spacing: .28em; font-style: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-style: normal;
 }
 .theme-thali .glass-card {
-  background: linear-gradient(160deg, rgba(255,255,255,.8), rgba(255,255,255,.5));
-  border: 1px solid rgba(217,154,91,.26);
-  box-shadow: 0 20px 46px -28px rgba(180,110,60,.4);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.5)
+  );
+  border: 1px solid rgba(217, 154, 91, 0.26);
+  box-shadow: 0 20px 46px -28px rgba(180, 110, 60, 0.4);
   border-radius: 14px !important;
 }
-.theme-thali .tpl-btn, .theme-thali .tpl-icon { background: linear-gradient(135deg, #ebd3a0, #c9a45c); color: #3a2e1c; border-radius: 999px; }
-.theme-thali .tpl-photo { border-radius: 14px; filter: none; }
-.theme-thali .tpl-band { background: linear-gradient(120deg, rgba(240,196,140,.6), rgba(226,163,148,.5)); color: #3f291d; }
-.theme-thali .tpl-pattern { background-image: radial-gradient(circle at 12px 12px, rgba(217,154,91,.1) 2px, transparent 2px); background-size: 28px 28px; }
+.theme-thali .tpl-btn,
+.theme-thali .tpl-icon {
+  background: linear-gradient(135deg, #ebd3a0, #c9a45c);
+  color: #3a2e1c;
+  border-radius: 999px;
+}
+.theme-thali .tpl-photo {
+  border-radius: 14px;
+  filter: none;
+}
+.theme-thali .tpl-band {
+  background: linear-gradient(
+    120deg,
+    rgba(240, 196, 140, 0.6),
+    rgba(226, 163, 148, 0.5)
+  );
+  color: #3f291d;
+}
+.theme-thali .tpl-pattern {
+  background-image: radial-gradient(
+    circle at 12px 12px,
+    rgba(217, 154, 91, 0.1) 2px,
+    transparent 2px
+  );
+  background-size: 28px 28px;
+}
 
 /* ── Chapel — powder blue & pearl ───────────────────────────────────── */
 .theme-chapel {
   background: linear-gradient(180deg, #fafbfd, #eef2f8);
   --foreground: #2b3550;
   --muted-foreground: #6c7793;
-  --border: rgba(43, 53, 80, .14);
+  --border: rgba(43, 53, 80, 0.14);
   --gold: #b99a5b;
   --rose: #4a5876;
   --gradient-gold: linear-gradient(135deg, #5b6a8c, #33405e);
   --btn-ink: #f8fafd;
 }
-.theme-chapel h1, .theme-chapel h2, .theme-chapel h3, .theme-chapel h4, .theme-chapel .font-display {
+.theme-chapel h1,
+.theme-chapel h2,
+.theme-chapel h3,
+.theme-chapel h4,
+.theme-chapel .font-display {
   font-family: "Cormorant Garamond", serif !important;
-  font-weight: 500; font-style: normal; text-transform: none; letter-spacing: .02em;
+  font-weight: 500;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0.02em;
 }
-.theme-chapel .font-script { font-family: "Cormorant Garamond", serif !important; }
+.theme-chapel .font-script {
+  font-family: "Cormorant Garamond", serif !important;
+}
 .theme-chapel .font-kicker {
   font-family: "Lato", sans-serif !important;
-  font-size: 10px; text-transform: uppercase; letter-spacing: .36em; font-style: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.36em;
+  font-style: normal;
 }
 .theme-chapel .glass-card {
-  background: linear-gradient(160deg, rgba(255,255,255,.86), rgba(255,255,255,.58));
-  border: 1px solid rgba(255,255,255,.85);
-  box-shadow: 0 22px 46px -30px rgba(43,53,80,.32);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.86),
+    rgba(255, 255, 255, 0.58)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 22px 46px -30px rgba(43, 53, 80, 0.32);
   border-radius: 6px !important;
 }
-.theme-chapel .tpl-btn, .theme-chapel .tpl-icon { background: linear-gradient(135deg, #5b6a8c, #33405e); color: #f8fafd; border-radius: 6px; }
-.theme-chapel .tpl-photo { border-radius: 170px 170px 6px 6px; filter: none; }
-.theme-chapel .tpl-band { background: linear-gradient(120deg, rgba(198,210,230,.6), rgba(229,214,182,.5)); color: #2b3550; }
+.theme-chapel .tpl-btn,
+.theme-chapel .tpl-icon {
+  background: linear-gradient(135deg, #5b6a8c, #33405e);
+  color: #f8fafd;
+  border-radius: 6px;
+}
+.theme-chapel .tpl-photo {
+  border-radius: 170px 170px 6px 6px;
+  filter: none;
+}
+.theme-chapel .tpl-band {
+  background: linear-gradient(
+    120deg,
+    rgba(198, 210, 230, 0.6),
+    rgba(229, 214, 182, 0.5)
+  );
+  color: #2b3550;
+}
 
 /* ── Nikkah — pastel sage & gold ─────────────────────────────────────── */
 .theme-nikkah {
   background: linear-gradient(180deg, #f7fbf8, #eef5f0);
   --foreground: #26382f;
   --muted-foreground: #6d8177;
-  --border: rgba(38, 56, 47, .14);
+  --border: rgba(38, 56, 47, 0.14);
   --gold: #a98f4e;
   --rose: #4f6b58;
   --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
   --btn-ink: #3a2e1c;
 }
-.theme-nikkah h1, .theme-nikkah h2, .theme-nikkah h3, .theme-nikkah h4, .theme-nikkah .font-display {
+.theme-nikkah h1,
+.theme-nikkah h2,
+.theme-nikkah h3,
+.theme-nikkah h4,
+.theme-nikkah .font-display {
   font-family: "Amiri", serif !important;
-  font-weight: 700; font-style: normal; text-transform: none; letter-spacing: 0;
+  font-weight: 700;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
 }
-.theme-nikkah .font-script { font-family: "Amiri", serif !important; }
+.theme-nikkah .font-script {
+  font-family: "Amiri", serif !important;
+}
 .theme-nikkah .font-kicker {
   font-family: "Jost", sans-serif !important;
-  font-size: 10px; text-transform: uppercase; letter-spacing: .3em; font-style: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-style: normal;
 }
 .theme-nikkah .glass-card {
-  background: linear-gradient(160deg, rgba(255,255,255,.84), rgba(255,255,255,.54));
-  border: 1px solid rgba(169,143,78,.24);
-  box-shadow: 0 20px 44px -30px rgba(40,70,55,.35);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.84),
+    rgba(255, 255, 255, 0.54)
+  );
+  border: 1px solid rgba(169, 143, 78, 0.24);
+  box-shadow: 0 20px 44px -30px rgba(40, 70, 55, 0.35);
   border-radius: 4px !important;
 }
-.theme-nikkah .tpl-btn, .theme-nikkah .tpl-icon { background: linear-gradient(135deg, #ebd3a0, #c9a45c); color: #3a2e1c; border-radius: 4px; }
-.theme-nikkah .tpl-photo { border-radius: 6px; filter: none; }
-.theme-nikkah .tpl-band { background: linear-gradient(120deg, rgba(186,208,193,.55), rgba(224,206,158,.5)); color: #26382f; }
-.theme-nikkah .tpl-pattern { background-image: repeating-linear-gradient(45deg, rgba(169,143,78,.05) 0 2px, transparent 2px 16px); }
+.theme-nikkah .tpl-btn,
+.theme-nikkah .tpl-icon {
+  background: linear-gradient(135deg, #ebd3a0, #c9a45c);
+  color: #3a2e1c;
+  border-radius: 4px;
+}
+.theme-nikkah .tpl-photo {
+  border-radius: 6px;
+  filter: none;
+}
+.theme-nikkah .tpl-band {
+  background: linear-gradient(
+    120deg,
+    rgba(186, 208, 193, 0.55),
+    rgba(224, 206, 158, 0.5)
+  );
+  color: #26382f;
+}
+.theme-nikkah .tpl-pattern {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(169, 143, 78, 0.05) 0 2px,
+    transparent 2px 16px
+  );
+}
 
 /* ── Noir — champagne on charcoal ───────────────────────────────────── */
 .theme-noir {
   background: linear-gradient(180deg, #17161a, #211f25);
   --foreground: #f3eee4;
   --muted-foreground: #a9a196;
-  --border: rgba(243, 238, 228, .18);
+  --border: rgba(243, 238, 228, 0.18);
   --gold: #d8b877;
   --rose: #e8cd94;
   --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
   --btn-ink: #20190f;
 }
-.theme-noir h1, .theme-noir h2, .theme-noir h3, .theme-noir h4, .theme-noir .font-display {
+.theme-noir h1,
+.theme-noir h2,
+.theme-noir h3,
+.theme-noir h4,
+.theme-noir .font-display {
   font-family: "Bodoni Moda", serif !important;
-  font-weight: 500; font-style: normal; text-transform: uppercase; letter-spacing: .08em;
+  font-weight: 500;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
-.theme-noir .font-script { font-family: "Bodoni Moda", serif !important; }
+.theme-noir .font-script {
+  font-family: "Bodoni Moda", serif !important;
+}
 .theme-noir .font-kicker {
   font-family: "Jost", sans-serif !important;
-  font-size: 10px; text-transform: uppercase; letter-spacing: .42em; font-style: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.42em;
+  font-style: normal;
 }
 .theme-noir .glass-card {
-  background: linear-gradient(160deg, rgba(255,255,255,.1), rgba(255,255,255,.03));
-  border: 1px solid rgba(216,184,119,.26);
-  box-shadow: 0 24px 50px -34px rgba(0,0,0,.7);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.03)
+  );
+  border: 1px solid rgba(216, 184, 119, 0.26);
+  box-shadow: 0 24px 50px -34px rgba(0, 0, 0, 0.7);
   border-radius: 4px !important;
 }
-.theme-noir .tpl-btn, .theme-noir .tpl-icon { background: linear-gradient(135deg, #ebd3a0, #c9a45c); color: #20190f; border-radius: 4px; }
-.theme-noir .tpl-photo { border-radius: 4px; filter: none; }
-.theme-noir .tpl-band { background: linear-gradient(120deg, rgba(216,184,119,.24), rgba(255,255,255,.06)); color: #f6f0e4; }
+.theme-noir .tpl-btn,
+.theme-noir .tpl-icon {
+  background: linear-gradient(135deg, #ebd3a0, #c9a45c);
+  color: #20190f;
+  border-radius: 4px;
+}
+.theme-noir .tpl-photo {
+  border-radius: 4px;
+  filter: none;
+}
+.theme-noir .tpl-band {
+  background: linear-gradient(
+    120deg,
+    rgba(216, 184, 119, 0.24),
+    rgba(255, 255, 255, 0.06)
+  );
+  color: #f6f0e4;
+}
 
 /* ── Editorial — oat, clay & gold rules ─────────────────────────────── */
 .theme-editorial {
   background: linear-gradient(180deg, #faf7f3, #f2ebe4);
   --foreground: #2a231e;
   --muted-foreground: #786a5f;
-  --border: rgba(42, 35, 30, .16);
+  --border: rgba(42, 35, 30, 0.16);
   --gold: #c08e6d;
   --rose: #95604a;
   --gradient-gold: linear-gradient(135deg, #3a302a, #221c18);
   --btn-ink: #faf7f3;
 }
-.theme-editorial h1, .theme-editorial h2, .theme-editorial h3, .theme-editorial h4, .theme-editorial .font-display {
+.theme-editorial h1,
+.theme-editorial h2,
+.theme-editorial h3,
+.theme-editorial h4,
+.theme-editorial .font-display {
   font-family: "Instrument Serif", serif !important;
-  font-weight: 400; font-style: normal; text-transform: none; letter-spacing: -.02em;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: -0.02em;
 }
-.theme-editorial .font-script { font-family: "Instrument Serif", serif !important; }
+.theme-editorial .font-script {
+  font-family: "Instrument Serif", serif !important;
+}
 .theme-editorial .font-kicker {
   font-family: "Archivo", sans-serif !important;
-  font-size: 10px; text-transform: uppercase; letter-spacing: .22em; font-style: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-style: normal;
 }
 .theme-editorial .glass-card {
-  background: linear-gradient(160deg, rgba(255,255,255,.8), rgba(255,255,255,.5));
-  border: 1px solid rgba(42,35,30,.14);
-  box-shadow: 0 20px 44px -30px rgba(90,70,55,.35);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.5)
+  );
+  border: 1px solid rgba(42, 35, 30, 0.14);
+  box-shadow: 0 20px 44px -30px rgba(90, 70, 55, 0.35);
   border-radius: 2px !important;
 }
-.theme-editorial .tpl-btn, .theme-editorial .tpl-icon { background: linear-gradient(135deg, #3a302a, #221c18); color: #faf7f3; border-radius: 2px; }
-.theme-editorial .tpl-photo { border-radius: 2px; filter: none; }
-.theme-editorial .tpl-band { background: linear-gradient(120deg, rgba(214,176,150,.5), rgba(228,207,170,.5)); color: #2a231e; }
+.theme-editorial .tpl-btn,
+.theme-editorial .tpl-icon {
+  background: linear-gradient(135deg, #3a302a, #221c18);
+  color: #faf7f3;
+  border-radius: 2px;
+}
+.theme-editorial .tpl-photo {
+  border-radius: 2px;
+  filter: none;
+}
+.theme-editorial .tpl-band {
+  background: linear-gradient(
+    120deg,
+    rgba(214, 176, 150, 0.5),
+    rgba(228, 207, 170, 0.5)
+  );
+  color: #2a231e;
+}
 
 /* ── Quiet — pearl white, gold hairline ─────────────────────────────── */
 .theme-quiet {
   background: linear-gradient(180deg, #ffffff, #f7f5f2);
   --foreground: #211f1d;
   --muted-foreground: #7b756e;
-  --border: rgba(33, 31, 29, .12);
+  --border: rgba(33, 31, 29, 0.12);
   --gold: #c0a878;
   --rose: #8a7748;
   --gradient-gold: linear-gradient(135deg, #2c2926, #181614);
   --btn-ink: #fbfaf8;
 }
-.theme-quiet h1, .theme-quiet h2, .theme-quiet h3, .theme-quiet h4, .theme-quiet .font-display {
+.theme-quiet h1,
+.theme-quiet h2,
+.theme-quiet h3,
+.theme-quiet h4,
+.theme-quiet .font-display {
   font-family: "Manrope", sans-serif !important;
-  font-weight: 800; font-style: normal; text-transform: uppercase; letter-spacing: -.02em;
+  font-weight: 800;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
 }
-.theme-quiet .font-script { font-family: "Cormorant Garamond", serif !important; }
+.theme-quiet .font-script {
+  font-family: "Cormorant Garamond", serif !important;
+}
 .theme-quiet .font-kicker {
   font-family: "Manrope", sans-serif !important;
-  font-size: 10px; text-transform: uppercase; letter-spacing: .3em; font-style: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-style: normal;
 }
 .theme-quiet .glass-card {
-  background: linear-gradient(160deg, rgba(255,255,255,.9), rgba(250,248,245,.7));
-  border: 1px solid rgba(192,168,120,.24);
-  box-shadow: 0 18px 40px -30px rgba(60,50,35,.25);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(250, 248, 245, 0.7)
+  );
+  border: 1px solid rgba(192, 168, 120, 0.24);
+  box-shadow: 0 18px 40px -30px rgba(60, 50, 35, 0.25);
   border-radius: 2px !important;
 }
-.theme-quiet .tpl-btn, .theme-quiet .tpl-icon { background: linear-gradient(135deg, #2c2926, #181614); color: #fbfaf8; border-radius: 2px; }
-.theme-quiet .tpl-photo { border-radius: 2px; filter: grayscale(.85); }
-.theme-quiet .tpl-band { background: linear-gradient(120deg, rgba(233,226,212,.7), rgba(246,243,238,.7)); color: #211f1d; }
+.theme-quiet .tpl-btn,
+.theme-quiet .tpl-icon {
+  background: linear-gradient(135deg, #2c2926, #181614);
+  color: #fbfaf8;
+  border-radius: 2px;
+}
+.theme-quiet .tpl-photo {
+  border-radius: 2px;
+  filter: grayscale(0.85);
+}
+.theme-quiet .tpl-band {
+  background: linear-gradient(
+    120deg,
+    rgba(233, 226, 212, 0.7),
+    rgba(246, 243, 238, 0.7)
+  );
+  color: #211f1d;
+}
 
 /* ── Garden — pastel sage & cream ───────────────────────────────────── */
 .theme-garden {
   background: linear-gradient(180deg, #f7faf3, #eef4e9);
   --foreground: #2c3626;
   --muted-foreground: #6c7c60;
-  --border: rgba(44, 54, 38, .13);
+  --border: rgba(44, 54, 38, 0.13);
   --gold: #8fa673;
   --rose: #55703f;
   --gradient-gold: linear-gradient(135deg, #7c9761, #4e6b3b);
   --btn-ink: #f7faf2;
 }
-.theme-garden h1, .theme-garden h2, .theme-garden h3, .theme-garden h4, .theme-garden .font-display {
+.theme-garden h1,
+.theme-garden h2,
+.theme-garden h3,
+.theme-garden h4,
+.theme-garden .font-display {
   font-family: "Newsreader", serif !important;
-  font-weight: 400; font-style: italic; text-transform: none; letter-spacing: 0;
+  font-weight: 400;
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0;
 }
-.theme-garden .font-script { font-family: "Newsreader", serif !important; }
+.theme-garden .font-script {
+  font-family: "Newsreader", serif !important;
+}
 .theme-garden .font-kicker {
   font-family: "Newsreader", serif !important;
-  font-size: 15px; text-transform: none; letter-spacing: .01em; font-style: italic;
+  font-size: 15px;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  font-style: italic;
 }
 .theme-garden .glass-card {
-  background: linear-gradient(160deg, rgba(255,255,255,.85), rgba(255,255,255,.55));
-  border: 1px solid rgba(143,166,115,.24);
-  box-shadow: 0 22px 46px -30px rgba(70,95,55,.35);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.85),
+    rgba(255, 255, 255, 0.55)
+  );
+  border: 1px solid rgba(143, 166, 115, 0.24);
+  box-shadow: 0 22px 46px -30px rgba(70, 95, 55, 0.35);
   border-radius: 22px !important;
 }
-.theme-garden .tpl-btn, .theme-garden .tpl-icon { background: linear-gradient(135deg, #7c9761, #4e6b3b); color: #f7faf2; border-radius: 999px; }
-.theme-garden .tpl-photo { border-radius: 22px; filter: none; }
-.theme-garden .tpl-band { background: linear-gradient(120deg, rgba(196,214,175,.6), rgba(232,224,190,.5)); color: #2c3626; }
+.theme-garden .tpl-btn,
+.theme-garden .tpl-icon {
+  background: linear-gradient(135deg, #7c9761, #4e6b3b);
+  color: #f7faf2;
+  border-radius: 999px;
+}
+.theme-garden .tpl-photo {
+  border-radius: 22px;
+  filter: none;
+}
+.theme-garden .tpl-band {
+  background: linear-gradient(
+    120deg,
+    rgba(196, 214, 175, 0.6),
+    rgba(232, 224, 190, 0.5)
+  );
+  color: #2c3626;
+}
 @keyframes leafSway {
-  0%, 100% { transform: rotate(-2deg) translateY(0); }
-  50% { transform: rotate(2deg) translateY(-3px); }
+  0%,
+  100% {
+    transform: rotate(-2deg) translateY(0);
+  }
+  50% {
+    transform: rotate(2deg) translateY(-3px);
+  }
 }
 .theme-garden img[alt=""]:not(.animate-petal) {
   animation: leafSway 7s ease-in-out infinite;
@@ -1045,98 +1560,197 @@
   background: linear-gradient(180deg, #fcf8f1, #ecf5f5);
   --foreground: #1f3c45;
   --muted-foreground: #65838b;
-  --border: rgba(31, 60, 69, .13);
+  --border: rgba(31, 60, 69, 0.13);
   --gold: #8bb6bd;
   --rose: #3a6d78;
   --gradient-gold: linear-gradient(135deg, #7fadb6, #39707c);
   --btn-ink: #f7fbfb;
 }
-.theme-shoreline h1, .theme-shoreline h2, .theme-shoreline h3, .theme-shoreline h4, .theme-shoreline .font-display {
+.theme-shoreline h1,
+.theme-shoreline h2,
+.theme-shoreline h3,
+.theme-shoreline h4,
+.theme-shoreline .font-display {
   font-family: "Tenor Sans", sans-serif !important;
-  font-weight: 400; font-style: normal; text-transform: none; letter-spacing: .06em;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0.06em;
 }
-.theme-shoreline .font-script { font-family: "Cormorant Garamond", serif !important; }
+.theme-shoreline .font-script {
+  font-family: "Cormorant Garamond", serif !important;
+}
 .theme-shoreline .font-kicker {
   font-family: "Nunito Sans", sans-serif !important;
-  font-size: 10px; text-transform: uppercase; letter-spacing: .3em; font-style: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-style: normal;
 }
 .theme-shoreline .glass-card {
-  background: linear-gradient(160deg, rgba(255,255,255,.82), rgba(255,255,255,.5));
-  border: 1px solid rgba(139,182,189,.28);
-  box-shadow: 0 22px 44px -30px rgba(35,80,90,.35);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.82),
+    rgba(255, 255, 255, 0.5)
+  );
+  border: 1px solid rgba(139, 182, 189, 0.28);
+  box-shadow: 0 22px 44px -30px rgba(35, 80, 90, 0.35);
   border-radius: 18px !important;
 }
-.theme-shoreline .tpl-btn, .theme-shoreline .tpl-icon { background: linear-gradient(135deg, #7fadb6, #39707c); color: #f7fbfb; border-radius: 999px; }
-.theme-shoreline .tpl-photo { border-radius: 18px; filter: none; }
-.theme-shoreline .tpl-band { background: linear-gradient(120deg, rgba(178,212,216,.6), rgba(238,224,199,.55)); color: #1f3c45; }
+.theme-shoreline .tpl-btn,
+.theme-shoreline .tpl-icon {
+  background: linear-gradient(135deg, #7fadb6, #39707c);
+  color: #f7fbfb;
+  border-radius: 999px;
+}
+.theme-shoreline .tpl-photo {
+  border-radius: 18px;
+  filter: none;
+}
+.theme-shoreline .tpl-band {
+  background: linear-gradient(
+    120deg,
+    rgba(178, 212, 216, 0.6),
+    rgba(238, 224, 199, 0.55)
+  );
+  color: #1f3c45;
+}
 
 /* ── Deco — pastel jade & gilt ───────────────────────────────────────── */
 .theme-deco {
   background: linear-gradient(180deg, #f6f3ea, #eef0e7);
   --foreground: #1f4241;
   --muted-foreground: #5f7b7a;
-  --border: rgba(31, 66, 65, .18);
+  --border: rgba(31, 66, 65, 0.18);
   --gold: #c2a15c;
   --rose: #7d6528;
   --gradient-gold: linear-gradient(135deg, #ebd3a0, #c9a45c);
   --btn-ink: #3a2e1c;
 }
-.theme-deco h1, .theme-deco h2, .theme-deco h3, .theme-deco h4, .theme-deco .font-display {
+.theme-deco h1,
+.theme-deco h2,
+.theme-deco h3,
+.theme-deco h4,
+.theme-deco .font-display {
   font-family: "Poiret One", sans-serif !important;
-  font-weight: 400; font-style: normal; text-transform: uppercase; letter-spacing: .18em;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
 }
-.theme-deco .font-script { font-family: "Poiret One", sans-serif !important; }
+.theme-deco .font-script {
+  font-family: "Poiret One", sans-serif !important;
+}
 .theme-deco .font-kicker {
   font-family: "Josefin Sans", sans-serif !important;
-  font-size: 10px; text-transform: uppercase; letter-spacing: .4em; font-style: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  font-style: normal;
 }
 .theme-deco .glass-card {
-  background: linear-gradient(160deg, rgba(255,255,255,.82), rgba(255,255,255,.5));
-  border: 1px solid rgba(194,161,92,.3);
-  box-shadow: 0 20px 44px -30px rgba(35,70,68,.35);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.82),
+    rgba(255, 255, 255, 0.5)
+  );
+  border: 1px solid rgba(194, 161, 92, 0.3);
+  box-shadow: 0 20px 44px -30px rgba(35, 70, 68, 0.35);
   border-radius: 0 !important;
 }
-.theme-deco .tpl-btn, .theme-deco .tpl-icon { background: linear-gradient(135deg, #ebd3a0, #c9a45c); color: #3a2e1c; border-radius: 0; }
-.theme-deco .tpl-photo { border-radius: 0; filter: none; }
-.theme-deco .tpl-band { background: linear-gradient(120deg, rgba(176,201,197,.55), rgba(224,201,146,.55)); color: #1f4241; }
-.theme-deco .tpl-pattern { background-image: repeating-linear-gradient(90deg, rgba(194,161,92,.08) 0 1px, transparent 1px 14px); }
+.theme-deco .tpl-btn,
+.theme-deco .tpl-icon {
+  background: linear-gradient(135deg, #ebd3a0, #c9a45c);
+  color: #3a2e1c;
+  border-radius: 0;
+}
+.theme-deco .tpl-photo {
+  border-radius: 0;
+  filter: none;
+}
+.theme-deco .tpl-band {
+  background: linear-gradient(
+    120deg,
+    rgba(176, 201, 197, 0.55),
+    rgba(224, 201, 146, 0.55)
+  );
+  color: #1f4241;
+}
+.theme-deco .tpl-pattern {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(194, 161, 92, 0.08) 0 1px,
+    transparent 1px 14px
+  );
+}
 
 /* ── Film — warm sepia, photo-led ───────────────────────────────────── */
 .theme-film {
   background: linear-gradient(180deg, #161311, #1e1a17);
   --foreground: #f4ece1;
   --muted-foreground: #a89c8d;
-  --border: rgba(244, 236, 225, .18);
+  --border: rgba(244, 236, 225, 0.18);
   --gold: #d9c3a0;
   --rose: #f0e3cf;
   --gradient-gold: linear-gradient(135deg, #efe3d1, #cdb494);
   --btn-ink: #241d16;
 }
-.theme-film h1, .theme-film h2, .theme-film h3, .theme-film h4, .theme-film .font-display {
+.theme-film h1,
+.theme-film h2,
+.theme-film h3,
+.theme-film h4,
+.theme-film .font-display {
   font-family: "Crimson Pro", serif !important;
-  font-weight: 400; font-style: normal; text-transform: none; letter-spacing: .01em;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0.01em;
 }
-.theme-film .font-script { font-family: "Crimson Pro", serif !important; }
+.theme-film .font-script {
+  font-family: "Crimson Pro", serif !important;
+}
 .theme-film .font-kicker {
   font-family: "IBM Plex Sans", sans-serif !important;
-  font-size: 10px; text-transform: uppercase; letter-spacing: .28em; font-style: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-style: normal;
 }
 .theme-film .glass-card {
-  background: linear-gradient(160deg, rgba(255,255,255,.1), rgba(255,255,255,.03));
-  border: 1px solid rgba(217,195,160,.24);
-  box-shadow: 0 24px 50px -34px rgba(0,0,0,.7);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.03)
+  );
+  border: 1px solid rgba(217, 195, 160, 0.24);
+  box-shadow: 0 24px 50px -34px rgba(0, 0, 0, 0.7);
   border-radius: 3px !important;
 }
-.theme-film .tpl-btn, .theme-film .tpl-icon { background: linear-gradient(135deg, #efe3d1, #cdb494); color: #241d16; border-radius: 3px; }
-.theme-film .tpl-photo { border-radius: 3px; filter: sepia(.18) contrast(1.04); }
-.theme-film .tpl-band { background: linear-gradient(120deg, rgba(217,195,160,.24), rgba(255,255,255,.06)); color: #f7efe3; }
+.theme-film .tpl-btn,
+.theme-film .tpl-icon {
+  background: linear-gradient(135deg, #efe3d1, #cdb494);
+  color: #241d16;
+  border-radius: 3px;
+}
+.theme-film .tpl-photo {
+  border-radius: 3px;
+  filter: sepia(0.18) contrast(1.04);
+}
+.theme-film .tpl-band {
+  background: linear-gradient(
+    120deg,
+    rgba(217, 195, 160, 0.24),
+    rgba(255, 255, 255, 0.06)
+  );
+  color: #f7efe3;
+}
 
 /* ── Lotus — ivory & gold, falling lotus ────────────────────────────── */
 .theme-lotus {
   background: linear-gradient(180deg, #fdf9f0 0%, #f6eddc 52%, #fbf5e8 100%);
   --foreground: #2f2a22;
   --muted-foreground: #8a7b60;
-  --border: rgba(192, 153, 63, .28);
+  --border: rgba(192, 153, 63, 0.28);
   --gold: #c0993f;
   --rose: #96712a;
   --gradient-gold: linear-gradient(135deg, #e8cf95, #c0993f);
@@ -1151,54 +1765,128 @@
      mismatch — pink showing through an ivory/gold template — was actually
      visible instead of just theoretical. Matches this theme's own page
      background exactly, so the opener and the page it fades into agree. */
-  --gradient-hero: linear-gradient(180deg, #fdf9f0 0%, #f6eddc 52%, #fbf5e8 100%);
+  --gradient-hero: linear-gradient(
+    180deg,
+    #fdf9f0 0%,
+    #f6eddc 52%,
+    #fbf5e8 100%
+  );
 }
-.theme-lotus h1, .theme-lotus h2, .theme-lotus h3, .theme-lotus h4, .theme-lotus .font-display {
+.theme-lotus h1,
+.theme-lotus h2,
+.theme-lotus h3,
+.theme-lotus h4,
+.theme-lotus .font-display {
   font-family: "Playfair Display", serif !important;
-  font-weight: 500; font-style: normal; text-transform: none; letter-spacing: .01em;
+  font-weight: 500;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0.01em;
 }
-.theme-lotus .font-script { font-family: "Cormorant Garamond", serif !important; }
+.theme-lotus .font-script {
+  font-family: "Cormorant Garamond", serif !important;
+}
 .theme-lotus .font-kicker {
   font-family: "Lato", sans-serif !important;
-  font-size: 10px; text-transform: uppercase; letter-spacing: .3em; font-style: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-style: normal;
 }
 .theme-lotus .glass-card {
-  background: linear-gradient(160deg, rgba(255,253,247,.86), rgba(255,251,240,.54));
-  border: 1px solid rgba(192,153,63,.3);
-  box-shadow: 0 22px 48px -28px rgba(150,113,42,.4);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 253, 247, 0.86),
+    rgba(255, 251, 240, 0.54)
+  );
+  border: 1px solid rgba(192, 153, 63, 0.3);
+  box-shadow: 0 22px 48px -28px rgba(150, 113, 42, 0.4);
   border-radius: 6px !important;
 }
-.theme-lotus .tpl-btn, .theme-lotus .tpl-icon { background: linear-gradient(135deg, #e8cf95, #c0993f); color: #2f2a22; border-radius: 6px; }
-.theme-lotus .tpl-photo { border-radius: 6px; filter: none; }
-.theme-lotus .tpl-band { background: linear-gradient(120deg, rgba(232,207,149,.55), rgba(246,237,220,.7)); color: #2f2a22; }
-.theme-lotus .tpl-pattern { background-image: radial-gradient(circle at 14px 14px, rgba(192,153,63,.07) 1.6px, transparent 1.6px); background-size: 30px 30px; }
+.theme-lotus .tpl-btn,
+.theme-lotus .tpl-icon {
+  background: linear-gradient(135deg, #e8cf95, #c0993f);
+  color: #2f2a22;
+  border-radius: 6px;
+}
+.theme-lotus .tpl-photo {
+  border-radius: 6px;
+  filter: none;
+}
+.theme-lotus .tpl-band {
+  background: linear-gradient(
+    120deg,
+    rgba(232, 207, 149, 0.55),
+    rgba(246, 237, 220, 0.7)
+  );
+  color: #2f2a22;
+}
+.theme-lotus .tpl-pattern {
+  background-image: radial-gradient(
+    circle at 14px 14px,
+    rgba(192, 153, 63, 0.07) 1.6px,
+    transparent 1.6px
+  );
+  background-size: 30px 30px;
+}
 
 /* ── Bloom — blush rose-gold, arched ────────────────────────────────── */
 .theme-bloom {
   background: linear-gradient(180deg, #fdf8f6, #f7eee9);
   --foreground: #3f2e2b;
   --muted-foreground: #8b736e;
-  --border: rgba(63, 46, 43, .12);
+  --border: rgba(63, 46, 43, 0.12);
   --gold: #d3a293;
   --rose: #a06455;
   --gradient-gold: linear-gradient(135deg, #e2b6a4, #b07463);
   --btn-ink: #fff8f5;
 }
-.theme-bloom h1, .theme-bloom h2, .theme-bloom h3, .theme-bloom h4, .theme-bloom .font-display {
+.theme-bloom h1,
+.theme-bloom h2,
+.theme-bloom h3,
+.theme-bloom h4,
+.theme-bloom .font-display {
   font-family: "Marcellus", serif !important;
-  font-weight: 400; font-style: normal; text-transform: none; letter-spacing: .01em;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0.01em;
 }
-.theme-bloom .font-script { font-family: "Cormorant Garamond", serif !important; }
+.theme-bloom .font-script {
+  font-family: "Cormorant Garamond", serif !important;
+}
 .theme-bloom .font-kicker {
   font-family: "Outfit", sans-serif !important;
-  font-size: 10px; text-transform: uppercase; letter-spacing: .3em; font-style: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-style: normal;
 }
 .theme-bloom .glass-card {
-  background: linear-gradient(160deg, rgba(255,255,255,.85), rgba(255,255,255,.55));
-  border: 1px solid rgba(211,162,147,.26);
-  box-shadow: 0 24px 50px -32px rgba(140,90,78,.4);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.85),
+    rgba(255, 255, 255, 0.55)
+  );
+  border: 1px solid rgba(211, 162, 147, 0.26);
+  box-shadow: 0 24px 50px -32px rgba(140, 90, 78, 0.4);
   border-radius: 18px !important;
 }
-.theme-bloom .tpl-btn, .theme-bloom .tpl-icon { background: linear-gradient(135deg, #e2b6a4, #b07463); color: #fff8f5; border-radius: 999px; }
-.theme-bloom .tpl-photo { border-radius: 200px 200px 18px 18px; filter: none; }
-.theme-bloom .tpl-band { background: linear-gradient(120deg, rgba(232,197,185,.6), rgba(233,201,138,.55)); color: #3f2e2b; }
+.theme-bloom .tpl-btn,
+.theme-bloom .tpl-icon {
+  background: linear-gradient(135deg, #e2b6a4, #b07463);
+  color: #fff8f5;
+  border-radius: 999px;
+}
+.theme-bloom .tpl-photo {
+  border-radius: 200px 200px 18px 18px;
+  filter: none;
+}
+.theme-bloom .tpl-band {
+  background: linear-gradient(
+    120deg,
+    rgba(232, 197, 185, 0.6),
+    rgba(233, 201, 138, 0.55)
+  );
+  color: #3f2e2b;
+}

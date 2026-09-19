@@ -14,7 +14,7 @@ import { LotusPetals } from "@/components/LotusPetals";
 import { LotusVineBand, LotusStemsCorner } from "@/components/LotusCorner";
 import { Monogram } from "@/components/Monogram";
 import { Motif } from "@/components/Motif";
-import coupleImg from "@/assets/couple.png";
+import coupleImg from "@/assets/couple.webp";
 
 // Matches the 1.6s undelayed crossfade .theme-lotus .invite-opener uses
 // (styles.css) — every other opener's own 2100ms default matches the

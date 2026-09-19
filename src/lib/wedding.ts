@@ -72,6 +72,84 @@ export const TEMPLATE_META: Record<
   bloom: { hero: "split", opener: "ring", motif: "leaf" },
 };
 
+// Google Fonts families each template actually uses (display / script /
+// kicker — see the matching `.theme-*` blocks in styles.css). Loading only
+// the current template's families instead of all 23 at once cuts the guest
+// page's blocking font CSS from ~50 KB to a few KB. Inter is the shared body
+// face for every template; Archivo is the admin/landing UI face.
+const FONT_INTER = "family=Inter:wght@300;400;500;600;700";
+const FONT_ARCHIVO = "family=Archivo:wght@400;500;600;700;800";
+const FONT_CORMORANT =
+  "family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500";
+const FONT_PLAYFAIR =
+  "family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400";
+const TEMPLATE_FONT_FAMILIES: Record<WeddingTemplate, string[]> = {
+  classic: [FONT_PLAYFAIR, FONT_CORMORANT],
+  poruwa: [
+    "family=Cinzel:wght@400;600",
+    FONT_CORMORANT,
+    "family=Mukta:wght@400;600",
+  ],
+  thali: ["family=Rozha+One", FONT_CORMORANT, "family=Mukta:wght@400;600"],
+  chapel: [FONT_CORMORANT, "family=Lato:wght@400;700"],
+  nikkah: [
+    "family=Amiri:ital,wght@0,400;0,700;1,400",
+    "family=Jost:wght@400;500;600",
+  ],
+  noir: [
+    "family=Bodoni+Moda:ital,wght@0,400;0,500;1,400",
+    "family=Jost:wght@400;500;600",
+  ],
+  editorial: ["family=Instrument+Serif:ital@0;1", FONT_ARCHIVO],
+  quiet: ["family=Manrope:wght@400;600;800", FONT_CORMORANT],
+  garden: ["family=Newsreader:ital,wght@0,400;0,500;1,400;1,500"],
+  shoreline: [
+    "family=Tenor+Sans",
+    FONT_CORMORANT,
+    "family=Nunito+Sans:wght@400;600",
+  ],
+  deco: ["family=Poiret+One", "family=Josefin+Sans:wght@300;400;600"],
+  film: [
+    "family=Crimson+Pro:ital,wght@0,400;1,400",
+    "family=IBM+Plex+Sans:wght@400;500",
+  ],
+  lotus: [FONT_PLAYFAIR, FONT_CORMORANT, "family=Lato:wght@400;700"],
+  bloom: ["family=Marcellus", FONT_CORMORANT, "family=Outfit:wght@400;500;600"],
+};
+
+function googleFontsHref(families: string[]): string {
+  return `https://fonts.googleapis.com/css2?${[...new Set(families)].join("&")}&display=swap`;
+}
+
+/** Stylesheet URL for exactly the fonts one template needs (plus Inter). */
+export function templateFontsHref(template: WeddingTemplate): string {
+  return googleFontsHref([FONT_INTER, ...TEMPLATE_FONT_FAMILIES[template]]);
+}
+
+/** Stylesheet URL for the admin portal / product landing (Archivo + Inter). */
+export const UI_FONTS_HREF = googleFontsHref([FONT_ARCHIVO, FONT_INTER]);
+
+/** Stylesheet URL for every template — only for the admin template picker preview. */
+export const ALL_TEMPLATE_FONTS_HREF = googleFontsHref([
+  FONT_INTER,
+  FONT_ARCHIVO,
+  ...Object.values(TEMPLATE_FONT_FAMILIES).flat(),
+]);
+
+/** `<link>` descriptors for TanStack Router `head()`; preconnects included. */
+type HeadLink = React.ComponentProps<"link">;
+export function fontLinks(href: string): HeadLink[] {
+  return [
+    { rel: "preconnect", href: "https://fonts.googleapis.com" },
+    {
+      rel: "preconnect",
+      href: "https://fonts.gstatic.com",
+      crossOrigin: "anonymous",
+    },
+    { rel: "stylesheet", href },
+  ];
+}
+
 // Only "classic" carries the falling-petal/corner-rose floral decoration —
 // every other template is deliberately unadorned by that specific motif
 // (they get their own personality through TEMPLATE_META + styles.css's
@@ -111,6 +189,7 @@ export type PublicWedding = {
   couplePhotoUrl: string | null;
   venuePhotoUrl: string | null;
   shareImageUrl: string | null;
+  floorPlanUrl: string | null;
   mapsUrl: string | null;
   musicUrl: string | null;
 };
@@ -133,6 +212,7 @@ function toPublicWedding(row: {
   couple_photo_url: string | null;
   venue_photo_url: string | null;
   share_image_url: string | null;
+  floor_plan_url: string | null;
   maps_url: string | null;
   music_url: string | null;
 }): PublicWedding {
@@ -158,13 +238,14 @@ function toPublicWedding(row: {
     couplePhotoUrl: row.couple_photo_url,
     venuePhotoUrl: row.venue_photo_url,
     shareImageUrl: row.share_image_url,
+    floorPlanUrl: row.floor_plan_url,
     mapsUrl: row.maps_url,
     musicUrl: row.music_url,
   };
 }
 
 const WEDDING_COLUMNS =
-  "slug, bride, groom, groom_parents_names, bride_parents_names, event_date, event_end, reception_date, reception_end, venue, hall, address, description, template, couple_photo_url, venue_photo_url, share_image_url, maps_url, music_url";
+  "slug, bride, groom, groom_parents_names, bride_parents_names, event_date, event_end, reception_date, reception_end, venue, hall, address, description, template, couple_photo_url, venue_photo_url, share_image_url, floor_plan_url, maps_url, music_url";
 
 // The "families" kicker several hero layouts open with (WeddingSite.tsx,
 // InvitationOpener.tsx's VeilOpener) — swapped for the couple's actual
@@ -335,22 +416,9 @@ export async function uploadWeddingMedia(
   return `${data.publicUrl}?v=${Date.now()}`;
 }
 
-// Kept for the root `/` route — a convenience alias to "whichever wedding is
-// published" for this single-tenant deployment. The real, shareable public
-// URL is /$slug (fetchWeddingBySlug below), which is what the admin's own
-// "Public link" points guests at and what actually scales to more than one
-// customer sharing this Worker.
-export async function fetchPublishedWedding(): Promise<PublicWedding | null> {
-  const { data, error } = await supabase
-    .from("weddings")
-    .select(WEDDING_COLUMNS)
-    .eq("published", true)
-    .limit(1)
-    .maybeSingle();
-  if (error || !data) return null;
-  return toPublicWedding(data);
-}
-
+// The only public read path: a wedding is addressed by slug and must be
+// published. There is deliberately no "whichever wedding is published"
+// helper any more — every guest-facing route is under /$slug.
 export async function fetchWeddingBySlug(
   slug: string,
 ): Promise<PublicWedding | null> {

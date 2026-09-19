@@ -12,13 +12,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Reveal } from "@/components/wedding/Reveal";
 import { Motif } from "@/components/Motif";
 import { RoseCorner } from "@/components/RoseCorner";
-import { z } from "zod";
-import { fallback } from "@tanstack/zod-adapter";
-import seatingPlanImg from "@/assets/seating.png";
 import {
   fetchWeddingBySlug,
+  fontLinks,
   formatLongDate,
   isDecorativeTemplate,
+  templateFontsHref,
   TEMPLATE_META,
   type PublicWedding,
 } from "@/lib/wedding";
@@ -33,9 +32,16 @@ type SeatingData = {
   tablemates: { name: string; is_current: boolean }[];
 };
 
+type SeatingSearch = { code?: string };
+
 export const Route = createFileRoute("/$slug/seating")({
-  validateSearch: z.object({
-    code: fallback(z.string().optional(), undefined),
+  // Only one optional string param — a hand-rolled validator keeps zod (and
+  // its adapter's peer-dep conflict) out of the client bundle entirely.
+  validateSearch: (search: Record<string, unknown>): SeatingSearch => ({
+    code:
+      typeof search.code === "string" && search.code.trim()
+        ? search.code.trim().slice(0, 32)
+        : undefined,
   }),
   loader: ({ params }) => fetchWeddingBySlug(params.slug),
   head: ({ loaderData }) => {
@@ -52,6 +58,7 @@ export const Route = createFileRoute("/$slug/seating")({
         },
         { name: "robots", content: "noindex" },
       ],
+      links: fontLinks(templateFontsHref(wedding?.template ?? "classic")),
     };
   },
   component: SeatingPage,
@@ -283,13 +290,24 @@ function SeatingPage() {
           </p>
           <div className="glass-card overflow-hidden rounded-3xl p-2 sm:p-3">
             <div className="relative">
-              <img
-                src={seatingPlanImg}
-                alt={`${w.hall ?? w.venue ?? "Reception"} seating plan`}
-                className="tpl-photo block h-auto w-full select-none"
-                loading="eager"
-                draggable={false}
-              />
+              {w.floorPlanUrl ? (
+                <img
+                  src={w.floorPlanUrl}
+                  alt={`${w.hall ?? w.venue ?? "Reception"} seating plan`}
+                  className="tpl-photo block h-auto w-full select-none"
+                  loading="eager"
+                  draggable={false}
+                />
+              ) : (
+                // No floor plan uploaded yet: keep the marker meaningful by
+                // placing it on a plain hall-shaped canvas.
+                <div
+                  className="tpl-photo aspect-[4/3] w-full"
+                  style={{ background: "var(--card)" }}
+                  aria-label="Reception hall"
+                  role="img"
+                />
+              )}
               {/* Highlight marker */}
               <div
                 className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2"

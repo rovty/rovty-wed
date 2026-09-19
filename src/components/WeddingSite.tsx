@@ -1,7 +1,5 @@
-// The full public invitation page body — shared by the root `/` route (a
-// single-tenant convenience alias) and `/$slug` (the real, shareable public
-// URL every "Public link" in admin actually points at). Kept as one
-// component so the two routes can't drift apart in what a guest sees.
+// The full public invitation page body, rendered by /$slug. Every "Public
+// link" and personalised WhatsApp link the admin hands out points here.
 import {
   Calendar,
   Clock,
@@ -37,8 +35,8 @@ import {
   type PublicWedding,
 } from "@/lib/wedding";
 import { supabase } from "@/integrations/supabase/client";
-import coupleImg from "@/assets/couple.png";
-import venueImg from "@/assets/venue.jpg";
+import coupleImg from "@/assets/couple.webp";
+import venueImg from "@/assets/venue.webp";
 
 export function WeddingNotLive() {
   return (
@@ -643,7 +641,7 @@ function SeatingCta({
               your table on the ballroom map.
             </p>
             <a
-              href={`/seating?code=${code}`}
+              href={`/${wedding.slug}/seating?code=${encodeURIComponent(code)}`}
               className="tpl-btn mt-5 min-h-12 px-7 text-sm font-medium"
             >
               <Users className="h-4 w-4" /> View Your Table

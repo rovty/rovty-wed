@@ -31,11 +31,21 @@ export const Route = createFileRoute("/sso")({
 
         if (!token) return failure("missing_token");
 
+        // /api/sso/resolve requires proof that the caller is a Rovty product
+        // Worker, not whoever happened to see the token URL in a log or
+        // browser history. Same static secret /api/team already presents to
+        // the dashboard's grant endpoint.
+        const workerSecret = process.env.TEAM_GRANT_SHARED_SECRET;
+        if (!workerSecret) return failure("server_misconfigured");
+
         let resolved: { email?: string; product?: string; error?: string };
         try {
           const res = await fetch(DASHBOARD_SSO_RESOLVE_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${workerSecret}`,
+            },
             body: JSON.stringify({ token }),
           });
           resolved = await res.json();

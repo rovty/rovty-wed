@@ -5,8 +5,10 @@
 // values the landing page's live builder and gallery need to render a
 // miniature of each design; src/lib/wedding.ts stays the source of truth for
 // which templates exist.
+import { WEDDING_TEMPLATES, type WeddingTemplate } from "@/lib/wedding";
+
 export interface WedTemplateTheme {
-  id: string;
+  id: WeddingTemplate;
   label: string;
   desc: string;
   /** Full CSS background (gradient) for the live phone preview screen. */
@@ -410,3 +412,16 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
     scr: '"Cormorant Garamond",serif',
   },
 ];
+
+// Compile-time + startup guard: every product template must have a landing
+// theme and vice versa. `satisfies` keeps the ids typed; the length check
+// catches an omission (a missing entry would otherwise just not render).
+const _landingIds = new Set(WED_TEMPLATES.map((t) => t.id));
+if (
+  _landingIds.size !== WEDDING_TEMPLATES.length ||
+  WEDDING_TEMPLATES.some((t) => !_landingIds.has(t.id))
+) {
+  throw new Error(
+    "wed-landing/templates.ts is out of sync with WEDDING_TEMPLATES in lib/wedding.ts",
+  );
+}

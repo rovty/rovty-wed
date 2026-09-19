@@ -5,6 +5,7 @@ import type { Tables } from "@/integrations/supabase/types";
 import { Onboarding } from "@/components/admin/Onboarding";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { AButton } from "@/components/admin/ui";
+import { ALL_TEMPLATE_FONTS_HREF, fontLinks } from "@/lib/wedding";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -13,6 +14,9 @@ export const Route = createFileRoute("/admin")({
       { title: "Wedding Admin | Rovty Wed" },
       { name: "robots", content: "noindex" },
     ],
+    // The admin's template picker previews every template's typeface, so
+    // this is the one route that legitimately loads the whole set.
+    links: fontLinks(ALL_TEMPLATE_FONTS_HREF),
   }),
   component: AdminPage,
 });

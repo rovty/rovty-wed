@@ -13,13 +13,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as CalendarDoticsRouteImport } from './routes/calendar[.]ics'
-import { Route as PeoplesBankRouteImport } from './routes/peoples-bank'
-import { Route as RsvpRouteImport } from './routes/rsvp'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SsoRouteImport } from './routes/sso'
-import { Route as ThankYouRouteImport } from './routes/thank-you'
-import { Route as ThankyouRouteImport } from './routes/thankyou'
 import { Route as SlugIndexRouteImport } from './routes/$slug.index'
 import { Route as SlugCalendarDoticsRouteImport } from './routes/$slug.calendar[.]ics'
 import { Route as SlugSeatingRouteImport } from './routes/$slug.seating'
@@ -45,21 +40,6 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CalendarDoticsRoute = CalendarDoticsRouteImport.update({
-  id: '/calendar.ics',
-  path: '/calendar.ics',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PeoplesBankRoute = PeoplesBankRouteImport.update({
-  id: '/peoples-bank',
-  path: '/peoples-bank',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RsvpRoute = RsvpRouteImport.update({
-  id: '/rsvp',
-  path: '/rsvp',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -68,16 +48,6 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SsoRoute = SsoRouteImport.update({
   id: '/sso',
   path: '/sso',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ThankYouRoute = ThankYouRouteImport.update({
-  id: '/thank-you',
-  path: '/thank-you',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ThankyouRoute = ThankyouRouteImport.update({
-  id: '/thankyou',
-  path: '/thankyou',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SlugIndexRoute = SlugIndexRouteImport.update({
@@ -106,13 +76,8 @@ export interface FileRoutesByFullPath {
   '/$slug': typeof SlugRouteWithChildren
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/calendar.ics': typeof CalendarDoticsRoute
-  '/peoples-bank': typeof PeoplesBankRoute
-  '/rsvp': typeof RsvpRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sso': typeof SsoRoute
-  '/thank-you': typeof ThankYouRoute
-  '/thankyou': typeof ThankyouRoute
   '/$slug/calendar.ics': typeof SlugCalendarDoticsRoute
   '/$slug/seating': typeof SlugSeatingRoute
   '/api/team': typeof ApiTeamRoute
@@ -122,13 +87,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/calendar.ics': typeof CalendarDoticsRoute
-  '/peoples-bank': typeof PeoplesBankRoute
-  '/rsvp': typeof RsvpRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sso': typeof SsoRoute
-  '/thank-you': typeof ThankYouRoute
-  '/thankyou': typeof ThankyouRoute
   '/$slug/calendar.ics': typeof SlugCalendarDoticsRoute
   '/$slug/seating': typeof SlugSeatingRoute
   '/api/team': typeof ApiTeamRoute
@@ -140,13 +100,8 @@ export interface FileRoutesById {
   '/$slug': typeof SlugRouteWithChildren
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/calendar.ics': typeof CalendarDoticsRoute
-  '/peoples-bank': typeof PeoplesBankRoute
-  '/rsvp': typeof RsvpRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sso': typeof SsoRoute
-  '/thank-you': typeof ThankYouRoute
-  '/thankyou': typeof ThankyouRoute
   '/$slug/calendar.ics': typeof SlugCalendarDoticsRoute
   '/$slug/seating': typeof SlugSeatingRoute
   '/api/team': typeof ApiTeamRoute
@@ -159,13 +114,8 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/admin'
     | '/auth'
-    | '/calendar.ics'
-    | '/peoples-bank'
-    | '/rsvp'
     | '/sitemap.xml'
     | '/sso'
-    | '/thank-you'
-    | '/thankyou'
     | '/$slug/calendar.ics'
     | '/$slug/seating'
     | '/api/team'
@@ -175,13 +125,8 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
-    | '/calendar.ics'
-    | '/peoples-bank'
-    | '/rsvp'
     | '/sitemap.xml'
     | '/sso'
-    | '/thank-you'
-    | '/thankyou'
     | '/$slug/calendar.ics'
     | '/$slug/seating'
     | '/api/team'
@@ -192,13 +137,8 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/admin'
     | '/auth'
-    | '/calendar.ics'
-    | '/peoples-bank'
-    | '/rsvp'
     | '/sitemap.xml'
     | '/sso'
-    | '/thank-you'
-    | '/thankyou'
     | '/$slug/calendar.ics'
     | '/$slug/seating'
     | '/api/team'
@@ -210,13 +150,8 @@ export interface RootRouteChildren {
   SlugRoute: typeof SlugRouteWithChildren
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
-  CalendarDoticsRoute: typeof CalendarDoticsRoute
-  PeoplesBankRoute: typeof PeoplesBankRoute
-  RsvpRoute: typeof RsvpRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SsoRoute: typeof SsoRoute
-  ThankYouRoute: typeof ThankYouRoute
-  ThankyouRoute: typeof ThankyouRoute
   ApiTeamRoute: typeof ApiTeamRoute
 }
 
@@ -250,27 +185,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/calendar.ics': {
-      id: '/calendar.ics'
-      path: '/calendar.ics'
-      fullPath: '/calendar.ics'
-      preLoaderRoute: typeof CalendarDoticsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/peoples-bank': {
-      id: '/peoples-bank'
-      path: '/peoples-bank'
-      fullPath: '/peoples-bank'
-      preLoaderRoute: typeof PeoplesBankRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/rsvp': {
-      id: '/rsvp'
-      path: '/rsvp'
-      fullPath: '/rsvp'
-      preLoaderRoute: typeof RsvpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -283,20 +197,6 @@ declare module '@tanstack/react-router' {
       path: '/sso'
       fullPath: '/sso'
       preLoaderRoute: typeof SsoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/thank-you': {
-      id: '/thank-you'
-      path: '/thank-you'
-      fullPath: '/thank-you'
-      preLoaderRoute: typeof ThankYouRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/thankyou': {
-      id: '/thankyou'
-      path: '/thankyou'
-      fullPath: '/thankyou'
-      preLoaderRoute: typeof ThankyouRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$slug/': {
@@ -349,13 +249,8 @@ const rootRouteChildren: RootRouteChildren = {
   SlugRoute: SlugRouteWithChildren,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
-  CalendarDoticsRoute: CalendarDoticsRoute,
-  PeoplesBankRoute: PeoplesBankRoute,
-  RsvpRoute: RsvpRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SsoRoute: SsoRoute,
-  ThankYouRoute: ThankYouRoute,
-  ThankyouRoute: ThankyouRoute,
   ApiTeamRoute: ApiTeamRoute,
 }
 export const routeTree = rootRouteImport

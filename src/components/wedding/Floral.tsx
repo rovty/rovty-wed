@@ -25,7 +25,12 @@ function Leaf({
         strokeWidth="0.9"
         strokeLinejoin="round"
       />
-      <path d="M3 0 L 16 0" stroke="var(--champagne)" strokeWidth="0.6" strokeLinecap="round" />
+      <path
+        d="M3 0 L 16 0"
+        stroke="var(--champagne)"
+        strokeWidth="0.6"
+        strokeLinecap="round"
+      />
     </g>
   );
 }
@@ -105,9 +110,20 @@ export function FloralCorner({
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
-      <g stroke="var(--champagne)" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14 14 C 14 44, 22 64, 40 74 C 56 83, 74 82, 86 72" fill="none" />
-        <path d="M14 14 C 44 14, 64 22, 74 40 C 83 56, 82 74, 72 86" fill="none" />
+      <g
+        stroke="var(--champagne)"
+        strokeWidth="1.1"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path
+          d="M14 14 C 14 44, 22 64, 40 74 C 56 83, 74 82, 86 72"
+          fill="none"
+        />
+        <path
+          d="M14 14 C 44 14, 64 22, 74 40 C 83 56, 82 74, 72 86"
+          fill="none"
+        />
       </g>
       <Leaf x={30} y={20} angle={70} scale={0.8} />
       <Leaf x={20} y={30} angle={160} scale={0.8} />
@@ -123,9 +139,20 @@ export function FloralCorner({
 }
 
 /** Tiny single rose bud, used as a soft accent. */
-export function RoseBud({ className, style }: { className?: string; style?: CSSProperties }) {
+export function RoseBud({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: CSSProperties;
+}) {
   return (
-    <svg viewBox="0 0 40 40" className={className} style={style} aria-hidden="true">
+    <svg
+      viewBox="0 0 40 40"
+      className={className}
+      style={style}
+      aria-hidden="true"
+    >
       <Rose cx={20} cy={20} r={8} />
     </svg>
   );

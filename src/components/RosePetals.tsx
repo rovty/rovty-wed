@@ -1,4 +1,4 @@
-import petal from "@/assets/petal.png";
+import petal from "@/assets/petal.webp";
 import { useEffect, useMemo, useState } from "react";
 
 export function RosePetals({
@@ -32,7 +32,10 @@ export function RosePetals({
   if (!mounted) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-10 overflow-hidden" aria-hidden>
+    <div
+      className="pointer-events-none fixed inset-0 z-10 overflow-hidden"
+      aria-hidden
+    >
       {petals.map((p) => (
         <img
           key={p.id}

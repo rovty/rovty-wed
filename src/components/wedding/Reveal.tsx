@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 
 type RevealProps = {
   children: ReactNode;
@@ -13,7 +19,13 @@ type RevealProps = {
  * Fades + lifts its children into view the first time they enter the viewport.
  * Falls back to visible if IntersectionObserver is unavailable.
  */
-export function Reveal({ children, delay = 0, className = "", style, y = 24 }: RevealProps) {
+export function Reveal({
+  children,
+  delay = 0,
+  className = "",
+  style,
+  y = 24,
+}: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [shown, setShown] = useState(false);
 

@@ -11,7 +11,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         // this domain. Every other route here is either one customer's
         // private invitation (/$slug, /$slug/seating — noindex, keyed off a
         // slug/guest code that has no business in a sitemap), or app
-        // functionality (/rsvp, /thankyou, /admin, /auth — also noindex).
+        // functionality (/admin, /auth, /sso — also noindex).
         // Rovty Wed's marketing pages (features, pricing, ...) live on
         // rovty.com, a separate site/repo with its own sitemap.
         const entries = [{ path: "/", changefreq: "weekly", priority: "1.0" }];

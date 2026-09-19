@@ -1,10 +1,18 @@
 import type { Wedding } from "./types";
 
-export function randCode() {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+// Guest codes are the only credential a guest has for RSVP/seating, so they
+// need to be unguessable: 8 chars from a 32-symbol alphabet (~1.1e12
+// combinations) drawn from the CSPRNG, with the ambiguous glyphs (0/O, 1/I)
+// removed so a code read out over the phone still types correctly.
+const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+export const GUEST_CODE_LENGTH = 8;
+
+export function randCode(length = GUEST_CODE_LENGTH) {
+  const bytes = new Uint8Array(length);
+  crypto.getRandomValues(bytes);
   let s = "";
-  for (let i = 0; i < 6; i++)
-    s += chars[Math.floor(Math.random() * chars.length)];
+  for (let i = 0; i < length; i++)
+    s += CODE_ALPHABET[bytes[i] % CODE_ALPHABET.length];
   return s;
 }
 

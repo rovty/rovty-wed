@@ -1,5 +1,5 @@
-import petalA from "@/assets/petal-lotus-a.png";
-import petalB from "@/assets/petal-lotus-b.png";
+import petalA from "@/assets/petal-lotus-a.webp";
+import petalB from "@/assets/petal-lotus-b.webp";
 import { useEffect, useMemo, useState } from "react";
 
 // Same falling-petal mechanic as RosePetals — a random field of particles

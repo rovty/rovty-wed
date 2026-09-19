@@ -5,7 +5,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { WeddingSite, WeddingNotLive } from "@/components/WeddingSite";
 import {
   fetchWeddingBySlug,
+  fontLinks,
   formatLongDate,
+  templateFontsHref,
   type PublicWedding,
 } from "@/lib/wedding";
 
@@ -27,6 +29,7 @@ export const Route = createFileRoute("/$slug/")({
           { title: "Wedding Invitation" },
           { name: "robots", content: "noindex" },
         ],
+        links: fontLinks(templateFontsHref("classic")),
       };
     const names = `${wedding.groom} & ${wedding.bride}`;
     const when = `${formatLongDate(wedding.date)} · ${wedding.venue ?? ""}${wedding.hall ? ` · ${wedding.hall}` : ""}`;
@@ -55,6 +58,14 @@ export const Route = createFileRoute("/$slug/")({
         { property: "og:image", content: ogImage },
         { name: "twitter:image", content: ogImage },
         { name: "robots", content: "noindex" },
+      ],
+      links: [
+        ...fontLinks(templateFontsHref(wedding.template)),
+        // The hero photo is above the fold on every template — fetch it as
+        // early as the HTML is parsed rather than waiting for React.
+        ...(wedding.couplePhotoUrl
+          ? [{ rel: "preload", as: "image", href: wedding.couplePhotoUrl }]
+          : []),
       ],
     };
   },
