@@ -517,6 +517,25 @@
   }
 }
 
+/* Frosted glass for floating controls that sit over the invitation
+   (music toggle). Tinted from the template's own surface so it belongs to
+   the design rather than looking bolted on; solid fallback without
+   backdrop-filter. */
+.tpl-glass {
+  background: var(--tpl-surface);
+  border: 1px solid var(--tpl-surface-border);
+  box-shadow: var(--tpl-shadow);
+}
+@supports (
+  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+) {
+  .tpl-glass {
+    background: color-mix(in oklab, var(--background) 55%, transparent);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(18px) saturate(150%);
+  }
+}
+
 /* Hero type + entrance */
 .tpl-names {
   font-size: clamp(2.6rem, 11.5vw, 5.25rem);

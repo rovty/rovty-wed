@@ -65,8 +65,8 @@ export function MusicPlayer({ src }: { src?: string | null } = {}) {
     <button
       onClick={toggle}
       aria-label={playing ? "Mute background music" : "Play background music"}
-      className="fixed bottom-5 right-5 z-50 grid h-12 w-12 place-items-center rounded-full shadow-gold transition-transform hover:scale-105 active:scale-95"
-      style={{ background: "var(--gradient-gold)", color: "var(--btn-ink)" }}
+      className="tpl-glass fixed bottom-5 right-5 z-50 grid h-12 w-12 place-items-center rounded-full transition-transform hover:scale-105 active:scale-95"
+      style={{ color: "var(--gold)" }}
       disabled={!ready}
     >
       {playing ? (
