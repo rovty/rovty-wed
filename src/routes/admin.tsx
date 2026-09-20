@@ -6,9 +6,12 @@ import { Onboarding } from "@/components/admin/Onboarding";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { AButton } from "@/components/admin/ui";
 import { UI_FONTS_HREF, fontLinks } from "@/lib/wedding";
+import { adminSearch, DASHBOARD_ORIGIN } from "@/lib/platform";
+import { PlatformBar } from "@/components/admin/PlatformBar";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
+  validateSearch: adminSearch,
   head: () => ({
     meta: [
       { title: "Wedding Admin | Rovty Wed" },
@@ -16,6 +19,7 @@ export const Route = createFileRoute("/admin")({
     ],
     // The studio requests fonts for visible and selected templates on demand.
     links: [
+      { rel: "preconnect", href: DASHBOARD_ORIGIN },
       ...fontLinks(UI_FONTS_HREF),
       {
         rel: "stylesheet",
@@ -30,6 +34,7 @@ type Wedding = Tables<"weddings">;
 
 function AdminPage() {
   const navigate = useNavigate();
+  const { section = "home" } = Route.useSearch();
   const [ready, setReady] = useState(false);
   const [wedding, setWedding] = useState<Wedding | null>(null);
   // Distinct from "wedding === null (genuinely no row — first-time owner,
@@ -52,20 +57,37 @@ function AdminPage() {
   }, []);
 
   useEffect(() => {
-    (async () => {
+    let active = true;
+    const restore = async () => {
       const { data } = await supabase.auth.getSession();
+      if (!active) return;
       if (!data.session) {
-        navigate({ to: "/auth" });
+        navigate({ to: "/auth", replace: true });
         return;
       }
       await loadWedding();
-      setReady(true);
-    })();
+      if (active) setReady(true);
+    };
+    void restore();
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) void restore();
+    };
+    window.addEventListener("pageshow", onPageShow);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_OUT") void navigate({ to: "/auth", replace: true });
+    });
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+      window.removeEventListener("pageshow", onPageShow);
+    };
   }, [navigate, loadWedding]);
 
   const signOut = async () => {
     await supabase.auth.signOut();
-    navigate({ to: "/auth" });
+    navigate({ to: "/auth", replace: true });
   };
 
   if (!ready) {
@@ -100,7 +122,14 @@ function AdminPage() {
   }
 
   if (!wedding) {
-    return <Onboarding onCreated={setWedding} onSignOut={signOut} />;
+    return (
+      <div className="flex h-dvh flex-col">
+        <PlatformBar />
+        <div className="min-h-0 flex-1">
+          <Onboarding onCreated={setWedding} onSignOut={signOut} />
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -108,6 +137,14 @@ function AdminPage() {
       wedding={wedding}
       onSignOut={signOut}
       onWeddingChange={setWedding}
+      section={section}
+      onSectionChange={(next) =>
+        void navigate({
+          to: "/admin",
+          search: next === "home" ? {} : { section: next },
+          resetScroll: false,
+        })
+      }
     />
   );
 }

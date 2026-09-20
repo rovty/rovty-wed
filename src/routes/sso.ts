@@ -16,6 +16,18 @@ const DASHBOARD_SSO_RESOLVE_URL =
   process.env.DASHBOARD_SSO_RESOLVE_URL ??
   "https://dash.rovty.com/api/sso/resolve";
 
+// One-use sign-in redirects must never be reused by a browser or edge cache.
+function redirect(location: string) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: location,
+      "Cache-Control": "no-store",
+      "Referrer-Policy": "no-referrer",
+    },
+  });
+}
+
 export const Route = createFileRoute("/sso")({
   server: {
     handlers: {
@@ -24,10 +36,7 @@ export const Route = createFileRoute("/sso")({
         const token = url.searchParams.get("token");
         const origin = url.origin;
         const failure = (reason: string) =>
-          Response.redirect(
-            `${origin}/auth?sso_error=${encodeURIComponent(reason)}`,
-            302,
-          );
+          redirect(`${origin}/auth?sso_error=${encodeURIComponent(reason)}`);
 
         if (!token) return failure("missing_token");
 
@@ -52,6 +61,7 @@ export const Route = createFileRoute("/sso")({
           if (!res.ok || !resolved.email) {
             return failure(resolved.error ?? "resolve_failed");
           }
+          if (resolved.product !== "wed") return failure("wrong_product");
         } catch {
           return failure("resolve_unreachable");
         }
@@ -79,7 +89,7 @@ export const Route = createFileRoute("/sso")({
         // Supabase verifies the embedded one-time code and redirects to
         // redirectTo with the session in the URL fragment, which the client
         // SDK picks up automatically (detectSessionInUrl, on by default).
-        return Response.redirect(data.properties.action_link, 302);
+        return redirect(data.properties.action_link);
       },
     },
   },

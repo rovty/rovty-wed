@@ -45,6 +45,7 @@ export function Sidebar({
           return (
             <button
               key={id}
+              aria-current={isActive ? "page" : undefined}
               onClick={() => onChange(id)}
               className="flex items-center gap-3 px-3 py-2.5 text-left text-sm font-semibold"
               style={

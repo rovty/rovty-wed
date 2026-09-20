@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, KeyRound } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { UI_FONTS_HREF, fontLinks } from "@/lib/wedding";
+import { WED_SIGN_IN_URL, DASHBOARD_ORIGIN } from "@/lib/platform";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -10,7 +11,10 @@ export const Route = createFileRoute("/auth")({
       { title: "Sign In | Rovty Wed" },
       { name: "robots", content: "noindex" },
     ],
-    links: fontLinks(UI_FONTS_HREF),
+    links: [
+      ...fontLinks(UI_FONTS_HREF),
+      { rel: "preconnect", href: DASHBOARD_ORIGIN },
+    ],
   }),
   component: AuthPage,
 });
@@ -67,14 +71,26 @@ function describeSsoError(reason: string): string {
 
 function AuthPage() {
   const navigate = useNavigate();
+  const [checking, setChecking] = useState(true);
 
   useEffect(() => {
+    let active = true;
     // A live session (from a previous SSO hand-off) still gets in without
     // going through the dashboard again — that's just normal session
     // persistence, not a second account-creation path.
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/admin" });
-    });
+    supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        if (!active) return;
+        if (data.session) navigate({ to: "/admin", replace: true });
+        else setChecking(false);
+      })
+      .catch(() => {
+        if (active) setChecking(false);
+      });
+    return () => {
+      active = false;
+    };
   }, [navigate]);
 
   // Read only after mount, not inline in the render body — this route is
@@ -89,6 +105,16 @@ function AuthPage() {
   useEffect(() => {
     setSsoError(new URLSearchParams(window.location.search).get("sso_error"));
   }, []);
+
+  if (checking)
+    return (
+      <main
+        className="grid min-h-dvh place-items-center bg-[#08090b] text-[#f3f2f2]"
+        role="status"
+      >
+        Opening Rovty Wed…
+      </main>
+    );
 
   return (
     <main className="admin-portal grid min-h-[100dvh] place-items-center px-5 py-10">
@@ -108,9 +134,8 @@ function AuthPage() {
             Sign in to your wedding
           </h1>
           <p className="mt-3 text-sm leading-relaxed text-[var(--admin-muted)]">
-            Rovty Wed accounts are managed through your Rovty dashboard, so
-            there's no separate sign-up here. Sign in there, then open Rovty Wed
-            from your Products list.
+            Use your Rovty account. After sign-in, we’ll bring you straight back
+            to your wedding.
           </p>
 
           {ssoError && (
@@ -119,13 +144,14 @@ function AuthPage() {
             </p>
           )}
 
-          <a
-            href="https://dash.rovty.com"
+          <button
+            type="button"
+            onClick={() => window.location.replace(WED_SIGN_IN_URL)}
             className="a-btn-primary mt-6 flex h-[52px] w-full items-center justify-between px-4 text-[15px] font-bold"
           >
-            <span>Go to Rovty Dashboard</span>
+            <span>Continue with Rovty</span>
             <ArrowRight className="h-[18px] w-[18px]" />
-          </a>
+          </button>
 
           <div className="mt-6 border-t-2 border-[var(--admin-ink)] pt-3.5">
             <p className="flex items-start gap-2 text-xs leading-relaxed text-[var(--admin-muted)]">

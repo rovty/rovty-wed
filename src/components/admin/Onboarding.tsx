@@ -80,7 +80,7 @@ export function Onboarding({
     // text input across a 1600px monitor; it's centered with margin, not
     // boxed in a bordered/shadowed card, so there's no framing to read as
     // "not full width". Mobile (below `md`) is untouched either way.
-    <div className="admin-portal flex h-[100dvh] flex-col overflow-hidden">
+    <div className="admin-portal flex h-full flex-col overflow-hidden">
       <div className="flex h-full flex-col overflow-hidden md:mx-auto md:w-full md:max-w-3xl">
         <div className="border-b-2 border-[var(--admin-ink)] px-5 pb-3.5 pt-4">
           <div className="flex items-center justify-between">

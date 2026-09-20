@@ -1,3 +1,4 @@
+import { useBlocker } from "@tanstack/react-router";
 import { PanelHeading, Field, HexInput } from "./EditorFields";
 import { SectionFields } from "./SectionFields";
 import { ReviewDialog, ConfirmLeave } from "./EditorDialogs";
@@ -102,6 +103,12 @@ export default function WeddingEditor({
   const draftRef = useRef(draft);
   const editTime = useRef(0);
   const dirty = JSON.stringify(draft) !== saved;
+  useBlocker({
+    shouldBlockFn: () =>
+      Boolean(dirty && onSave) &&
+      !window.confirm("You have unsaved design changes. Leave this editor?"),
+    enableBeforeUnload: false,
+  });
   const template = getTemplate(draft.wedding.template);
   const currentSection = draft.design.sections.find(
     (s) => s.id === selectedSection,

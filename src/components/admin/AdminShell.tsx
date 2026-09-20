@@ -18,17 +18,21 @@ import { SeatingSection } from "./SeatingSection";
 import { DesignSection } from "./DesignSection";
 import { MoreSection } from "./MoreSection";
 import { ScreenHeader } from "./ui";
+import { PlatformBar } from "./PlatformBar";
 
 export function AdminShell({
   wedding,
   onSignOut,
   onWeddingChange,
+  section,
+  onSectionChange: setSection,
 }: {
   wedding: Wedding;
   onSignOut: () => void;
   onWeddingChange: (w: Wedding) => void;
+  section: AdminSection;
+  onSectionChange: (section: AdminSection) => void;
 }) {
-  const [section, setSection] = useState<AdminSection>("home");
   const [guestsView, setGuestsView] = useState<"list" | "send">("list");
   const [guestsFilter, setGuestsFilter] = useState<GuestFilter>("all");
   const [guestsKey, setGuestsKey] = useState(0);
@@ -99,93 +103,96 @@ export function AdminShell({
   };
 
   return (
-    <div className="admin-portal flex h-[100dvh] flex-col overflow-hidden md:flex-row">
-      <Sidebar
-        wedding={wedding}
-        active={section}
-        onChange={setSection}
-        onSignOut={onSignOut}
-        inviteUrl={inviteUrl}
-      />
+    <div className="admin-portal flex h-[100dvh] flex-col overflow-hidden">
+      <PlatformBar />
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row">
+        <Sidebar
+          wedding={wedding}
+          active={section}
+          onChange={setSection}
+          onSignOut={onSignOut}
+          inviteUrl={inviteUrl}
+        />
 
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        {/* Fills the full remaining width next to the Sidebar — no capped
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          {/* Fills the full remaining width next to the Sidebar — no capped
             reading column, so desktop uses the whole viewport instead of
             leaving empty margins either side. Mobile (below `md`, no
             Sidebar) is unaffected either way, since it was already full
             width. */}
-        <div className="flex min-h-0 flex-1 flex-col">
-          {section === "home" && (
-            <Dashboard
-              wedding={wedding}
-              guests={guests}
-              rsvps={rsvps}
-              tables={tables}
-              assignments={assignments}
-              inviteUrl={inviteUrl}
-              goTo={goTo}
-            />
-          )}
-
-          {section === "guests" &&
-            (guestsView === "send" ? (
-              <Send
-                wedding={wedding}
-                guests={guests}
-                reload={load}
-                inviteUrl={inviteUrl}
-                onBack={() => setGuestsView("list")}
-                onEditWording={() => setSection("design")}
-              />
-            ) : (
-              <Guests
-                key={guestsKey}
+          <div className="flex min-h-0 flex-1 flex-col">
+            {section === "home" && (
+              <Dashboard
                 wedding={wedding}
                 guests={guests}
                 rsvps={rsvps}
+                tables={tables}
+                assignments={assignments}
+                inviteUrl={inviteUrl}
+                goTo={goTo}
+              />
+            )}
+
+            {section === "guests" &&
+              (guestsView === "send" ? (
+                <Send
+                  wedding={wedding}
+                  guests={guests}
+                  reload={load}
+                  inviteUrl={inviteUrl}
+                  onBack={() => setGuestsView("list")}
+                  onEditWording={() => setSection("design")}
+                />
+              ) : (
+                <Guests
+                  key={guestsKey}
+                  wedding={wedding}
+                  guests={guests}
+                  rsvps={rsvps}
+                  reload={load}
+                  inviteUrl={inviteUrl}
+                  initialFilter={guestsFilter}
+                  onSend={() => setGuestsView("send")}
+                />
+              ))}
+
+            {section === "seating" && (
+              <SeatingSection
+                key={seatingKey}
+                wedding={wedding}
+                guests={guests}
+                rsvps={rsvps}
+                tables={tables}
+                assignments={assignments}
+                published={seatingPublished}
                 reload={load}
                 inviteUrl={inviteUrl}
-                initialFilter={guestsFilter}
-                onSend={() => setGuestsView("send")}
+                initialView={seatingView}
+                onWeddingChange={onWeddingChange}
               />
-            ))}
+            )}
 
-          {section === "seating" && (
-            <SeatingSection
-              key={seatingKey}
-              wedding={wedding}
-              guests={guests}
-              rsvps={rsvps}
-              tables={tables}
-              assignments={assignments}
-              published={seatingPublished}
-              reload={load}
-              inviteUrl={inviteUrl}
-              initialView={seatingView}
-              onWeddingChange={onWeddingChange}
-            />
-          )}
+            {section === "design" && (
+              <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+                <ScreenHeader
+                  title="Design"
+                  subtitle="Everything here appears on the invitation, whichever template you're using."
+                />
+                <DesignSection
+                  wedding={wedding}
+                  onChange={onWeddingChange}
+                  inviteUrl={inviteUrl}
+                />
+              </div>
+            )}
 
-          {section === "design" && (
-            <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-              <ScreenHeader
-                title="Design"
-                subtitle="Everything here appears on the invitation, whichever template you're using."
-              />
-              <DesignSection
-                wedding={wedding}
-                onChange={onWeddingChange}
-                inviteUrl={inviteUrl}
-              />
-            </div>
-          )}
+            {section === "more" && (
+              <MoreSection wedding={wedding} onSignOut={onSignOut} />
+            )}
+          </div>
 
-          {section === "more" && (
-            <MoreSection wedding={wedding} onSignOut={onSignOut} />
-          )}
+          <BottomNav active={section} onChange={setSection} />
         </div>
-
-        <BottomNav active={section} onChange={setSection} />
       </div>
     </div>
   );

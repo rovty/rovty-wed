@@ -1,6 +1,6 @@
 import { WHATSAPP_HREF } from "./content";
 
-const SIGN_IN_URL = "https://dash.rovty.com/login";
+const SIGN_IN_URL = "/admin";
 
 export function Header() {
   return (

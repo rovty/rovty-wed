@@ -22,6 +22,7 @@ export function BottomNav({
         return (
           <button
             key={id}
+            aria-current={isActive ? "page" : undefined}
             onClick={() => onChange(id)}
             className="flex h-16 flex-col items-center justify-center gap-1.5"
             style={{
