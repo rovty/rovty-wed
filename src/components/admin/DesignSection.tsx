@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { Eye, EyeOff, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { WEDDING_TEMPLATES } from "@/lib/wedding";
@@ -7,6 +7,7 @@ import { slugify } from "./utils";
 import { AButton, AInput } from "./ui";
 import { DetailsForm } from "./DetailsForm";
 import { Templates } from "./Templates";
+const DesignStudio = lazy(() => import("./DesignStudio"));
 
 // "Design" = how the invitation looks (template) and is reached (publish
 // state + public link) + what it says (Details). The redesign's mock
@@ -24,6 +25,26 @@ export function DesignSection({
   inviteUrl: string;
 }) {
   const [pickingTemplate, setPickingTemplate] = useState(false);
+  const [editing, setEditing] = useState(false);
+
+  if (editing)
+    return (
+      <div className="admin-design-overlay">
+        <Suspense
+          fallback={
+            <div className="studio-shell studio-loading">
+              Opening your studio…
+            </div>
+          }
+        >
+          <DesignStudio
+            wedding={wedding}
+            onChange={onChange}
+            onBack={() => setEditing(false)}
+          />
+        </Suspense>
+      </div>
+    );
 
   if (pickingTemplate) {
     return (
@@ -47,6 +68,20 @@ export function DesignSection({
         onChange={onChange}
         inviteUrl={inviteUrl}
       />
+
+      <div className="admin-studio-entry">
+        <div>
+          <p>YOUR WEDDING, YOUR WAY</p>
+          <h2>Make it beautifully yours.</h2>
+          <span>
+            Colors, photographs, words and every little detail. See it all come
+            together in your live design studio.
+          </span>
+        </div>
+        <button onClick={() => setEditing(true)}>
+          Open design studio <Pencil size={15} />
+        </button>
+      </div>
 
       <button
         onClick={() => setPickingTemplate(true)}

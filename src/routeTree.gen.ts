@@ -15,6 +15,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SsoRouteImport } from './routes/sso'
+import { Route as TemplatesRouteImport } from './routes/templates'
 import { Route as SlugIndexRouteImport } from './routes/$slug.index'
 import { Route as SlugCalendarDoticsRouteImport } from './routes/$slug.calendar[.]ics'
 import { Route as SlugSeatingRouteImport } from './routes/$slug.seating'
@@ -50,6 +51,11 @@ const SsoRoute = SsoRouteImport.update({
   path: '/sso',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TemplatesRoute = TemplatesRouteImport.update({
+  id: '/templates',
+  path: '/templates',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SlugIndexRoute = SlugIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sso': typeof SsoRoute
+  '/templates': typeof TemplatesRoute
   '/$slug/calendar.ics': typeof SlugCalendarDoticsRoute
   '/$slug/seating': typeof SlugSeatingRoute
   '/api/team': typeof ApiTeamRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sso': typeof SsoRoute
+  '/templates': typeof TemplatesRoute
   '/$slug/calendar.ics': typeof SlugCalendarDoticsRoute
   '/$slug/seating': typeof SlugSeatingRoute
   '/api/team': typeof ApiTeamRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sso': typeof SsoRoute
+  '/templates': typeof TemplatesRoute
   '/$slug/calendar.ics': typeof SlugCalendarDoticsRoute
   '/$slug/seating': typeof SlugSeatingRoute
   '/api/team': typeof ApiTeamRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/sitemap.xml'
     | '/sso'
+    | '/templates'
     | '/$slug/calendar.ics'
     | '/$slug/seating'
     | '/api/team'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/sitemap.xml'
     | '/sso'
+    | '/templates'
     | '/$slug/calendar.ics'
     | '/$slug/seating'
     | '/api/team'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/sitemap.xml'
     | '/sso'
+    | '/templates'
     | '/$slug/calendar.ics'
     | '/$slug/seating'
     | '/api/team'
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SsoRoute: typeof SsoRoute
+  TemplatesRoute: typeof TemplatesRoute
   ApiTeamRoute: typeof ApiTeamRoute
 }
 
@@ -197,6 +210,13 @@ declare module '@tanstack/react-router' {
       path: '/sso'
       fullPath: '/sso'
       preLoaderRoute: typeof SsoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/templates': {
+      id: '/templates'
+      path: '/templates'
+      fullPath: '/templates'
+      preLoaderRoute: typeof TemplatesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$slug/': {
@@ -251,6 +271,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SsoRoute: SsoRoute,
+  TemplatesRoute: TemplatesRoute,
   ApiTeamRoute: ApiTeamRoute,
 }
 export const routeTree = rootRouteImport

@@ -20,6 +20,7 @@ export type Database = {
     Tables: {
       weddings: {
         Row: {
+          design: Json | null;
           id: string;
           owner_id: string;
           slug: string;
@@ -51,6 +52,7 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
+          design?: Json | null;
           id?: string;
           owner_id: string;
           slug: string;
@@ -82,6 +84,7 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          design?: Json | null;
           id?: string;
           owner_id?: string;
           slug?: string;

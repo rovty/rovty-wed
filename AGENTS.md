@@ -28,10 +28,10 @@ build. Secrets (`SUPABASE_SERVICE_ROLE_KEY`, `TEAM_GRANT_SHARED_SECRET`) via
   invitation (SSR, per-wedding OG tags, `noindex`); `/$slug/seating` guest
   seat lookup; `/$slug/calendar.ics`; `/admin` couple portal (client-only);
   `/auth` sign-in (Google / SSO only, no signup); `/sso` redeems a dashboard
-  hand-off token; `/api/team` team invites; `/sitemap.xml`.
+  hand-off token; `/api/team` team invites; `/sitemap.xml`; `/templates` public collection and design studio.
 - **Templates**: 14 ids in `src/lib/wedding.ts` (`WEDDING_TEMPLATES`,
   `TEMPLATE_META`) + `.theme-*` blocks in `src/styles.css`. Fonts load per
-  template via `templateFontsHref()`; only `/admin` and `/` load all of them.
+  template via `templateFontsHref()`; studio previews load fonts on demand.
   `src/components/wed-landing/templates.ts` must stay in sync (it throws at
   startup if not).
 - **Data**: Supabase (`supabase/migrations/`). Public reads go only through
@@ -47,3 +47,12 @@ build. Secrets (`SUPABASE_SERVICE_ROLE_KEY`, `TEAM_GRANT_SHARED_SECRET`) via
 - All guest-facing images live in `src/assets/*.webp`; never commit multi‑MB PNGs.
 - Do not add "whichever wedding is published" helpers — every public route is under `/$slug`.
 - Do not force-push or rewrite published history.
+
+## Design studio
+
+`src/lib/studio/` owns the versioned schema, catalog and optimized uploads.
+`src/components/studio/` contains discovery, editor panels and the renderer shared
+by previews and public websites. Nullable `weddings.design` opts into the new
+renderer; null retains existing invitations. Apply
+`20260920000000_wedding_design.sql` before deploying studio saves.
+See `docs/template-studio.md` for architecture, rollout and validation commands.

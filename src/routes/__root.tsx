@@ -10,6 +10,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import studioCss from "../components/studio/studio.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -93,6 +94,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
         { rel: "shortcut icon", href: "/favicon.ico" },
         { rel: "stylesheet", href: appCss },
+        { rel: "stylesheet", href: studioCss },
         // Fonts are declared per route (see fontLinks() in lib/wedding.ts):
         // guest pages load only their template's families, the admin and
         // landing load the UI face. Nothing font-related is site-wide.

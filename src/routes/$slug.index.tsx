@@ -4,6 +4,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { WeddingSite, WeddingNotLive } from "@/components/WeddingSite";
+import { StudioWeddingSite } from "@/components/studio/StudioWeddingSite";
+import { customFontHref } from "@/lib/studio/design";
 import {
   fetchWeddingBySlug,
   fontLinks,
@@ -64,6 +66,9 @@ export const Route = createFileRoute("/$slug/")({
       ],
       links: [
         ...fontLinks(templateFontsHref(wedding.template)),
+        ...(wedding.design && customFontHref(wedding.design)
+          ? [{ rel: "stylesheet", href: customFontHref(wedding.design)! }]
+          : []),
         // The hero photo is above the fold on every template — fetch it as
         // early as the HTML is parsed rather than waiting for React.
         ...(wedding.couplePhotoUrl
@@ -93,7 +98,15 @@ function SlugIndexPage() {
   return (
     <>
       {preview && <TemplateFontLoader template={preview} />}
-      <WeddingSite key={shown.template} wedding={shown} />
+      {shown.design ? (
+        <StudioWeddingSite
+          key={shown.template}
+          wedding={shown}
+          design={shown.design}
+        />
+      ) : (
+        <WeddingSite key={shown.template} wedding={shown} />
+      )}
     </>
   );
 }

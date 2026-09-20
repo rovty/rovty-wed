@@ -705,7 +705,7 @@ function RsvpCta({
   );
 }
 
-function SeatingCta({
+export function SeatingCta({
   wedding,
   motif,
 }: {

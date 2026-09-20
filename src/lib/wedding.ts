@@ -4,6 +4,7 @@
 // updated to read from it. This is the one place that fetches it, so every
 // public page/component gets it the same way.
 import { supabase } from "@/integrations/supabase/client";
+import { normalizeDesign, type DesignConfig } from "@/lib/studio/design";
 
 // Wedding-day times are always meant in venue-local time, not the viewer's
 // or the server's — formatting pins to this zone explicitly so an overseas
@@ -307,6 +308,7 @@ export function isWeddingTemplate(v: string): v is WeddingTemplate {
 }
 
 export type PublicWedding = {
+  design?: DesignConfig | null;
   slug: string;
   bride: string;
   groom: string;
@@ -330,7 +332,8 @@ export type PublicWedding = {
   musicUrl: string | null;
 };
 
-function toPublicWedding(row: {
+export function toPublicWedding(row: {
+  design?: unknown;
   slug: string;
   bride: string;
   groom: string;
@@ -354,6 +357,7 @@ function toPublicWedding(row: {
 }): PublicWedding {
   const title = `${row.groom} & ${row.bride} Wedding`;
   return {
+    design: normalizeDesign(row.design),
     slug: row.slug,
     bride: row.bride,
     groom: row.groom,
@@ -560,10 +564,21 @@ export async function fetchWeddingBySlug(
 ): Promise<PublicWedding | null> {
   const { data, error } = await supabase
     .from("weddings")
-    .select(WEDDING_COLUMNS)
+    .select(`${WEDDING_COLUMNS}, design`)
     .eq("slug", slug)
     .eq("published", true)
     .maybeSingle();
+  // During a rolling deployment, keep legacy invitations available until
+  // the additive studio migration has reached this database.
+  if (error?.code === "42703" || error?.code === "PGRST204") {
+    const legacy = await supabase
+      .from("weddings")
+      .select(WEDDING_COLUMNS)
+      .eq("slug", slug)
+      .eq("published", true)
+      .maybeSingle();
+    return legacy.data ? toPublicWedding(legacy.data) : null;
+  }
   if (error || !data) return null;
   return toPublicWedding(data);
 }

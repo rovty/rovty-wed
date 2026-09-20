@@ -14,10 +14,10 @@ export function Header() {
         </a>
         <nav className="flex items-center gap-4 sm:gap-5">
           <a
-            href="#build"
+            href="/templates"
             className="hidden text-[12.5px] font-semibold text-wl-ink no-underline hover:text-wed-deep lg:inline"
           >
-            Build one
+            The collection
           </a>
           <a
             href="#how"

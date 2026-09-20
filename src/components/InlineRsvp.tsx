@@ -133,7 +133,9 @@ export function InlineRsvp({
       </div>
 
       <div className="mt-6">
-        <p className="font-kicker mb-3 text-center text-muted-foreground">Will you attend?</p>
+        <p className="font-kicker mb-3 text-center text-muted-foreground">
+          Will you attend?
+        </p>
         <div className="grid grid-cols-2 gap-3">
           <Choice
             active={attending === "yes"}

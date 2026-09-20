@@ -5,7 +5,7 @@ import type { Tables } from "@/integrations/supabase/types";
 import { Onboarding } from "@/components/admin/Onboarding";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { AButton } from "@/components/admin/ui";
-import { ALL_TEMPLATE_FONTS_HREF, fontLinks } from "@/lib/wedding";
+import { UI_FONTS_HREF, fontLinks } from "@/lib/wedding";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -14,9 +14,14 @@ export const Route = createFileRoute("/admin")({
       { title: "Wedding Admin | Rovty Wed" },
       { name: "robots", content: "noindex" },
     ],
-    // The admin's template picker previews every template's typeface, so
-    // this is the one route that legitimately loads the whole set.
-    links: fontLinks(ALL_TEMPLATE_FONTS_HREF),
+    // The studio requests fonts for visible and selected templates on demand.
+    links: [
+      ...fontLinks(UI_FONTS_HREF),
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap",
+      },
+    ],
   }),
   component: AdminPage,
 });

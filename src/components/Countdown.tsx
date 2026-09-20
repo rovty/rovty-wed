@@ -25,7 +25,8 @@ export function Countdown({ target }: { target: Date }) {
     return () => clearInterval(id);
   }, [target]);
 
-  const past = t.days === 0 && t.hours === 0 && t.minutes === 0 && t.seconds === 0 && live;
+  const past =
+    t.days === 0 && t.hours === 0 && t.minutes === 0 && t.seconds === 0 && live;
   if (past) {
     return (
       <p className="font-kicker text-rose" aria-live="polite">
@@ -42,11 +43,18 @@ export function Countdown({ target }: { target: Date }) {
   ];
 
   return (
-    <div className="tpl-countdown" role="timer" aria-live="off" aria-label="Countdown to the wedding">
+    <div
+      className="tpl-countdown"
+      role="timer"
+      aria-live="off"
+      aria-label="Countdown to the wedding"
+    >
       {items.map(([label, value], i) => (
         <div key={label} className="tpl-countdown__cell">
           {i > 0 && <span className="tpl-countdown__rule" aria-hidden="true" />}
-          <div className="tpl-countdown__num font-display tabular-nums">{String(value).padStart(2, "0")}</div>
+          <div className="tpl-countdown__num font-display tabular-nums">
+            {String(value).padStart(2, "0")}
+          </div>
           <div className="tpl-countdown__label font-kicker">{label}</div>
         </div>
       ))}

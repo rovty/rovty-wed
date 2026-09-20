@@ -9,7 +9,7 @@
 // the actual page (implements the "Rovty Wed Landing B" design canvas).
 import { createFileRoute } from "@tanstack/react-router";
 import { WedLandingPage } from "@/components/wed-landing/WedLandingPage";
-import { ALL_TEMPLATE_FONTS_HREF, fontLinks } from "@/lib/wedding";
+import { UI_FONTS_HREF, fontLinks } from "@/lib/wedding";
 
 const TITLE = "Rovty Wed | Wedding Invitations Your Guests Actually Open";
 const DESCRIPTION =
@@ -36,11 +36,14 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: "https://wed.rovty.com/wed-og.png" },
     ],
-    // The landing's live template builder previews every typeface, so it
-    // needs the full set — the only public route that does.
+    // Template previews load their own fonts when they become visible.
     links: [
       { rel: "canonical", href: CANONICAL },
-      ...fontLinks(ALL_TEMPLATE_FONTS_HREF),
+      ...fontLinks(UI_FONTS_HREF),
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap",
+      },
     ],
   }),
   component: WedLandingPage,
