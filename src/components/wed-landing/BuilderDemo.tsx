@@ -76,7 +76,7 @@ export function BuilderDemo() {
           >
             {TEMPLATE_CATALOG.map((t) => (
               <option key={t.id} value={t.id}>
-                {t.name} — {t.collection}
+                {t.name} ({t.collection})
               </option>
             ))}
           </select>
