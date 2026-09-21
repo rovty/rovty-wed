@@ -102,6 +102,19 @@ try:
     assert sql(plan_query('select count(*) from guests'),'wedding')=='0'
     limited['x-rovty-owner-plan']=json.dumps({'features':[]})
     assert 'Choose a Rovty Wed plan' in sql(plan_query(f"insert into weddings(owner_id,slug,bride,groom,event_date) values('{uid(3)}','unpaid-wedding','A','B',now())"),'wedding',False)
+    # Onboarding inserts and returns a new row before its UUID can appear in
+    # the gateway's existing-wedding plan map.
+    sql(f"insert into auth.users(id,email,email_confirmed_at) values('{uid(5)}','first-couple@example.test',now()); insert into auth.sessions(id,user_id) values('{uid(105)}','{uid(5)}');",'wedding')
+    fresh={'x-rovty-gateway':'local-test-gateway','x-rovty-plans':'{}','x-rovty-owner-plan':json.dumps({'active':True,'features':['website','templates','rsvp','guests']})}
+    def onboarding(query):return who('',user=5,session=105)+f"set request.headers='{json.dumps(fresh)}'; "+query
+    assert sql(onboarding(f"insert into weddings(id,owner_id,slug,bride,groom,event_date,template) values('{uid(205)}','{uid(5)}','first-couple','First','Couple',now(),'classic') returning id"),'wedding')==uid(205)
+    assert sql(onboarding('select count(*) from weddings'),'wedding')=='1'
+    assert 'already has a wedding' in sql(onboarding(f"insert into weddings(owner_id,slug,bride,groom,event_date) values('{uid(5)}','second-couple','Another','Couple',now()) returning id"),'wedding',False)
+    fresh['x-rovty-gateway']='forged-gateway'
+    assert sql(onboarding('select count(*) from weddings'),'wedding')=='0'
+    fresh['x-rovty-gateway']='local-test-gateway'
+    fresh['x-rovty-owner-plan']=json.dumps({'active':False,'features':[]})
+    assert sql(onboarding('select count(*) from weddings'),'wedding')=='0'
     # Row locking makes legacy email linking unique under concurrent handoffs.
     def claim(n):
         try:return sql(f"set role service_role; select rovty_link_account('{uid(n)}','other@example.test')",'wedding')

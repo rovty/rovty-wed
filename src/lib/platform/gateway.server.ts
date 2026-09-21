@@ -42,6 +42,8 @@ export function handleDataRequest(request: Request) {
     publicKey:
       import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
       process.env.SUPABASE_PUBLISHABLE_KEY!,
-    fetch,
+    // Cloudflare's native fetch requires its global receiver. Passing it as a
+    // backend method makes handleGateway call it with `this === backend`.
+    fetch: (input, init) => fetch(input, init),
   });
 }
