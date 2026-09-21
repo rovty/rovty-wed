@@ -36,6 +36,7 @@ try:
     sql('''
       create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
       create schema auth;
+      create table auth.sessions(id uuid primary key,user_id uuid,created_at timestamptz default now(),not_after timestamptz);
       create table auth.users(id uuid primary key,email text,email_confirmed_at timestamptz,last_sign_in_at timestamptz,created_at timestamptz default now());
       create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
       grant usage on schema auth to authenticated;
@@ -81,7 +82,7 @@ try:
     params = {'weddingId':uid(101),'version':d['wedding']['updated_at'],'changes':{'bride':'Alexandra','slug':'alexandra-sam'},'reason':'Requested by couple'}
     assert 'Editing requires' in request('wedding',params,actor=2,ok=False)
     # Couple identity protection remains intact, even with forged metadata.
-    assert 'are locked' in sql(f"set role authenticated; set request.jwt.claim.sub='{uid(3)}'; set request.jwt.claims='{{\"role\":\"service_role\"}}'; update weddings set bride='Other' where id='{uid(101)}'",ok=False)
+    assert 'are locked' in sql(f"select set_config('request.headers',(select json_build_object('x-rovty-gateway',secret)::text from platform_gateway),false); set role authenticated; set request.jwt.claim.sub='{uid(3)}'; set request.jwt.claims='{{\"role\":\"service_role\"}}'; update weddings set bride='Other' where id='{uid(101)}'",ok=False)
     request('wedding',params)
     updated = detail()
     assert updated['wedding']['bride'] == 'Alexandra' and updated['wedding']['design'] == d['wedding']['design']

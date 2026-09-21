@@ -1,9 +1,11 @@
+import { PlatformSessionGate } from "@/components/admin/PlatformSessionGate";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
   createRootRouteWithContext,
   useRouter,
+  useLocation,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -123,9 +125,18 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const location = useLocation();
+  const privatePage =
+    location.pathname === "/admin" || location.pathname.startsWith("/admin/");
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      {privatePage ? (
+        <PlatformSessionGate>
+          <Outlet />
+        </PlatformSessionGate>
+      ) : (
+        <Outlet />
+      )}
     </QueryClientProvider>
   );
 }

@@ -18,3 +18,9 @@ dist
 # Logs
 *.log
 npm-debug.log*
+
+# Separate deployment environments
+.env.*
+!.env.example
+!.env.staging.example
+wrangler.staging.jsonc

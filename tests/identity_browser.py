@@ -36,12 +36,14 @@ async def run():
             await context.route('**/api/assist/**', assist)
             await context.route('**/api/contact', lambda r: r.abort())
             async def wedding(r):
+                if not urlparse(parse_qs(urlparse(r.request.url).query)['path'][0]).path.endswith('/weddings'):
+                    return await r.fallback()
                 if r.request.method == 'PATCH':
                     data = r.request.post_data_json
                     support['patches'].append(data)
                     return await r.fulfill(json={**WEDDING, **data})
                 return await r.fulfill(json=WEDDING)
-            await context.route('**/rest/v1/weddings?**', wedding)
+            await context.route('**/api/data?**', wedding)
             # An unrelated previous chat must not receive the correction request.
             await context.add_init_script(f"if(location.origin === '{SITE}' && !localStorage.getItem('test-chat-seeded')) {{ localStorage.setItem('rovty-assist-session', JSON.stringify({{token:'old-chat',name:'Earlier visitor',agent:'Rovty'}})); localStorage.setItem('test-chat-seeded','1'); }}")
             await page.goto(f'{DASH}/open/wed', wait_until='domcontentloaded')

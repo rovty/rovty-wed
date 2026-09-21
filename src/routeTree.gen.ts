@@ -20,7 +20,9 @@ import { Route as SlugIndexRouteImport } from './routes/$slug.index'
 import { Route as SlugCalendarDoticsRouteImport } from './routes/$slug.calendar[.]ics'
 import { Route as SlugSeatingRouteImport } from './routes/$slug.seating'
 import { Route as AdminManageRouteImport } from './routes/admin_.manage'
+import { Route as ApiDataRouteImport } from './routes/api.data'
 import { Route as ApiManageRouteImport } from './routes/api.manage'
+import { Route as ApiSessionRouteImport } from './routes/api.session'
 import { Route as ApiTeamRouteImport } from './routes/api.team'
 
 const IndexRoute = IndexRouteImport.update({
@@ -78,9 +80,19 @@ const AdminManageRoute = AdminManageRouteImport.update({
   path: '/admin/manage',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiDataRoute = ApiDataRouteImport.update({
+  id: '/api/data',
+  path: '/api/data',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiManageRoute = ApiManageRouteImport.update({
   id: '/api/manage',
   path: '/api/manage',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSessionRoute = ApiSessionRouteImport.update({
+  id: '/api/session',
+  path: '/api/session',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiTeamRoute = ApiTeamRouteImport.update({
@@ -100,7 +112,9 @@ export interface FileRoutesByFullPath {
   '/$slug/calendar.ics': typeof SlugCalendarDoticsRoute
   '/$slug/seating': typeof SlugSeatingRoute
   '/admin/manage': typeof AdminManageRoute
+  '/api/data': typeof ApiDataRoute
   '/api/manage': typeof ApiManageRoute
+  '/api/session': typeof ApiSessionRoute
   '/api/team': typeof ApiTeamRoute
   '/$slug/': typeof SlugIndexRoute
 }
@@ -114,7 +128,9 @@ export interface FileRoutesByTo {
   '/$slug/calendar.ics': typeof SlugCalendarDoticsRoute
   '/$slug/seating': typeof SlugSeatingRoute
   '/admin/manage': typeof AdminManageRoute
+  '/api/data': typeof ApiDataRoute
   '/api/manage': typeof ApiManageRoute
+  '/api/session': typeof ApiSessionRoute
   '/api/team': typeof ApiTeamRoute
   '/$slug': typeof SlugIndexRoute
 }
@@ -130,7 +146,9 @@ export interface FileRoutesById {
   '/$slug/calendar.ics': typeof SlugCalendarDoticsRoute
   '/$slug/seating': typeof SlugSeatingRoute
   '/admin_/manage': typeof AdminManageRoute
+  '/api/data': typeof ApiDataRoute
   '/api/manage': typeof ApiManageRoute
+  '/api/session': typeof ApiSessionRoute
   '/api/team': typeof ApiTeamRoute
   '/$slug/': typeof SlugIndexRoute
 }
@@ -147,7 +165,9 @@ export interface FileRouteTypes {
     | '/$slug/calendar.ics'
     | '/$slug/seating'
     | '/admin/manage'
+    | '/api/data'
     | '/api/manage'
+    | '/api/session'
     | '/api/team'
     | '/$slug/'
   fileRoutesByTo: FileRoutesByTo
@@ -161,7 +181,9 @@ export interface FileRouteTypes {
     | '/$slug/calendar.ics'
     | '/$slug/seating'
     | '/admin/manage'
+    | '/api/data'
     | '/api/manage'
+    | '/api/session'
     | '/api/team'
     | '/$slug'
   id:
@@ -176,7 +198,9 @@ export interface FileRouteTypes {
     | '/$slug/calendar.ics'
     | '/$slug/seating'
     | '/admin_/manage'
+    | '/api/data'
     | '/api/manage'
+    | '/api/session'
     | '/api/team'
     | '/$slug/'
   fileRoutesById: FileRoutesById
@@ -190,7 +214,9 @@ export interface RootRouteChildren {
   SsoRoute: typeof SsoRoute
   TemplatesRoute: typeof TemplatesRoute
   AdminManageRoute: typeof AdminManageRoute
+  ApiDataRoute: typeof ApiDataRoute
   ApiManageRoute: typeof ApiManageRoute
+  ApiSessionRoute: typeof ApiSessionRoute
   ApiTeamRoute: typeof ApiTeamRoute
 }
 
@@ -273,11 +299,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminManageRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/data': {
+      id: '/api/data'
+      path: '/api/data'
+      fullPath: '/api/data'
+      preLoaderRoute: typeof ApiDataRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/manage': {
       id: '/api/manage'
       path: '/api/manage'
       fullPath: '/api/manage'
       preLoaderRoute: typeof ApiManageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/session': {
+      id: '/api/session'
+      path: '/api/session'
+      fullPath: '/api/session'
+      preLoaderRoute: typeof ApiSessionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/team': {
@@ -313,7 +353,9 @@ const rootRouteChildren: RootRouteChildren = {
   SsoRoute: SsoRoute,
   TemplatesRoute: TemplatesRoute,
   AdminManageRoute: AdminManageRoute,
+  ApiDataRoute: ApiDataRoute,
   ApiManageRoute: ApiManageRoute,
+  ApiSessionRoute: ApiSessionRoute,
   ApiTeamRoute: ApiTeamRoute,
 }
 export const routeTree = rootRouteImport

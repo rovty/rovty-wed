@@ -14,7 +14,7 @@ import type {} from "@tanstack/react-start";
 // session in *this* Supabase project for that person.
 const DASHBOARD_SSO_RESOLVE_URL =
   process.env.DASHBOARD_SSO_RESOLVE_URL ??
-  "https://dash.rovty.com/api/sso/resolve";
+  `${process.env.ROVTY_DASHBOARD_ORIGIN || "https://dash.rovty.com"}/api/sso/resolve`;
 
 // One-use sign-in redirects must never be reused by a browser or edge cache.
 function redirect(location: string) {
@@ -44,10 +44,18 @@ export const Route = createFileRoute("/sso")({
         // Worker, not whoever happened to see the token URL in a log or
         // browser history. Same static secret /api/team already presents to
         // the dashboard's grant endpoint.
-        const workerSecret = process.env.TEAM_GRANT_SHARED_SECRET;
+        const workerSecret =
+          process.env.WED_WORKER_SECRET || process.env.TEAM_GRANT_SHARED_SECRET;
         if (!workerSecret) return failure("server_misconfigured");
 
-        let resolved: { email?: string; product?: string; error?: string };
+        let resolved: {
+          email?: string;
+          product?: string;
+          error?: string;
+          user_id?: string;
+          session_id?: string;
+          version?: number;
+        };
         try {
           const res = await fetch(DASHBOARD_SSO_RESOLVE_URL, {
             method: "POST",
@@ -56,6 +64,7 @@ export const Route = createFileRoute("/sso")({
               Authorization: `Bearer ${workerSecret}`,
             },
             body: JSON.stringify({ token }),
+            signal: AbortSignal.timeout(8000),
           });
           resolved = await res.json();
           if (!res.ok || !resolved.email) {
@@ -66,30 +75,39 @@ export const Route = createFileRoute("/sso")({
           return failure("resolve_unreachable");
         }
 
-        // Server-only client, loaded dynamically per client.server.ts's own
-        // convention — a top-level import here would ship the service_role
-        // key into the client bundle, since route files aren't .server.ts.
-        const { supabaseAdmin } =
-          await import("@/integrations/supabase/client.server");
-
-        // generateLink creates the user if this email has never signed in
-        // here before — no separate find-or-create step needed. This is the
-        // one Supabase call in the whole flow that ever sees the email; the
-        // dashboard's token never carried it.
-        const { data, error } = await supabaseAdmin.auth.admin.generateLink({
-          type: "magiclink",
-          email: resolved.email,
-          options: { redirectTo: `${origin}/admin` },
-        });
-        if (error || !data.properties?.action_link) {
-          return failure("session_creation_failed");
+        const id =
+          /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
+        if (
+          resolved.version !== 2 ||
+          !resolved.user_id ||
+          !id.test(resolved.user_id) ||
+          !resolved.session_id ||
+          !id.test(resolved.session_id)
+        )
+          return failure("identity_upgrade_required");
+        try {
+          const { establishProductSession } =
+            await import("@/lib/platform/handoff.server");
+          const session = await establishProductSession({
+            user_id: resolved.user_id,
+            session_id: resolved.session_id,
+            email: resolved.email!,
+            product: "wed",
+            version: 2,
+          });
+          // Tokens stay in the fragment, never in a request query or referrer.
+          // The existing Supabase browser client consumes and clears this fragment.
+          const fragment = new URLSearchParams({
+            access_token: session.access_token,
+            refresh_token: session.refresh_token,
+            expires_in: String(session.expires_in),
+            token_type: session.token_type,
+            type: "magiclink",
+          });
+          return redirect(`${origin}/admin#${fragment}`);
+        } catch {
+          return failure("account_connection_failed");
         }
-
-        // Following this link is what actually establishes the session —
-        // Supabase verifies the embedded one-time code and redirects to
-        // redirectTo with the session in the URL fragment, which the client
-        // SDK picks up automatically (detectSessionInUrl, on by default).
-        return redirect(data.properties.action_link);
       },
     },
   },

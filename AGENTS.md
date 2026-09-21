@@ -18,8 +18,8 @@ npm run format           # prettier --write .
 npx wrangler dev --config .output/server/wrangler.json   # serve the built Worker locally
 ```
 
-Deploy: `npx wrangler deploy --config .output/server/wrangler.json` after a
-build. Secrets (`SUPABASE_SERVICE_ROLE_KEY`, `TEAM_GRANT_SHARED_SECRET`) via
+Deploy: `npm run deploy` validates production configuration before building.
+Secrets (`SUPABASE_SERVICE_ROLE_KEY`, `WED_WORKER_SECRET`) via
 `wrangler secret put`; `SUPABASE_URL` is a plain var in `wrangler.jsonc`.
 
 ## Architecture
@@ -38,8 +38,14 @@ build. Secrets (`SUPABASE_SERVICE_ROLE_KEY`, `TEAM_GRANT_SHARED_SECRET`) via
   security-definer RPCs keyed by `(slug, guest code)`; those RPCs are
   throttled per client (`rpc_attempts`) and RSVP is one-row-per-guest
   (`20260919000000_rsvp_hardening.sql`). Members/roles gate everything else via RLS.
-- **Identity**: couples sign in via the Rovty dashboard → `/sso`. `/sso`
-  presents `TEAM_GRANT_SHARED_SECRET` to the dashboard's `/api/sso/resolve`.
+- **Identity**: couples sign in via the Rovty dashboard → `/sso`. The Worker
+  presents `WED_WORKER_SECRET`, links the permanent platform UUID, and binds
+  each product session to its central session. `/api/data` checks central
+  session/access on every private request; original wedding RLS still applies.
+  `/api/session` checks or revokes platform authorization. `/api/manage` and
+  `/api/team` require central authorization plus their existing role checks.
+  See `../rovty-dashboard/docs/platform-identity.md` before rollout. Staging
+  uses `npm run build:staging` and distinct projects/configuration/secrets.
 
 ## Conventions
 

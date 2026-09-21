@@ -29,6 +29,68 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
     }
 
     headers.set("apikey", supabaseKey);
+    const target =
+      typeof input === "string"
+        ? input
+        : input instanceof URL
+          ? input.href
+          : input.url;
+    const url = new URL(target);
+    const project =
+      import.meta.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+    const publicRpc =
+      /^\/rest\/v1\/rpc\/(get_guest_by_code|get_seating_by_code|get_seating_by_tables|submit_rsvp)$/.test(
+        url.pathname,
+      );
+    if (project && url.origin === new URL(project).origin && publicRpc) {
+      // Guest capabilities remain available even when this browser also has
+      // an expired product session. These RPCs verify invitation codes.
+      if (isNewSupabaseApiKey(supabaseKey)) headers.delete("Authorization");
+      else headers.set("Authorization", `Bearer ${supabaseKey}`);
+      return fetch(input, { ...init, headers });
+    }
+    const token = headers.get("Authorization")?.replace(/^Bearer /, "");
+    // Private data always crosses the same-origin Worker. Auth refresh and
+    // anonymous guest capabilities continue to use Supabase directly.
+    if (
+      typeof window !== "undefined" &&
+      project &&
+      url.origin === new URL(project).origin &&
+      token &&
+      token !== supabaseKey &&
+      (url.pathname.startsWith("/rest/v1/") ||
+        url.pathname.startsWith("/storage/v1/"))
+    ) {
+      const path = url.pathname + url.search;
+      const gateway = `/api/data?path=${encodeURIComponent(path)}`;
+      const forwarded =
+        input instanceof Request ? new Request(gateway, input) : gateway;
+      return fetch(forwarded, { ...init, headers }).then(async (response) => {
+        if (response.status === 401 || response.status === 403) {
+          const problem = await response
+            .clone()
+            .json()
+            .catch(() => null);
+          if (
+            [
+              "SESSION_EXPIRED",
+              "ACCESS_REVOKED",
+              "RECONNECT_REQUIRED",
+            ].includes(problem?.code)
+          )
+            window.dispatchEvent(
+              new CustomEvent("rovty:session-issue", {
+                detail: {
+                  message: problem.message,
+                  code: problem.code,
+                  status: response.status,
+                },
+              }),
+            );
+        }
+        return response;
+      });
+    }
     return fetch(input, { ...init, headers });
   };
 }

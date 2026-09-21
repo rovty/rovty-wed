@@ -26,6 +26,13 @@ async def fixture(browser,width=1440,role='admin',signed_in=True):
     if signed_in: await context.add_init_script(f"localStorage.setItem('sb-rovty-wed-test-auth-token',{json.dumps(json.dumps(session()))})")
     async def route(r):
         url=r.request.url; path=urlparse(url).path
+        if path=='/api/session':
+            assert 'authorization' in r.request.headers
+            return await r.fulfill(json={'ok':True})
+        if path=='/api/data':
+            assert 'authorization' in r.request.headers
+            data_path=urlparse(parse_qs(urlparse(url).query)['path'][0]).path
+            return await r.fulfill(json=WEDDING if data_path.endswith('/weddings') else [])
         if path=='/api/manage':
             assert 'authorization' in r.request.headers
             if state['role']=='denied': return await r.fulfill(status=403,json={'error':'Rovty team access required.'})
@@ -168,7 +175,7 @@ async def run():
         await context.close()
         context,page,state=await fixture(browser,signed_in=False)
         await page.goto(WED+'/admin/manage',wait_until='domcontentloaded')
-        await expect(page.get_by_role('heading',name='Team access required')).to_be_visible()
+        await expect(page.get_by_role('button',name='Continue with Rovty')).to_be_visible()
         assert not state['queries']
         await context.close()
         print('PASS: viewer read-only, unauthorized and anonymous denial, ordinary couple portal preserved.',flush=True)

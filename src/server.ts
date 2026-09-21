@@ -53,7 +53,11 @@ export default {
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
-      return await normalizeCatastrophicSsrResponse(response);
+      const normalized = await normalizeCatastrophicSsrResponse(response);
+      if (process.env.ROVTY_ENV !== "staging") return normalized;
+      const staged = new Response(normalized.body, normalized);
+      staged.headers.set("X-Robots-Tag", "noindex, nofollow");
+      return staged;
     } catch (error) {
       console.error(error);
       return new Response(renderErrorPage(), {

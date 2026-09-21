@@ -21,7 +21,7 @@ function isRole(v: unknown): v is Role {
 // handleGrantProductAccess for the receiving end.
 const DASHBOARD_PRODUCT_ACCESS_GRANT_URL =
   process.env.DASHBOARD_PRODUCT_ACCESS_GRANT_URL ??
-  "https://dash.rovty.com/api/product-access/grant";
+  `${process.env.ROVTY_DASHBOARD_ORIGIN || "https://dash.rovty.com"}/api/product-access/grant`;
 
 // Best-effort on purpose: the invite itself (the wedding_members row, the
 // account they'll actually sign in with) already succeeded by the time this
@@ -34,7 +34,7 @@ async function grantDashboardProductAccess(email: string, product: string) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.TEAM_GRANT_SHARED_SECRET}`,
+        Authorization: `Bearer ${process.env.WED_WORKER_SECRET || process.env.TEAM_GRANT_SHARED_SECRET}`,
       },
       body: JSON.stringify({ email, product }),
     });
@@ -57,9 +57,9 @@ async function requireOwner(request: Request, weddingId: string) {
   const auth = request.headers.get("Authorization");
   if (!auth?.startsWith("Bearer ")) return null;
   const token = auth.slice("Bearer ".length);
-  const { data: userData, error: userError } =
-    await supabase.auth.getUser(token);
-  if (userError || !userData.user) return null;
+  const { requirePlatformSession } =
+    await import("@/lib/platform/session.server");
+  const session = await requirePlatformSession(token);
 
   const { supabaseAdmin } =
     await import("@/integrations/supabase/client.server");
@@ -68,164 +68,184 @@ async function requireOwner(request: Request, weddingId: string) {
     .select("id, owner_id")
     .eq("id", weddingId)
     .maybeSingle();
-  if (error || !wedding || wedding.owner_id !== userData.user.id) return null;
-  return { userId: userData.user.id };
+  if (error || !wedding || wedding.owner_id !== session.user.id) return null;
+  return { userId: session.user.id };
 }
 
 export const Route = createFileRoute("/api/team")({
   server: {
     handlers: {
-      POST: async ({ request }) => {
-        let body: { wedding_id?: unknown; email?: unknown; role?: unknown };
-        try {
-          body = await request.json();
-        } catch {
-          return Response.json(
-            { error: "Invalid request body" },
-            { status: 400 },
-          );
-        }
-        const weddingId =
-          typeof body.wedding_id === "string" ? body.wedding_id : null;
-        const email =
-          typeof body.email === "string"
-            ? body.email.trim().toLowerCase()
-            : null;
-        const role: Role = isRole(body.role) ? body.role : "admin";
-        if (!weddingId || !email) {
-          return Response.json(
-            { error: "Missing wedding_id or email" },
-            { status: 400 },
-          );
-        }
+      POST: async ({ request }) =>
+        guarded(request, async () => {
+          let body: { wedding_id?: unknown; email?: unknown; role?: unknown };
+          try {
+            body = await request.json();
+          } catch {
+            return Response.json(
+              { error: "Invalid request body" },
+              { status: 400 },
+            );
+          }
+          const weddingId =
+            typeof body.wedding_id === "string" ? body.wedding_id : null;
+          const email =
+            typeof body.email === "string"
+              ? body.email.trim().toLowerCase()
+              : null;
+          const role: Role = isRole(body.role) ? body.role : "admin";
+          if (!weddingId || !email) {
+            return Response.json(
+              { error: "Missing wedding_id or email" },
+              { status: 400 },
+            );
+          }
 
-        const owner = await requireOwner(request, weddingId);
-        if (!owner)
-          return Response.json({ error: "Not authorized" }, { status: 403 });
+          const owner = await requireOwner(request, weddingId);
+          if (!owner)
+            return Response.json({ error: "Not authorized" }, { status: 403 });
 
-        const { supabaseAdmin } =
-          await import("@/integrations/supabase/client.server");
-        const origin = new URL(request.url).origin;
-        // inviteUserByEmail both creates the auth user (if new) and sends
-        // Supabase's own "you've been invited" email — no email sending of
-        // our own to build or configure.
-        const { data: invited, error: inviteError } =
-          await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
-            redirectTo: `${origin}/admin`,
-          });
-        if (inviteError || !invited.user) {
-          const alreadyExists = /already registered|already exists/i.test(
-            inviteError?.message ?? "",
-          );
-          return Response.json(
-            {
-              error: alreadyExists
-                ? "That person already has a Rovty account. They may already have access, or contact us to add them."
-                : (inviteError?.message ?? "Could not send invite"),
-            },
-            { status: 400 },
-          );
-        }
+          const { supabaseAdmin } =
+            await import("@/integrations/supabase/client.server");
+          const origin = new URL(request.url).origin;
+          // inviteUserByEmail both creates the auth user (if new) and sends
+          // Supabase's own "you've been invited" email — no email sending of
+          // our own to build or configure.
+          const { data: invited, error: inviteError } =
+            await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
+              redirectTo: `${origin}/admin`,
+            });
+          if (inviteError || !invited.user) {
+            const alreadyExists = /already registered|already exists/i.test(
+              inviteError?.message ?? "",
+            );
+            return Response.json(
+              {
+                error: alreadyExists
+                  ? "That person already has a Rovty account. They may already have access, or contact us to add them."
+                  : (inviteError?.message ?? "Could not send invite"),
+              },
+              { status: 400 },
+            );
+          }
 
-        const { error: memberError } = await supabaseAdmin
-          .from("wedding_members")
-          .insert({
-            wedding_id: weddingId,
-            user_id: invited.user.id,
-            email,
-            role,
-            invited_by: owner.userId,
-          });
-        if (memberError) {
-          return Response.json(
-            {
-              error:
-                memberError.code === "23505"
-                  ? "They're already on your team."
-                  : memberError.message,
-            },
-            { status: 400 },
-          );
-        }
-        // Every role gets Rovty Wed unlocked on the dashboard — view-only
-        // members still need to open the product to use it at all, this
-        // isn't the same thing as the edit-rights split `role` governs
-        // inside the product itself (see has_wedding_edit_access).
-        await grantDashboardProductAccess(email, "wed");
-        return Response.json({ ok: true });
-      },
-      PATCH: async ({ request }) => {
-        let body: { wedding_id?: unknown; member_id?: unknown; role?: unknown };
-        try {
-          body = await request.json();
-        } catch {
-          return Response.json(
-            { error: "Invalid request body" },
-            { status: 400 },
-          );
-        }
-        const weddingId =
-          typeof body.wedding_id === "string" ? body.wedding_id : null;
-        const memberId =
-          typeof body.member_id === "string" ? body.member_id : null;
-        if (!weddingId || !memberId || !isRole(body.role)) {
-          return Response.json(
-            { error: "Missing wedding_id, member_id, or a valid role" },
-            { status: 400 },
-          );
-        }
+          const { error: memberError } = await supabaseAdmin
+            .from("wedding_members")
+            .insert({
+              wedding_id: weddingId,
+              user_id: invited.user.id,
+              email,
+              role,
+              invited_by: owner.userId,
+            });
+          if (memberError) {
+            return Response.json(
+              {
+                error:
+                  memberError.code === "23505"
+                    ? "They're already on your team."
+                    : memberError.message,
+              },
+              { status: 400 },
+            );
+          }
+          // Every role gets Rovty Wed unlocked on the dashboard — view-only
+          // members still need to open the product to use it at all, this
+          // isn't the same thing as the edit-rights split `role` governs
+          // inside the product itself (see has_wedding_edit_access).
+          await grantDashboardProductAccess(email, "wed");
+          return Response.json({ ok: true });
+        }),
+      PATCH: async ({ request }) =>
+        guarded(request, async () => {
+          let body: {
+            wedding_id?: unknown;
+            member_id?: unknown;
+            role?: unknown;
+          };
+          try {
+            body = await request.json();
+          } catch {
+            return Response.json(
+              { error: "Invalid request body" },
+              { status: 400 },
+            );
+          }
+          const weddingId =
+            typeof body.wedding_id === "string" ? body.wedding_id : null;
+          const memberId =
+            typeof body.member_id === "string" ? body.member_id : null;
+          if (!weddingId || !memberId || !isRole(body.role)) {
+            return Response.json(
+              { error: "Missing wedding_id, member_id, or a valid role" },
+              { status: 400 },
+            );
+          }
 
-        const owner = await requireOwner(request, weddingId);
-        if (!owner)
-          return Response.json({ error: "Not authorized" }, { status: 403 });
+          const owner = await requireOwner(request, weddingId);
+          if (!owner)
+            return Response.json({ error: "Not authorized" }, { status: 403 });
 
-        const { supabaseAdmin } =
-          await import("@/integrations/supabase/client.server");
-        const { error } = await supabaseAdmin
-          .from("wedding_members")
-          .update({ role: body.role })
-          .eq("id", memberId)
-          .eq("wedding_id", weddingId);
-        if (error)
-          return Response.json({ error: error.message }, { status: 400 });
-        return Response.json({ ok: true });
-      },
-      DELETE: async ({ request }) => {
-        let body: { wedding_id?: unknown; member_id?: unknown };
-        try {
-          body = await request.json();
-        } catch {
-          return Response.json(
-            { error: "Invalid request body" },
-            { status: 400 },
-          );
-        }
-        const weddingId =
-          typeof body.wedding_id === "string" ? body.wedding_id : null;
-        const memberId =
-          typeof body.member_id === "string" ? body.member_id : null;
-        if (!weddingId || !memberId) {
-          return Response.json(
-            { error: "Missing wedding_id or member_id" },
-            { status: 400 },
-          );
-        }
+          const { supabaseAdmin } =
+            await import("@/integrations/supabase/client.server");
+          const { error } = await supabaseAdmin
+            .from("wedding_members")
+            .update({ role: body.role })
+            .eq("id", memberId)
+            .eq("wedding_id", weddingId);
+          if (error)
+            return Response.json({ error: error.message }, { status: 400 });
+          return Response.json({ ok: true });
+        }),
+      DELETE: async ({ request }) =>
+        guarded(request, async () => {
+          let body: { wedding_id?: unknown; member_id?: unknown };
+          try {
+            body = await request.json();
+          } catch {
+            return Response.json(
+              { error: "Invalid request body" },
+              { status: 400 },
+            );
+          }
+          const weddingId =
+            typeof body.wedding_id === "string" ? body.wedding_id : null;
+          const memberId =
+            typeof body.member_id === "string" ? body.member_id : null;
+          if (!weddingId || !memberId) {
+            return Response.json(
+              { error: "Missing wedding_id or member_id" },
+              { status: 400 },
+            );
+          }
 
-        const owner = await requireOwner(request, weddingId);
-        if (!owner)
-          return Response.json({ error: "Not authorized" }, { status: 403 });
+          const owner = await requireOwner(request, weddingId);
+          if (!owner)
+            return Response.json({ error: "Not authorized" }, { status: 403 });
 
-        const { supabaseAdmin } =
-          await import("@/integrations/supabase/client.server");
-        const { error } = await supabaseAdmin
-          .from("wedding_members")
-          .delete()
-          .eq("id", memberId)
-          .eq("wedding_id", weddingId);
-        if (error)
-          return Response.json({ error: error.message }, { status: 400 });
-        return Response.json({ ok: true });
-      },
+          const { supabaseAdmin } =
+            await import("@/integrations/supabase/client.server");
+          const { error } = await supabaseAdmin
+            .from("wedding_members")
+            .delete()
+            .eq("id", memberId)
+            .eq("wedding_id", weddingId);
+          if (error)
+            return Response.json({ error: error.message }, { status: 400 });
+          return Response.json({ ok: true });
+        }),
     },
   },
 });
+
+async function guarded(request: Request, operation: () => Promise<Response>) {
+  const { requireSameOrigin, platformFailure } =
+    await import("@/lib/platform/session.server");
+  try {
+    requireSameOrigin(request);
+    const response = await operation();
+    response.headers.set("Cache-Control", "private, no-store");
+    return response;
+  } catch (error) {
+    return platformFailure(error);
+  }
+}

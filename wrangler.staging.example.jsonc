@@ -1,0 +1,9 @@
+{
+  "name": "rovty-wed-staging",
+  "compatibility_date": "2026-06-07",
+  "vars": {
+    "ROVTY_ENV": "staging",
+    "SUPABASE_URL": "https://your-staging-wed-ref.supabase.co",
+    "ROVTY_DASHBOARD_ORIGIN": "https://dash-staging.rovty.com",
+  },
+}

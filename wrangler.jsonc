@@ -21,6 +21,7 @@
   // `wrangler secret put SUPABASE_SERVICE_ROLE_KEY` for production, and in
   // `.dev.vars` (gitignored) for local `wrangler dev`.
   "vars": {
-    "SUPABASE_URL": "https://bewmgfluzrypdcgnlxvg.supabase.co"
-  }
+    "SUPABASE_URL": "https://bewmgfluzrypdcgnlxvg.supabase.co",
+    "ROVTY_DASHBOARD_ORIGIN": "https://dash.rovty.com",
+  },
 }

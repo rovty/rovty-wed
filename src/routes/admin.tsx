@@ -1,3 +1,4 @@
+import { platformSignOut } from "@/lib/platform/session";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -92,22 +93,13 @@ function AdminPage() {
       if (event.persisted) void restore();
     };
     window.addEventListener("pageshow", onPageShow);
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_OUT") void navigate({ to: "/auth", replace: true });
-    });
     return () => {
       active = false;
-      subscription.unsubscribe();
       window.removeEventListener("pageshow", onPageShow);
     };
   }, [navigate, loadWedding]);
 
-  const signOut = async () => {
-    await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
-  };
+  const signOut = platformSignOut;
 
   if (!ready) {
     return (

@@ -357,6 +357,28 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      rovty_media_access: {
+        Args: { _user: string; _wedding: string; _edit: boolean };
+        Returns: boolean;
+      };
+      rovty_link_account: {
+        Args: { _platform_user: string; _email: string };
+        Returns: string | null;
+      };
+      rovty_bind_session: {
+        Args: {
+          _user: string;
+          _session: string;
+          _platform_user: string;
+          _platform_session: string;
+        };
+        Returns: undefined;
+      };
+      rovty_platform_session: {
+        Args: { _user: string; _session: string };
+        Returns: Json;
+      };
+      rovty_gateway_secret: { Args: Record<string, never>; Returns: string };
       rovty_manage: {
         Args: { _actor: string; _action: string; _params: Json };
         Returns: Json;
