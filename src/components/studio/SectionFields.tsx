@@ -27,6 +27,13 @@ export function SectionFields({
     "accommodation",
     "registry",
   ];
+  const layout = s.layout || {
+    alignment: "original",
+    width: "original",
+    visibility: "both",
+  };
+  const changeLayout = (patch: Partial<NonNullable<DesignSection["layout"]>>) =>
+    onChange({ layout: { ...layout, ...patch } });
   return (
     <div className="editor-section-fields">
       <Field label="Section title">
@@ -254,6 +261,92 @@ export function SectionFields({
             onChange={(e) => onChange({ background: e.target.value })}
           />
         </Field>
+        <Field label="Text alignment">
+          <select
+            value={layout.alignment}
+            onChange={(e) =>
+              changeLayout({
+                alignment: e.target.value as typeof layout.alignment,
+              })
+            }
+          >
+            <option value="original">Designer’s choice</option>
+            <option value="left">Left aligned</option>
+            <option value="center">Centered</option>
+          </select>
+        </Field>
+        <Field label="Content width">
+          <select
+            value={layout.width}
+            onChange={(e) =>
+              changeLayout({ width: e.target.value as typeof layout.width })
+            }
+          >
+            <option value="original">Designer’s choice</option>
+            <option value="narrow">Narrow & intimate</option>
+            <option value="wide">Wide & open</option>
+          </select>
+        </Field>
+        <Field label="Show this section on">
+          <select
+            value={layout.visibility}
+            onChange={(e) =>
+              changeLayout({
+                visibility: e.target.value as typeof layout.visibility,
+              })
+            }
+          >
+            <option value="both">All screens</option>
+            <option value="desktop">Desktop & tablet</option>
+            <option value="mobile">Phones only</option>
+          </select>
+        </Field>
+        {["hero", "story", "introduction", "venue", "gallery"].includes(
+          s.type,
+        ) && (
+          <>
+            <Field label="Section photo horizontal position">
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={layout.photoPosition?.x ?? 50}
+                onChange={(e) =>
+                  changeLayout({
+                    photoPosition: {
+                      x: +e.target.value,
+                      y: layout.photoPosition?.y ?? 50,
+                    },
+                  })
+                }
+              />
+            </Field>
+            <Field label="Section photo vertical position">
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={layout.photoPosition?.y ?? 50}
+                onChange={(e) =>
+                  changeLayout({
+                    photoPosition: {
+                      x: layout.photoPosition?.x ?? 50,
+                      y: +e.target.value,
+                    },
+                  })
+                }
+              />
+            </Field>
+            {layout.photoPosition && (
+              <button
+                className="studio-text-button"
+                onClick={() => changeLayout({ photoPosition: undefined })}
+              >
+                Use global photo position
+              </button>
+            )}
+          </>
+        )}
         {s.background && (
           <button
             className="studio-text-button"

@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from "react";
+import { memo, useState, type CSSProperties } from "react";
 import { ArrowUpRight, Check, Heart, MapPin } from "lucide-react";
 import { Countdown } from "@/components/Countdown";
 import { InlineRsvp } from "@/components/InlineRsvp";
@@ -23,23 +23,29 @@ import { TemplateHero } from "./TemplateHero";
 import couplePhoto from "@/assets/studio-couple.webp";
 import venuePhoto from "@/assets/studio-garden.webp";
 import { studioImageSources } from "@/lib/studio/images";
+import { CustomCanvas, type CanvasEditing } from "./CustomCanvas";
+import { emptyCanvas } from "@/lib/studio/canvas";
 
 export function StudioWeddingSite({
   wedding: w,
   design,
   preview = false,
   onSectionSelect,
+  selectedSection,
+  canvasEditing,
 }: {
   wedding: PublicWedding;
   design: DesignConfig;
   preview?: boolean;
   onSectionSelect?: (id: string) => void;
+  selectedSection?: string | null;
+  canvasEditing?: CanvasEditing;
 }) {
   const template = getTemplate(w.template);
   const sections = design.sections.filter((s) => s.enabled);
   return (
     <main
-      className={`wedding-design theme-${w.template} composition-${template.composition} design-${w.template}`}
+      className={`wedding-design theme-${w.template} composition-${template.composition} design-${w.template} ${w.template === "lotus" || w.template === "classic" ? "" : "collection-design"}`}
       data-motion={design.motion}
       style={designVariables(design, template.palette, template.fonts)}
     >
@@ -52,9 +58,29 @@ export function StudioWeddingSite({
       {sections.map((s, index) => (
         <div
           key={s.id}
-          id={s.type === "rsvp" ? "rsvp" : `section-${s.type}`}
-          className={`site-section-wrap section-${s.type} section-style-${s.style} space-${s.spacing}`}
-          style={s.background ? { background: s.background } : undefined}
+          id={
+            s.type === "rsvp"
+              ? "rsvp"
+              : `section-${s.type === "canvas" ? s.id : s.type}`
+          }
+          data-section-id={s.id}
+          className={`site-section-wrap section-${s.type} section-style-${s.style} space-${s.spacing} ${s.layout ? `section-align-${s.layout.alignment} section-width-${s.layout.width} section-visible-${s.layout.visibility}` : ""} ${onSectionSelect && selectedSection === s.id ? "site-section-selected" : ""}`}
+          style={
+            {
+              ...(s.background
+                ? {
+                    background: s.background,
+                    "--section-background": s.background,
+                  }
+                : {}),
+              ...(s.layout?.photoPosition
+                ? {
+                    "--photo-position": `${s.layout.photoPosition.x}% ${s.layout.photoPosition.y}%`,
+                  }
+                : {}),
+            } as CSSProperties
+          }
+          data-custom-background={s.background ? true : undefined}
         >
           {onSectionSelect && (
             <button
@@ -64,13 +90,25 @@ export function StudioWeddingSite({
               Edit {s.type.replaceAll("-", " ")}
             </button>
           )}
-          <WeddingSection
-            section={s}
-            wedding={w}
-            preview={preview}
-            index={index}
-            rsvp={sections.some((x) => x.type === "rsvp")}
-          />
+          {s.type === "canvas" ? (
+            <CustomCanvas
+              canvas={s.canvas || emptyCanvas()}
+              label={s.title || "Custom design"}
+              editing={
+                canvasEditing && selectedSection === s.id
+                  ? canvasEditing
+                  : undefined
+              }
+            />
+          ) : (
+            <WeddingSection
+              section={s}
+              wedding={w}
+              preview={preview}
+              index={index}
+              rsvp={sections.some((x) => x.type === "rsvp")}
+            />
+          )}
         </div>
       ))}
     </main>
@@ -92,7 +130,7 @@ function SectionHeading({
     </div>
   );
 }
-function WeddingSection({
+const WeddingSection = memo(function WeddingSection({
   section: s,
   wedding: w,
   preview,
@@ -447,7 +485,7 @@ function WeddingSection({
         </section>
       );
   }
-}
+});
 
 function PreviewRsvp() {
   const [sent, setSent] = useState(false);

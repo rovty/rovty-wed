@@ -1,3 +1,14 @@
+import { CanvasPanel } from "./CanvasPanel";
+import {
+  CANVAS_PRESETS,
+  createCanvas,
+  duplicateElement,
+  emptyCanvas,
+  MAX_ELEMENTS,
+  type CanvasDesign,
+  type CanvasElement,
+  type CanvasPreset,
+} from "@/lib/studio/canvas";
 import { IdentityNotice } from "@/components/admin/IdentityNotice";
 import { preserveWeddingIdentity } from "@/lib/wedding-identity";
 import { useBlocker } from "@tanstack/react-router";
@@ -13,6 +24,10 @@ import {
   Check,
   ChevronDown,
   Eye,
+  Grid2X2,
+  Magnet,
+  MousePointer2,
+  Copy,
   ImagePlus,
   Layers,
   LayoutTemplate,
@@ -55,10 +70,12 @@ import { prepareStudioImage, uploadStudioMedia } from "@/lib/studio/media";
 import { PreviewFrame, type PreviewDevice } from "./PreviewFrame";
 import { DeviceToggle, TemplateMiniature } from "./TemplateDiscovery";
 
-type Panel = "content" | "style" | "sections" | "photos" | "templates";
+type Panel =
+  "content" | "style" | "sections" | "photos" | "templates" | "elements";
 const PANELS = [
   { id: "content", label: "Content", icon: Type },
   { id: "style", label: "Style", icon: PaletteIcon },
+  { id: "elements", label: "Elements", icon: MousePointer2 },
   { id: "sections", label: "Sections", icon: Layers },
   { id: "photos", label: "Photos", icon: ImagePlus },
   { id: "templates", label: "Designs", icon: LayoutTemplate },
@@ -90,6 +107,12 @@ export default function WeddingEditor({
   const [panel, setPanel] = useState<Panel>("content");
   const [device, setDevice] = useState<PreviewDevice>("desktop");
   const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
+  const [selectedElement, setSelectedElement] = useState<string | null>(null);
+  const [grid, setGrid] = useState(false);
+  const [snap, setSnap] = useState(true);
+  const [zoom, setZoom] = useState<number | null>(null);
+  const copiedElement = useRef<CanvasElement | null>(null);
+  const keyboardRef = useRef<(event: KeyboardEvent) => void>(() => {});
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
@@ -209,7 +232,7 @@ export default function WeddingEditor({
   ) =>
     design(
       {
-        sections: draft.design.sections.map((s) =>
+        sections: draftRef.current.design.sections.map((s) =>
           s.id === id ? { ...s, ...patch } : s,
         ),
       },
@@ -319,6 +342,280 @@ export default function WeddingEditor({
         }}
       />
     </label>
+  );
+  const currentCanvas =
+    currentSection?.type === "canvas"
+      ? currentSection.canvas || emptyCanvas()
+      : null;
+  const addCanvas = (preset: CanvasPreset) => {
+    if (
+      draftRef.current.design.sections.filter((s) => s.type === "canvas")
+        .length >= 8
+    ) {
+      setError("Your website can have up to eight custom canvases.");
+      return;
+    }
+    const s = {
+      ...newSection("canvas", crypto.randomUUID()),
+      title: CANVAS_PRESETS.find((p) => p.id === preset)!.name,
+      canvas: createCanvas(preset, draft.wedding.couplePhotoUrl || ""),
+    };
+    const list = [...draftRef.current.design.sections];
+    const after = selectedSection
+      ? list.findIndex((x) => x.id === selectedSection)
+      : list.findIndex((x) => x.type === "hero");
+    list.splice(after + 1, 0, s);
+    design({ sections: list }, true);
+    setSelectedSection(s.id);
+    setSelectedElement(null);
+    setPanel("elements");
+  };
+  const changeCanvas = (patch: Partial<CanvasDesign>, discrete = false) => {
+    if (!currentSection || !currentCanvas) return;
+    const latest =
+      draftRef.current.design.sections.find((s) => s.id === currentSection.id)
+        ?.canvas || emptyCanvas();
+    section(currentSection.id, { canvas: { ...latest, ...patch } }, discrete);
+  };
+  const changeElement = (
+    id: string,
+    patch: Partial<CanvasElement>,
+    discrete = false,
+  ) => {
+    const latest = draftRef.current.design.sections.find(
+      (s) => s.id === selectedSection,
+    )?.canvas;
+    if (latest)
+      changeCanvas(
+        {
+          elements: latest.elements.map((e) =>
+            e.id === id ? { ...e, ...patch } : e,
+          ),
+        },
+        discrete,
+      );
+  };
+  const duplicateSelected = (source?: CanvasElement) => {
+    const element =
+      source || currentCanvas?.elements.find((e) => e.id === selectedElement);
+    if (
+      !element ||
+      !currentCanvas ||
+      currentCanvas.elements.length >= MAX_ELEMENTS
+    )
+      return;
+    const copy = duplicateElement(element);
+    changeCanvas({ elements: [...currentCanvas.elements, copy] }, true);
+    setSelectedElement(copy.id);
+  };
+  const removeSelected = () => {
+    const element = currentCanvas?.elements.find(
+      (e) => e.id === selectedElement,
+    );
+    if (!element || element.locked || !currentCanvas) return;
+    changeCanvas(
+      {
+        elements: currentCanvas.elements.filter(
+          (e) => e.id !== selectedElement,
+        ),
+      },
+      true,
+    );
+    setSelectedElement(null);
+  };
+  useEffect(() => {
+    keyboardRef.current = (event) => {
+      if (event.defaultPrevented || review || leave || uploading) return;
+      const target = event.target as HTMLElement;
+      if (target?.closest?.("input, textarea, select, [contenteditable=true]"))
+        return;
+      const command = event.metaKey || event.ctrlKey;
+      const key = event.key.toLowerCase();
+      if (command && key === "z") {
+        event.preventDefault();
+        if (event.shiftKey) redo();
+        else undo();
+      } else if (command && key === "y") {
+        event.preventDefault();
+        redo();
+      } else if (command && key === "s") {
+        event.preventDefault();
+        if (onSave) void save();
+      } else if (command && key === "d" && selectedElement) {
+        event.preventDefault();
+        duplicateSelected();
+      } else if (command && key === "c" && selectedElement) {
+        copiedElement.current =
+          currentCanvas?.elements.find((e) => e.id === selectedElement) || null;
+        if (copiedElement.current) {
+          event.preventDefault();
+          setStatus("Element copied. Paste it into any custom canvas.");
+        }
+      } else if (
+        command &&
+        key === "v" &&
+        currentCanvas &&
+        copiedElement.current
+      ) {
+        event.preventDefault();
+        duplicateSelected(copiedElement.current);
+      } else if ((key === "delete" || key === "backspace") && selectedElement) {
+        event.preventDefault();
+        removeSelected();
+      } else if (key === "escape") setSelectedElement(null);
+    };
+  });
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => keyboardRef.current(event),
+    [],
+  );
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
+  const elementsPanel = (
+    <>
+      <PanelHeading
+        eyebrow="Your imagination, invited"
+        title="Make something yours."
+        text="Compose your own section with words, photos and little details."
+      />
+      {draft.design.sections.some((s) => s.type === "canvas") && (
+        <Field label="Choose a custom canvas">
+          <select
+            value={currentCanvas ? selectedSection || "" : ""}
+            onChange={(e) => {
+              setSelectedSection(e.target.value || null);
+              setSelectedElement(null);
+            }}
+          >
+            <option value="">Choose a canvas…</option>
+            {draft.design.sections
+              .filter((s) => s.type === "canvas")
+              .map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.title}
+                </option>
+              ))}
+          </select>
+        </Field>
+      )}
+      {currentSection && currentCanvas ? (
+        <>
+          <Field label="Canvas title">
+            <input
+              value={currentSection.title}
+              maxLength={200}
+              onChange={(e) =>
+                section(currentSection.id, { title: e.target.value })
+              }
+            />
+          </Field>
+          <CanvasPanel
+            canvas={currentCanvas}
+            selected={selectedElement}
+            mobile={device === "mobile"}
+            onChange={changeCanvas}
+            onSelect={setSelectedElement}
+            onElement={changeElement}
+            onDuplicate={() => duplicateSelected()}
+            onRemove={removeSelected}
+            uploadControl={uploadControl}
+          />
+          <div className="canvas-section-actions">
+            <button
+              className="studio-text-button"
+              disabled={
+                draft.design.sections.filter((s) => s.type === "canvas")
+                  .length >= 8
+              }
+              onClick={() => {
+                const copy = {
+                  ...currentSection,
+                  id: crypto.randomUUID(),
+                  title: currentSection.title + " copy",
+                  canvas: {
+                    ...currentCanvas,
+                    elements: currentCanvas.elements.map((e) => ({
+                      ...e,
+                      id: crypto.randomUUID(),
+                    })),
+                  },
+                };
+                const list = [...draft.design.sections];
+                list.splice(
+                  list.findIndex((s) => s.id === currentSection.id) + 1,
+                  0,
+                  copy,
+                );
+                design({ sections: list }, true);
+                setSelectedSection(copy.id);
+                setSelectedElement(null);
+              }}
+            >
+              <Copy size={13} /> Duplicate canvas
+            </button>
+            <button
+              className="studio-text-button"
+              onClick={() => {
+                design(
+                  {
+                    sections: draft.design.sections.filter(
+                      (s) => s.id !== currentSection.id,
+                    ),
+                  },
+                  true,
+                );
+                setSelectedSection(null);
+                setSelectedElement(null);
+              }}
+            >
+              <Trash2 size={13} /> Remove canvas
+            </button>
+          </div>
+        </>
+      ) : (
+        <div className="canvas-preset-grid">
+          {CANVAS_PRESETS.map((p) => (
+            <button
+              key={p.id}
+              className={`canvas-preset preset-${p.id}`}
+              onClick={() => addCanvas(p.id)}
+            >
+              <span className="canvas-preset-art" aria-hidden="true">
+                <i />
+                <b>
+                  {p.id === "blank"
+                    ? "+"
+                    : p.id === "poster"
+                      ? "LET’S DANCE."
+                      : p.id === "note"
+                        ? "dear love,"
+                        : "always us"}
+                </b>
+              </span>
+              <strong>{p.name}</strong>
+              <small>{p.description}</small>
+            </button>
+          ))}
+        </div>
+      )}
+      {currentCanvas && (
+        <button
+          className="studio-button canvas-new-button"
+          onClick={() => {
+            setSelectedSection(null);
+            setSelectedElement(null);
+          }}
+        >
+          <Plus size={14} /> Add another canvas
+        </button>
+      )}
+      <p className="editor-help canvas-shortcut-help">
+        ⌘ / Ctrl + Z to undo · D to duplicate · C / V to copy and paste layers
+        in the studio.
+      </p>
+    </>
   );
   const detailsPanel = (
     <>
@@ -547,7 +844,10 @@ export default function WeddingEditor({
               aria-pressed={panel === p.id}
               onClick={() => {
                 setPanel(p.id);
-                setSelectedSection(null);
+                if (p.id !== "elements") {
+                  setSelectedSection(null);
+                  setSelectedElement(null);
+                }
                 setMobileView("edit");
               }}
             >
@@ -559,6 +859,7 @@ export default function WeddingEditor({
         <aside className="editor-panel">
           <fieldset className="editor-panel-fields" disabled={uploading}>
             {panel === "content" && detailsPanel}
+            {panel === "elements" && elementsPanel}
             {panel === "style" && (
               <>
                 <PanelHeading
@@ -788,11 +1089,20 @@ export default function WeddingEditor({
                     >
                       <ArrowLeft size={13} /> All sections
                     </button>
-                    <SectionFields
-                      section={currentSection}
-                      onChange={(patch) => section(currentSection.id, patch)}
-                      uploadControl={uploadControl}
-                    />
+                    {currentSection.type === "canvas" ? (
+                      <button
+                        className="studio-button"
+                        onClick={() => setPanel("elements")}
+                      >
+                        Edit canvas elements <ArrowRight size={14} />
+                      </button>
+                    ) : (
+                      <SectionFields
+                        section={currentSection}
+                        onChange={(patch) => section(currentSection.id, patch)}
+                        uploadControl={uploadControl}
+                      />
+                    )}
                   </>
                 ) : (
                   <>
@@ -815,9 +1125,15 @@ export default function WeddingEditor({
                           </span>
                           <button
                             className="editor-section-name"
-                            onClick={() => setSelectedSection(s.id)}
+                            onClick={() => {
+                              setSelectedSection(s.id);
+                              setSelectedElement(null);
+                              if (s.type === "canvas") setPanel("elements");
+                            }}
                           >
-                            {SECTION_LABELS[s.type]}
+                            {s.type === "canvas"
+                              ? s.title
+                              : SECTION_LABELS[s.type]}
                             <small>
                               {s.enabled
                                 ? "Click to customize"
@@ -857,6 +1173,10 @@ export default function WeddingEditor({
                         value=""
                         onChange={(e) => {
                           if (!e.target.value) return;
+                          if (e.target.value === "canvas") {
+                            addCanvas("blank");
+                            return;
+                          }
                           const s = newSection(e.target.value as SectionType);
                           design(
                             { sections: [...draft.design.sections, s] },
@@ -868,6 +1188,7 @@ export default function WeddingEditor({
                         <option value="">Choose your next chapter…</option>
                         {SECTION_TYPES.filter(
                           (type) =>
+                            type === "canvas" ||
                             !draft.design.sections.some((s) => s.type === type),
                         ).map((type) => (
                           <option key={type} value={type}>
@@ -1022,8 +1343,50 @@ export default function WeddingEditor({
               <i /> {template.name}
               <span className="editor-canvas-label"> · Live preview</span>
             </span>
-            <DeviceToggle device={device} onChange={setDevice} />
-            <span className="editor-canvas-hint">Made for every screen</span>
+            <DeviceToggle
+              device={device}
+              onChange={(next) => {
+                setDevice(next);
+                setZoom(null);
+              }}
+            />
+            <div className="editor-canvas-tools">
+              {currentCanvas && (
+                <>
+                  <button
+                    className="studio-icon-button"
+                    aria-label="Show alignment grid"
+                    aria-pressed={grid}
+                    onClick={() => setGrid((v) => !v)}
+                  >
+                    <Grid2X2 size={15} />
+                  </button>
+                  <button
+                    className="studio-icon-button"
+                    aria-label="Snap to alignment guides"
+                    aria-pressed={snap}
+                    onClick={() => setSnap((v) => !v)}
+                  >
+                    <Magnet size={15} />
+                  </button>
+                </>
+              )}
+              <select
+                aria-label="Canvas zoom"
+                value={zoom ?? "fit"}
+                onChange={(e) =>
+                  setZoom(
+                    e.target.value === "fit" ? null : Number(e.target.value),
+                  )
+                }
+              >
+                <option value="fit">Fit</option>
+                <option value={0.5}>50%</option>
+                <option value={0.75}>75%</option>
+                <option value={1}>100%</option>
+                <option value={1.25}>125%</option>
+              </select>
+            </div>
           </div>
           <div className="editor-canvas-frame">
             <PreviewFrame
@@ -1031,15 +1394,51 @@ export default function WeddingEditor({
               wedding={draft.wedding}
               design={draft.design}
               device={device}
+              zoom={zoom}
+              selectedSection={selectedSection}
+              onKeyDown={handleKeyDown}
+              canvasEditing={
+                currentCanvas
+                  ? {
+                      selected: selectedElement,
+                      grid,
+                      snap,
+                      onSelect: setSelectedElement,
+                      onChange: changeElement,
+                      onGesture: () => {
+                        editTime.current = 0;
+                      },
+                    }
+                  : undefined
+              }
               onSectionSelect={(id) => {
                 setSelectedSection(id);
-                setPanel("sections");
+                setSelectedElement(null);
+                setPanel(
+                  draft.design.sections.find((s) => s.id === id)?.type ===
+                    "canvas"
+                    ? "elements"
+                    : "sections",
+                );
                 setMobileView("edit");
               }}
             />
           </div>
           <p className="editor-canvas-note">
-            A little more you, with every change.
+            {currentCanvas ? (
+              <>
+                Drag to arrange · Double-click to edit text · Hold Alt to move
+                without snapping
+                <button
+                  className="canvas-mobile-inspect"
+                  onClick={() => setMobileView("edit")}
+                >
+                  Edit selected element <ArrowRight size={12} />
+                </button>
+              </>
+            ) : (
+              "Select a section on the preview to make it yours."
+            )}
           </p>
         </section>
       </div>

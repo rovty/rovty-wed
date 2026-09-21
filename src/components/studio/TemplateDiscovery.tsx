@@ -10,6 +10,7 @@ import {
   Monitor,
   Search,
   Smartphone,
+  Tablet,
   X,
 } from "lucide-react";
 import { templateFontsHref, type WeddingTemplate } from "@/lib/wedding";
@@ -351,7 +352,7 @@ export function TemplateMiniature({
         <>
           <link rel="stylesheet" href={templateFontsHref(template.id)} />
           <div
-            className={`template-miniature-inner wedding-design design-${template.id}`}
+            className={`template-miniature-inner wedding-design design-${template.id} ${template.id === "lotus" || template.id === "classic" ? "" : `collection-design theme-${template.id}`}`}
             data-motion="none"
             style={{ transform: `scale(${width / 1100})` }}
           >
@@ -378,6 +379,13 @@ export function DeviceToggle({
         onClick={() => onChange("desktop")}
       >
         <Monitor size={16} />
+      </button>
+      <button
+        aria-label="Tablet preview"
+        aria-pressed={device === "tablet"}
+        onClick={() => onChange("tablet")}
+      >
+        <Tablet size={16} />
       </button>
       <button
         aria-label="Mobile preview"

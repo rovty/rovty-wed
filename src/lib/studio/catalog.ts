@@ -223,6 +223,22 @@ export const TEMPLATE_CATALOG: TemplateDefinition[] = definitions.map((def) => {
       accent: theme.gold,
       background: theme.swatchBg,
       text: theme.fg,
+      ...(def.id === "deco"
+        ? {
+            primary: "#d6ba7a",
+            secondary: "#252a27",
+            accent: "#b99c60",
+            background: "#18211e",
+            text: "#f0e6cd",
+          }
+        : {}),
+      ...(def.id === "garden" ? { secondary: "#e3e9da" } : {}),
+      ...(def.id === "bloom" ? { secondary: "#f1ded5" } : {}),
+      ...(def.id === "thali"
+        ? { primary: "#93422d", secondary: "#efdbc3", accent: "#d2a257" }
+        : {}),
+      ...(def.id === "chapel" ? { secondary: "#e6ebf0" } : {}),
+      ...(def.id === "shoreline" ? { secondary: "#e5ece7" } : {}),
     },
     fonts: {
       heading: theme.disp,
@@ -343,6 +359,13 @@ export function parseDraft(raw: string | null): StudioDraft | null {
       wedding.venuePhotoUrl = venuePhoto;
     for (const section of design.sections) {
       if (section.image.startsWith("blob:")) section.image = "";
+      if (section.canvas) {
+        if (section.canvas.image.startsWith("blob:")) section.canvas.image = "";
+        section.canvas.elements = section.canvas.elements.map((element) => ({
+          ...element,
+          image: element.image.startsWith("blob:") ? "" : element.image,
+        }));
+      }
       section.items = section.items.map((item) => ({
         ...item,
         image: item.image.startsWith("blob:") ? "" : item.image,

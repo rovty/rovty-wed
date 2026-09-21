@@ -1,0 +1,1646 @@
+/* The second collection. Lotus and Classic intentionally retain their original rules. */
+.wedding-design.collection-design {
+  --collection-rule: color-mix(in srgb, var(--site-ink) 20%, transparent);
+}
+.collection-design.wedding-design :is(h1, h2, h3) {
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+.collection-design.wedding-design h1 > span {
+  min-width: 0;
+}
+.collection-design.wedding-design .site-prose {
+  font-size: 15px;
+  line-height: 1.85;
+}
+.collection-design.wedding-design .site-section {
+  padding-block: clamp(64px, 9vw, 125px);
+}
+.collection-design.wedding-design .site-hero {
+  min-height: 800px;
+}
+.collection-design.wedding-design .site-hero-note {
+  grid-column: 1/-1;
+}
+.collection-design.wedding-design .site-hero-detail {
+  font-size: 12px;
+}
+.collection-design.wedding-design .site-button {
+  min-height: 48px;
+  font-size: 11px;
+}
+.collection-design.wedding-design .site-timeline article p {
+  line-height: 1.8;
+  opacity: 0.85;
+}
+.collection-design.wedding-design .site-text-link {
+  min-height: 44px;
+}
+.collection-design.wedding-design a:focus-visible,
+.collection-design.wedding-design button:focus-visible {
+  outline: 2px solid var(--site-accent);
+  outline-offset: 5px;
+}
+.collection-design.wedding-design .template-ornament {
+  width: 100px;
+  height: 100px;
+  display: block;
+  color: var(--site-accent);
+}
+.collection-design.wedding-design .site-footer .site-credit {
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.collection-design.wedding-design .site-preview-rsvp :is(input, textarea) {
+  min-height: 44px;
+  font-size: 14px;
+}
+
+/* Editorial: a cover, generous spreads and a numbered running order. */
+.wedding-design.design-editorial .hero-editorial {
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 0.7fr);
+  gap: 0 7%;
+  padding-inline: 6%;
+}
+.wedding-design.design-editorial .editorial-title h1 {
+  font-size: calc(clamp(60px, 11.5vw, 170px) * var(--site-scale));
+  letter-spacing: -0.045em;
+  flex-wrap: wrap;
+}
+.wedding-design.design-editorial .editorial-photo {
+  height: 450px;
+}
+.wedding-design.design-editorial .editorial-aside {
+  justify-content: space-between;
+  padding-block: 20px;
+}
+.wedding-design.design-editorial .editorial-edition {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  padding-bottom: 65px;
+}
+.wedding-design.design-editorial .site-story {
+  grid-template-columns: 1.15fr 1fr;
+  gap: 10%;
+}
+.wedding-design.design-editorial .site-story-image img {
+  height: 580px;
+}
+.wedding-design.design-editorial .site-story-copy h2 {
+  font-size: calc(clamp(44px, 6vw, 82px) * var(--site-scale));
+  letter-spacing: -0.035em;
+}
+.wedding-design.design-editorial .site-section-number {
+  font: italic 64px var(--site-heading);
+  border: 0;
+  margin-bottom: 12px;
+}
+.wedding-design.design-editorial .site-schedule {
+  border-block: 1px solid var(--collection-rule);
+}
+.wedding-design.design-editorial .site-timeline article {
+  grid-template-columns: 88px 1fr;
+  padding-block: 32px;
+}
+.wedding-design.design-editorial .site-gallery-grid {
+  grid-template-columns: 1.5fr 1fr;
+  gap: 8%;
+  align-items: start;
+}
+.wedding-design.design-editorial .site-gallery-grid figure:nth-child(even) {
+  margin-top: 130px;
+}
+.wedding-design.design-editorial .site-gallery-grid figure:nth-child(odd) img {
+  height: 550px;
+}
+.wedding-design.design-editorial .site-rsvp {
+  background: var(--site-secondary);
+  padding-inline: 8%;
+}
+.wedding-design.design-editorial .site-footer {
+  text-align: left;
+}
+.wedding-design.design-editorial .site-footer h2 {
+  letter-spacing: -0.04em;
+  border-bottom: 1px solid var(--collection-rule);
+  padding-bottom: 40px;
+}
+
+/* Garden: a botanical invitation, pressed-flower borders and a garden path. */
+.wedding-design.design-garden .hero-garden {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.65fr);
+  padding-inline: 13%;
+}
+.wedding-design.design-garden .hero-garden::before {
+  content: "";
+  position: absolute;
+  inset: 76px 4% 25px;
+  border: 1px solid var(--collection-rule);
+  pointer-events: none;
+}
+.wedding-design.design-garden .garden-photo {
+  height: 470px;
+  border-radius: 48% 48% 3px 3px;
+  outline: 1px solid var(--site-accent);
+  outline-offset: 10px;
+}
+.wedding-design.design-garden .garden-heading {
+  margin-bottom: 48px;
+}
+.wedding-design.design-garden .garden-heading h1 {
+  font-size: calc(clamp(55px, 8vw, 110px) * var(--site-scale));
+  flex-wrap: wrap;
+}
+.wedding-design.design-garden .ornament-branch {
+  position: absolute;
+  right: 0;
+  bottom: 14px;
+  width: 180px;
+  height: 230px;
+  opacity: 0.5;
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+.wedding-design.design-garden .site-story {
+  grid-template-columns: 0.8fr 1fr;
+  gap: 12%;
+}
+.wedding-design.design-garden .site-story-image img {
+  height: 460px;
+  border-radius: 48% 48% 48% 48%;
+  padding: 8px;
+  border: 1px solid var(--site-accent);
+}
+.wedding-design.design-garden .site-story-copy .site-prose {
+  margin-inline: auto;
+}
+.wedding-design.design-garden .site-countdown {
+  background: var(--site-secondary);
+  max-width: none;
+}
+.wedding-design.design-garden .site-gallery-grid {
+  gap: 11%;
+}
+.wedding-design.design-garden .site-gallery-grid figure:nth-child(even) img {
+  border-radius: 0 0 48% 48%;
+  height: 440px;
+}
+.wedding-design.design-garden .site-timeline {
+  padding-left: 15%;
+}
+.wedding-design.design-garden .site-timeline article {
+  padding: 32px 0 32px 40px;
+}
+.wedding-design.design-garden .site-timeline article::after {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 42px;
+  width: 11px;
+  height: 11px;
+  background: var(--site-paper);
+  border: 1px solid var(--site-accent);
+  border-radius: 50%;
+}
+.wedding-design.design-garden .site-venue {
+  grid-template-columns: 1.2fr 1fr;
+  background: var(--site-secondary);
+}
+.wedding-design.design-garden .site-venue-image img {
+  border-radius: 48% 48% 0 0;
+}
+.wedding-design.design-garden .site-rsvp {
+  border: 1px solid var(--site-accent);
+  outline: 1px solid var(--collection-rule);
+  outline-offset: -12px;
+  margin: 80px auto;
+  padding: 80px 6%;
+  width: 84%;
+}
+.wedding-design.design-garden .site-footer {
+  border: 0;
+  background: var(--site-secondary);
+}
+
+/* Noir: a night-time portrait, contact sheet and restrained dinner invitation. */
+.wedding-design.design-noir .hero-noir {
+  padding: 115px 8% 60px;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+}
+.wedding-design.design-noir .noir-photo {
+  height: 630px;
+}
+.wedding-design.design-noir .noir-type {
+  margin-right: -45px;
+}
+.wedding-design.design-noir .noir-type h1 {
+  font-size: calc(clamp(65px, 10.5vw, 150px) * var(--site-scale));
+  text-transform: none;
+  letter-spacing: -0.025em;
+}
+.wedding-design.design-noir :is(h2, h3) {
+  text-transform: none;
+  letter-spacing: 0;
+}
+.wedding-design.design-noir .noir-type h1 em {
+  margin-left: 20%;
+}
+.wedding-design.design-noir .noir-signature {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 0.25em;
+  margin-top: 34px;
+  color: var(--site-accent);
+}
+.wedding-design.design-noir .site-date {
+  border-block: 1px solid var(--collection-rule);
+}
+.wedding-design.design-noir .site-gallery-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 0.7fr;
+  align-items: end;
+  gap: 5%;
+  overflow: visible;
+}
+.wedding-design.design-noir .site-gallery-grid figure:nth-child(odd) img {
+  height: 580px;
+}
+.wedding-design.design-noir .site-gallery-grid figure:nth-child(even) img {
+  height: 350px;
+  filter: grayscale(1);
+}
+.wedding-design.design-noir .site-story {
+  grid-template-columns: 1.4fr 1fr;
+}
+.wedding-design.design-noir .site-story-image img {
+  height: 430px;
+}
+.wedding-design.design-noir .site-schedule {
+  display: grid;
+  grid-template-columns: 0.75fr 1.25fr;
+  gap: 10%;
+}
+.wedding-design.design-noir .site-timeline article {
+  grid-template-columns: 90px 1fr;
+}
+.wedding-design.design-noir :is(.site-event-number, .site-event-star) {
+  display: none;
+}
+.wedding-design.design-noir .site-rsvp {
+  margin: 40px 8%;
+  padding: 60px 0;
+  grid-template-columns: 1fr 1fr;
+}
+.wedding-design.design-noir .site-venue {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  text-align: left;
+  padding: 80px 8%;
+  gap: 6%;
+}
+.wedding-design.design-noir .site-venue-copy {
+  padding: 0;
+}
+.wedding-design.design-noir .site-footer h2 {
+  font-style: italic;
+  color: var(--site-accent);
+}
+
+/* Quiet: Swiss typography, a square image grid and a clear agenda. */
+.wedding-design.design-quiet .hero-quiet {
+  min-height: 820px;
+  padding-inline: 7%;
+}
+.wedding-design.design-quiet .quiet-wordmark {
+  font-size: clamp(60px, 10vw, 148px);
+  line-height: 0.94;
+  letter-spacing: -0.065em;
+}
+.wedding-design.design-quiet .quiet-bottom {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.7fr) 150px;
+  padding-top: 30px;
+}
+.wedding-design.design-quiet .quiet-bottom h1 {
+  font-size: calc(36px * var(--site-scale));
+}
+.wedding-design.design-quiet .quiet-photo {
+  width: 150px;
+  height: 165px;
+}
+.wedding-design.design-quiet .site-story {
+  border-top: 1px solid var(--site-ink);
+  gap: 8%;
+}
+.wedding-design.design-quiet .site-story-image img {
+  height: auto;
+  aspect-ratio: 1;
+}
+.wedding-design.design-quiet .site-countdown {
+  max-width: none;
+  border-block: 1px solid var(--collection-rule);
+}
+.wedding-design.design-quiet .site-timeline article {
+  grid-template-columns: 60px 130px 1fr;
+  padding-block: 35px;
+}
+.wedding-design.design-quiet .site-event-number {
+  font-size: 24px;
+  color: var(--site-ink);
+}
+.wedding-design.design-quiet .site-event-star {
+  display: none;
+}
+.wedding-design.design-quiet .site-gallery-grid {
+  gap: 5px;
+}
+.wedding-design.design-quiet .site-gallery-grid figure img {
+  height: auto;
+  aspect-ratio: 1;
+  filter: grayscale(1);
+}
+.wedding-design.design-quiet .site-gallery-grid figcaption {
+  padding: 16px 10px;
+  border-bottom: 1px solid var(--collection-rule);
+}
+.wedding-design.design-quiet .site-rsvp {
+  border-top: 2px solid var(--site-ink);
+  grid-template-columns: 1.1fr 1fr;
+}
+.wedding-design.design-quiet .site-rsvp-intro > .site-script {
+  display: none;
+}
+.wedding-design.design-quiet .site-footer {
+  text-align: left;
+}
+.wedding-design.design-quiet .site-footer h2 {
+  font-size: calc(clamp(45px, 7vw, 95px) * var(--site-scale));
+  letter-spacing: -0.06em;
+}
+
+/* Poruwa: antique stationery, a ceremonial seal and a formal paired schedule. */
+.wedding-design.design-poruwa .hero-poruwa {
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.6fr);
+  gap: 8%;
+  padding-inline: 8%;
+}
+.wedding-design.design-poruwa .poruwa-frame {
+  padding: 28px 24px 40px;
+}
+.wedding-design.design-poruwa .ornament-sun {
+  width: 82px;
+  height: 82px;
+  margin: 0 auto 22px;
+}
+.wedding-design.design-poruwa .poruwa-frame h1 {
+  font-size: calc(clamp(42px, 6.2vw, 90px) * var(--site-scale));
+}
+.wedding-design.design-poruwa .poruwa-side {
+  height: 540px;
+}
+.wedding-design.design-poruwa .site-family {
+  background: var(--site-secondary);
+  border-block: 1px solid var(--site-accent);
+}
+.wedding-design.design-poruwa .site-story {
+  flex-direction: row;
+  text-align: left;
+  gap: 8%;
+}
+.wedding-design.design-poruwa .site-story-image {
+  flex: 1;
+}
+.wedding-design.design-poruwa .site-story-copy {
+  flex: 1;
+}
+.wedding-design.design-poruwa .site-timeline {
+  gap: 1px;
+  border: 1px solid var(--site-accent);
+  background: var(--site-accent);
+}
+.wedding-design.design-poruwa .site-timeline article {
+  background: var(--site-paper);
+  padding-block: 55px;
+}
+.wedding-design.design-poruwa .site-gallery-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 7%;
+}
+.wedding-design.design-poruwa .site-gallery-grid img {
+  padding: 10px;
+  border: 1px solid var(--site-accent);
+}
+.wedding-design.design-poruwa .site-rsvp {
+  outline: 1px solid var(--site-accent);
+  outline-offset: -10px;
+}
+.wedding-design.design-poruwa .site-footer {
+  background: var(--site-secondary);
+}
+.wedding-design.design-poruwa .site-footer h2 {
+  font-size: calc(clamp(40px, 6vw, 80px) * var(--site-scale));
+}
+
+/* Bloom: expressive type, a cut-paper flower and a keepsake scrapbook. */
+.wedding-design.design-bloom .hero-bloom {
+  padding-inline: 8%;
+  gap: 7%;
+}
+.wedding-design.design-bloom .bloom-message .site-script {
+  font-size: clamp(35px, 4.8vw, 65px);
+}
+.wedding-design.design-bloom .bloom-message h1 {
+  font-size: calc(clamp(42px, 6.4vw, 86px) * var(--site-scale));
+}
+.wedding-design.design-bloom .bloom-photo {
+  height: 560px;
+  border-radius: 45% 45% 45% 3px;
+  transform: rotate(5deg);
+}
+.wedding-design.design-bloom .ornament-flower {
+  position: absolute;
+  bottom: 26px;
+  left: 43%;
+  width: 180px;
+  height: 180px;
+  stroke-width: 1.4;
+}
+.wedding-design.design-bloom .site-story {
+  grid-template-columns: 1fr 1fr;
+  gap: 12%;
+}
+.wedding-design.design-bloom .site-story-image {
+  padding: 14px 14px 30px;
+  background: var(--site-secondary);
+}
+.wedding-design.design-bloom .site-story-image img {
+  border-radius: 0;
+  height: 440px;
+}
+.wedding-design.design-bloom .site-schedule {
+  border-radius: 45% 45% 0 0 / 100px 100px 0 0;
+  margin-inline: 5%;
+  padding-inline: 8%;
+}
+.wedding-design.design-bloom .site-timeline article {
+  grid-template-columns: 35px 100px 1fr;
+}
+.wedding-design.design-bloom .site-event-star {
+  display: none;
+}
+.wedding-design.design-bloom .site-gallery-grid figure {
+  padding: 13px 13px 22px;
+  background: var(--site-secondary);
+}
+.wedding-design.design-bloom .site-gallery-grid figcaption {
+  font: italic 22px var(--site-script);
+}
+.wedding-design.design-bloom .site-gallery-grid figcaption > span {
+  display: none;
+}
+.wedding-design.design-bloom .site-venue {
+  grid-template-columns: 1fr 1fr;
+}
+.wedding-design.design-bloom .site-venue-image img {
+  border-radius: 48% 48% 48% 0;
+}
+.wedding-design.design-bloom .site-rsvp {
+  background: var(--site-secondary);
+}
+.wedding-design.design-bloom .site-footer h2 {
+  font-style: italic;
+  color: var(--site-primary);
+}
+
+/* Film: wide-screen opening, frame numbers and a horizontal contact strip. */
+.wedding-design.design-film .hero-film {
+  padding-inline: 5%;
+  padding-top: 95px;
+}
+.wedding-design.design-film .film-photo {
+  height: 480px;
+  border: 18px solid var(--site-secondary);
+  outline: 1px solid var(--collection-rule);
+}
+.wedding-design.design-film .film-photo::before,
+.wedding-design.design-film .film-photo::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: -12px;
+  bottom: -12px;
+  width: 7px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--site-paper) 0 10px,
+    transparent 10px 22px
+  );
+}
+.wedding-design.design-film .film-photo::before {
+  left: -12px;
+}
+.wedding-design.design-film .film-photo::after {
+  right: -12px;
+}
+.wedding-design.design-film .film-edge {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+  font: 9px monospace;
+  letter-spacing: 0.12em;
+  color: white;
+}
+.wedding-design.design-film .film-caption {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.6fr);
+  text-align: left;
+  align-items: center;
+  column-gap: 6%;
+}
+.wedding-design.design-film .film-caption h1 {
+  grid-column: 1;
+  justify-content: start;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: calc(clamp(38px, 5.8vw, 80px) * var(--site-scale));
+}
+.wedding-design.design-film .film-caption > .site-eyebrow {
+  grid-column: 1;
+}
+.wedding-design.design-film .film-caption .site-hero-detail {
+  grid-column: 2;
+  grid-row: 1/3;
+  flex-direction: column;
+  align-items: end;
+  margin: 0;
+}
+.wedding-design.design-film .film-caption .site-button {
+  grid-column: 2;
+  justify-self: end;
+  margin-top: 18px;
+}
+.wedding-design.design-film .site-story {
+  grid-template-columns: 1fr 1.3fr;
+}
+.wedding-design.design-film .site-story-image img {
+  height: 400px;
+}
+.wedding-design.design-film .site-section-number {
+  font-family: monospace;
+  letter-spacing: 0.2em;
+}
+.wedding-design.design-film .site-gallery-grid {
+  gap: 24px;
+  padding-block: 24px;
+  border-block: 14px solid var(--site-secondary);
+}
+.wedding-design.design-film .site-gallery-grid figure {
+  flex-basis: 63%;
+}
+.wedding-design.design-film .site-gallery-grid figure img {
+  height: 450px;
+}
+.wedding-design.design-film .site-gallery-grid figcaption {
+  font-family: monospace;
+  text-transform: uppercase;
+}
+.wedding-design.design-film .site-timeline article {
+  grid-template-columns: 55px 120px 1fr;
+}
+.wedding-design.design-film .site-event-star {
+  display: none;
+}
+.wedding-design.design-film .site-venue-image img {
+  height: 490px;
+  filter: sepia(0.25);
+}
+.wedding-design.design-film .site-rsvp {
+  display: block;
+  max-width: 680px;
+  padding-inline: 5%;
+  text-align: center;
+  margin-block: 50px;
+}
+.wedding-design.design-film .site-rsvp-intro .site-prose {
+  margin-inline: auto;
+}
+.wedding-design.design-film .site-rsvp-form {
+  text-align: left;
+  margin-top: 42px;
+}
+.wedding-design.design-film .site-footer {
+  border: 0;
+}
+.wedding-design.design-film .site-footer h2 {
+  font-style: italic;
+}
+
+/* Thali: vermilion, marigold ornament and separate ceremony pavilions. */
+.wedding-design.design-thali .hero-thali {
+  border-width: 12px;
+  outline: 1px solid var(--site-accent);
+  outline-offset: -24px;
+}
+.wedding-design.design-thali .thali-copy h1 {
+  font-size: calc(clamp(52px, 8.2vw, 120px) * var(--site-scale));
+}
+.wedding-design.design-thali .thali-copy > .ornament-flower {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 15px;
+}
+.wedding-design.design-thali .thali-photo {
+  border-width: 3px;
+  outline: 1px solid var(--site-accent);
+  outline-offset: 9px;
+  height: 510px;
+}
+.wedding-design.design-thali .site-story {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10%;
+  text-align: left;
+}
+.wedding-design.design-thali .site-story-image {
+  padding: 0;
+  border: 0;
+  max-width: none;
+}
+.wedding-design.design-thali .site-story-image img {
+  height: 490px;
+  border-radius: 48% 48% 0 0;
+}
+.wedding-design.design-thali .site-timeline {
+  gap: 28px;
+}
+.wedding-design.design-thali .site-timeline article {
+  border-radius: 48% 48% 0 0 / 100px 100px 0 0;
+  padding-top: 75px;
+  border: 1px solid var(--site-accent);
+}
+.wedding-design.design-thali .site-event-number {
+  color: var(--site-accent);
+}
+.wedding-design.design-thali .site-venue {
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+  text-align: center;
+}
+.wedding-design.design-thali .site-venue-image {
+  width: 100%;
+}
+.wedding-design.design-thali .site-venue-image img {
+  height: 430px;
+}
+.wedding-design.design-thali .site-gallery-grid {
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 7%;
+}
+.wedding-design.design-thali .site-gallery-grid figure:nth-child(even) img {
+  height: 390px;
+  border-radius: 48% 48% 0 0;
+}
+.wedding-design.design-thali .site-rsvp {
+  background: var(--site-secondary);
+  border: 0;
+  border-block: 4px double var(--site-accent);
+  margin: 40px 0;
+  padding-inline: 8%;
+}
+.wedding-design.design-thali .site-footer {
+  background: var(--site-primary);
+  color: var(--site-paper);
+  border: 0;
+}
+
+/* Shoreline: a sunlit full-bleed portrait and airy travel-journal spreads. */
+.wedding-design.design-shoreline .hero-shoreline {
+  min-height: 870px;
+}
+.wedding-design.design-shoreline .shoreline-photo::after {
+  background: linear-gradient(180deg, #15363860, #15363810 35%, #153638a8);
+}
+.wedding-design.design-shoreline .shoreline-copy {
+  width: 84%;
+}
+.wedding-design.design-shoreline .shoreline-copy h1 {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  font-size: calc(clamp(58px, 11vw, 155px) * var(--site-scale));
+}
+.wedding-design.design-shoreline .ornament-sun {
+  margin: 0 auto 24px;
+  width: 90px;
+  height: 90px;
+  color: inherit;
+}
+.wedding-design.design-shoreline .site-countdown {
+  max-width: none;
+  background: var(--site-secondary);
+}
+.wedding-design.design-shoreline .site-venue {
+  grid-template-columns: 1.5fr 1fr;
+  gap: 7%;
+}
+.wedding-design.design-shoreline .site-venue-image {
+  padding: 12px;
+  border: 1px solid var(--collection-rule);
+  transform: rotate(-2deg);
+}
+.wedding-design.design-shoreline .site-venue-image img {
+  height: 420px;
+}
+.wedding-design.design-shoreline .site-story {
+  grid-template-columns: 0.75fr 1fr;
+  gap: 12%;
+}
+.wedding-design.design-shoreline .site-story-image {
+  transform: none;
+}
+.wedding-design.design-shoreline .site-story-image img {
+  border-radius: 48% 48% 0 0;
+  height: 480px;
+}
+.wedding-design.design-shoreline .site-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px;
+}
+.wedding-design.design-shoreline .site-gallery-grid figure {
+  transform: none;
+}
+.wedding-design.design-shoreline .site-gallery-grid figure:nth-child(even) {
+  margin-top: 90px;
+  transform: none;
+}
+.wedding-design.design-shoreline .site-gallery-grid img {
+  padding: 10px;
+  border: 1px solid var(--collection-rule);
+}
+.wedding-design.design-shoreline .site-schedule {
+  border-radius: 0;
+  background: var(--site-secondary);
+}
+.wedding-design.design-shoreline .site-timeline {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px;
+}
+.wedding-design.design-shoreline .site-timeline article {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 16px;
+  padding: 28px 10px;
+  border-block: 1px solid var(--collection-rule);
+}
+.wedding-design.design-shoreline .site-event-number {
+  font: italic 42px var(--site-heading);
+}
+.wedding-design.design-shoreline .site-event-star {
+  display: none;
+}
+.wedding-design.design-shoreline .site-rsvp {
+  grid-template-columns: 1fr 1fr;
+}
+.wedding-design.design-shoreline .site-footer {
+  background: var(--site-secondary);
+  border: 0;
+}
+
+/* Deco: an emerald-black invitation, gilded geometric framing and a gala menu. */
+.wedding-design.design-deco .hero-deco {
+  padding-top: 95px;
+}
+.wedding-design.design-deco .deco-frame {
+  padding: 32px 6% 45px;
+}
+.wedding-design.design-deco .ornament-fan {
+  margin: 0 auto 20px;
+  width: 100px;
+  height: 100px;
+}
+.wedding-design.design-deco .deco-frame h1 {
+  font-size: calc(clamp(50px, 7.2vw, 108px) * var(--site-scale));
+  color: var(--site-accent);
+  letter-spacing: 0.07em;
+}
+.wedding-design.design-deco .site-story {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10%;
+  text-align: left;
+}
+.wedding-design.design-deco .site-story-image {
+  max-width: none;
+  padding: 14px;
+  border: 1px solid var(--site-accent);
+}
+.wedding-design.design-deco .site-story-image img {
+  height: 440px;
+  filter: grayscale(1);
+}
+.wedding-design.design-deco .site-section-heading h2 {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: calc(clamp(28px, 3.5vw, 48px) * var(--site-scale));
+}
+.wedding-design.design-deco .site-schedule {
+  max-width: 900px;
+}
+.wedding-design.design-deco .site-timeline {
+  display: block;
+  border: 4px double var(--site-accent);
+  padding: 10px 8%;
+}
+.wedding-design.design-deco .site-timeline article {
+  border-bottom: 1px solid var(--site-accent);
+  padding-block: 34px;
+}
+.wedding-design.design-deco .site-timeline article:last-child {
+  border: 0;
+}
+.wedding-design.design-deco .site-event-number {
+  display: none;
+}
+.wedding-design.design-deco .site-gallery-grid {
+  gap: 4%;
+}
+.wedding-design.design-deco .site-gallery-grid img {
+  filter: grayscale(1);
+  padding: 8px;
+  border: 1px solid var(--site-accent);
+}
+.wedding-design.design-deco .site-gallery-grid figure:nth-child(even) {
+  margin-top: 100px;
+}
+.wedding-design.design-deco .site-venue {
+  grid-template-columns: 1.2fr 1fr;
+  background: transparent;
+  border-block: 1px solid var(--site-accent);
+}
+.wedding-design.design-deco .site-venue-image img {
+  filter: grayscale(0.6);
+}
+.wedding-design.design-deco .site-rsvp {
+  border: 4px double var(--site-accent);
+}
+.wedding-design.design-deco .site-footer {
+  border-top: 4px double var(--site-accent);
+}
+.wedding-design.design-deco .site-footer h2 {
+  color: var(--site-accent);
+  text-transform: uppercase;
+  font-size: calc(clamp(35px, 5vw, 70px) * var(--site-scale));
+}
+
+/* Chapel: quiet blue stationery, architectural arches and an order of service. */
+.wedding-design.design-chapel .hero-chapel {
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+  gap: 9%;
+}
+.wedding-design.design-chapel .chapel-photo {
+  height: 600px;
+  padding: 10px;
+  border: 1px solid var(--site-accent);
+}
+.wedding-design.design-chapel .ornament-arch {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 25px;
+}
+.wedding-design.design-chapel .chapel-copy h1 {
+  font-size: calc(clamp(50px, 7.5vw, 105px) * var(--site-scale));
+}
+.wedding-design.design-chapel .site-story {
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+}
+.wedding-design.design-chapel .site-story-image {
+  width: min(100%, 420px);
+}
+.wedding-design.design-chapel .site-story-image img {
+  height: 470px;
+  border-radius: 48% 48% 0 0;
+}
+.wedding-design.design-chapel .site-story-copy {
+  max-width: 620px;
+}
+.wedding-design.design-chapel .site-story-copy .site-prose {
+  margin-inline: auto;
+}
+.wedding-design.design-chapel .site-section-number {
+  display: none;
+}
+.wedding-design.design-chapel .site-schedule {
+  background: var(--site-secondary);
+  max-width: none;
+  padding-inline: 18%;
+}
+.wedding-design.design-chapel .site-timeline article {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  border-bottom: 1px solid var(--collection-rule);
+  padding: 28px 0;
+}
+.wedding-design.design-chapel .site-timeline article::before {
+  display: none;
+}
+.wedding-design.design-chapel .site-venue {
+  grid-template-columns: 1fr 1fr;
+}
+.wedding-design.design-chapel .site-venue-image {
+  order: 2;
+}
+.wedding-design.design-chapel .site-gallery-grid {
+  gap: 20px;
+}
+.wedding-design.design-chapel .site-gallery-grid figure:nth-child(even) {
+  margin: 0;
+}
+.wedding-design.design-chapel .site-gallery-grid img {
+  border-radius: 48% 48% 0 0;
+  height: 480px;
+}
+.wedding-design.design-chapel .site-rsvp {
+  max-width: 730px;
+  background: var(--site-secondary);
+  border-radius: 48% 48% 0 0 / 140px 140px 0 0;
+  margin-block: 40px;
+  padding: 115px 8% 70px;
+}
+.wedding-design.design-chapel .site-footer {
+  border-top: 1px solid var(--site-accent);
+}
+
+/* Nikkah: architectural sage, a crescent seal and an intimate long-table layout. */
+.wedding-design.design-nikkah .hero-nikkah {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.75fr);
+  padding-inline: 9%;
+  gap: 9%;
+}
+.wedding-design.design-nikkah .nikkah-arch {
+  outline: 1px solid var(--collection-rule);
+  outline-offset: 9px;
+  padding: 65px 20px 45px;
+}
+.wedding-design.design-nikkah .nikkah-arch h1 {
+  font-size: calc(clamp(45px, 6.8vw, 95px) * var(--site-scale));
+}
+.wedding-design.design-nikkah .nikkah-photo {
+  height: 545px;
+  border-radius: 0 0 48% 48%;
+}
+.wedding-design.design-nikkah .site-countdown {
+  max-width: none;
+  background: var(--site-secondary);
+}
+.wedding-design.design-nikkah .site-story {
+  gap: 12%;
+}
+.wedding-design.design-nikkah .site-story-image img {
+  border-radius: 48% 48% 0 0;
+  height: 500px;
+}
+.wedding-design.design-nikkah .site-schedule {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 10%;
+}
+.wedding-design.design-nikkah .site-timeline article {
+  grid-template-columns: 88px 1fr;
+  padding: 28px 0;
+}
+.wedding-design.design-nikkah :is(.site-event-number, .site-event-star) {
+  display: none;
+}
+.wedding-design.design-nikkah .site-venue {
+  padding-inline: 8%;
+  background: var(--site-secondary);
+}
+.wedding-design.design-nikkah .site-venue-image img {
+  height: 480px;
+}
+.wedding-design.design-nikkah .site-gallery-grid {
+  gap: 7%;
+}
+.wedding-design.design-nikkah .site-gallery-grid figure:nth-child(odd) img {
+  border-radius: 48% 48% 0 0;
+  height: 470px;
+}
+.wedding-design.design-nikkah .site-gallery-grid figure:nth-child(even) img {
+  border-radius: 0 0 48% 48%;
+  height: 470px;
+}
+.wedding-design.design-nikkah .site-rsvp {
+  margin: 50px 8%;
+  padding: 65px 5%;
+  border-block: 1px solid var(--site-accent);
+  grid-template-columns: 1fr 1fr;
+}
+.wedding-design.design-nikkah .site-footer {
+  background: var(--site-secondary);
+}
+
+/* The collection is re-composed at tablet width, before columns get cramped. */
+@media (min-width: 651px) and (max-width: 900px) {
+  .collection-design.wedding-design .site-hero {
+    padding-inline: 7%;
+  }
+  .collection-design.wedding-design .site-hero h1 {
+    font-size: calc(clamp(40px, 7vw, 65px) * var(--site-scale));
+  }
+  .collection-design.wedding-design .site-hero .site-button {
+    padding-inline: 14px;
+    gap: 12px;
+  }
+  .collection-design.wedding-design .site-hero-detail {
+    font-size: 11px;
+  }
+  .wedding-design.design-editorial .editorial-title h1 {
+    font-size: calc(10vw * var(--site-scale));
+  }
+  .wedding-design.design-quiet .quiet-bottom h1 {
+    font-size: calc(28px * var(--site-scale));
+  }
+  .collection-design.wedding-design .site-section {
+    padding-inline: 7%;
+    gap: 6%;
+  }
+  .collection-design.wedding-design .site-timeline article {
+    gap: 14px;
+  }
+  .collection-design.wedding-design .site-hero-note {
+    font-size: 13px;
+  }
+}
+
+/* Phone layouts are explicit. No fixed-width type or desktop grids survive. */
+@media (max-width: 650px) {
+  .collection-design.wedding-design .site-hero {
+    min-height: 0;
+    padding: 100px 7% 52px;
+  }
+  .collection-design.wedding-design .site-hero h1 {
+    font-size: calc(clamp(42px, 15vw, 76px) * var(--site-scale));
+  }
+  .collection-design.wedding-design .site-hero-detail {
+    font-size: 11px;
+  }
+  .collection-design.wedding-design .site-section {
+    padding: 62px 7%;
+  }
+  .collection-design.wedding-design .site-prose {
+    font-size: 14px;
+  }
+  .collection-design.wedding-design
+    :is(.site-story, .site-venue, .site-schedule, .site-rsvp) {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .collection-design.wedding-design
+    :is(
+      .site-story-image,
+      .site-story-copy,
+      .site-venue-image,
+      .site-venue-copy,
+      .site-rsvp-intro,
+      .site-rsvp-form,
+      .site-timeline
+    ) {
+    width: 100%;
+    min-width: 0;
+  }
+  .collection-design.wedding-design .site-section-heading {
+    margin-bottom: 22px;
+  }
+  .collection-design.wedding-design .site-story-image img {
+    height: 380px;
+  }
+  .collection-design.wedding-design .site-venue-image img {
+    height: 300px;
+  }
+  .collection-design.wedding-design .site-gallery-grid {
+    gap: 22px;
+  }
+  .collection-design.wedding-design .site-gallery-grid figure {
+    margin-top: 0;
+  }
+  .collection-design.wedding-design .site-gallery-grid figure img {
+    height: 320px;
+  }
+  .collection-design.wedding-design .site-timeline article {
+    gap: 14px;
+  }
+  .collection-design.wedding-design .site-footer h2 {
+    font-size: calc(clamp(34px, 10.5vw, 58px) * var(--site-scale));
+  }
+  .collection-design.wedding-design .site-footer {
+    padding-bottom: 32px;
+  }
+  .collection-design.wedding-design .site-link-row {
+    flex-wrap: wrap;
+    gap: 12px 25px;
+  }
+  .wedding-design.design-editorial .editorial-title h1 {
+    font-size: calc(clamp(46px, 16vw, 92px) * var(--site-scale));
+    gap: 10px;
+  }
+  .wedding-design.design-editorial .editorial-photo {
+    height: 350px;
+  }
+  .wedding-design.design-editorial .editorial-aside {
+    display: grid;
+    padding-top: 20px;
+    gap: 18px;
+    width: 100%;
+  }
+  .wedding-design.design-editorial .editorial-edition {
+    grid-column: 1/-1;
+    padding: 0;
+  }
+  .wedding-design.design-editorial .site-story-copy h2 {
+    font-size: calc(44px * var(--site-scale));
+  }
+  .wedding-design.design-editorial .site-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+  .wedding-design.design-editorial .site-gallery-grid figure:nth-child(even) {
+    width: 80%;
+    margin: 16px 0 0 auto;
+  }
+  .wedding-design.design-garden .hero-garden {
+    padding: 115px 10% 65px;
+  }
+  .wedding-design.design-garden .garden-heading h1 {
+    font-size: calc(15vw * var(--site-scale));
+  }
+  .wedding-design.design-garden .garden-photo {
+    height: 370px;
+    width: 88%;
+  }
+  .wedding-design.design-garden .ornament-branch {
+    width: 100px;
+    height: 160px;
+    bottom: 20px;
+  }
+  .wedding-design.design-garden .garden-side {
+    position: relative;
+    z-index: 1;
+  }
+  .wedding-design.design-garden .site-story-image {
+    max-width: 280px;
+  }
+  .wedding-design.design-garden .site-gallery-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .wedding-design.design-garden .site-gallery-grid figure:nth-child(even) {
+    margin-top: 55px;
+  }
+  .wedding-design.design-garden .site-gallery-grid figure img {
+    height: 240px;
+  }
+  .wedding-design.design-garden .site-timeline {
+    padding-left: 10px;
+  }
+  .wedding-design.design-garden .site-timeline article {
+    padding-left: 24px;
+    grid-template-columns: 75px 1fr;
+  }
+  .wedding-design.design-garden .site-rsvp {
+    margin-block: 40px;
+    width: 86%;
+    padding: 65px 8%;
+  }
+  .wedding-design.design-noir .hero-noir {
+    padding: 95px 7% 45px;
+  }
+  .wedding-design.design-noir .noir-photo {
+    height: 450px;
+    width: 90%;
+  }
+  .wedding-design.design-noir .noir-type {
+    margin: -145px 0 0;
+  }
+  .wedding-design.design-noir .noir-type h1 {
+    font-size: calc(23vw * var(--site-scale));
+    text-shadow: 0 2px 18px #0008;
+  }
+  .wedding-design.design-noir .noir-type h1 em {
+    margin-left: 12%;
+  }
+  .wedding-design.design-noir .site-gallery {
+    padding-inline: 0;
+  }
+  .wedding-design.design-noir .site-gallery-grid {
+    padding-inline: 7%;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 18px;
+  }
+  .wedding-design.design-noir .site-gallery-grid figure:nth-child(odd) img {
+    height: 310px;
+  }
+  .wedding-design.design-noir .site-gallery-grid figure:nth-child(even) img {
+    height: 230px;
+  }
+  .wedding-design.design-noir .site-timeline article {
+    grid-template-columns: 80px 1fr;
+  }
+  .wedding-design.design-noir .site-rsvp {
+    padding-inline: 0;
+  }
+  .wedding-design.design-noir .site-venue-copy {
+    padding: 0;
+  }
+  .wedding-design.design-quiet .quiet-wordmark {
+    font-size: 15vw;
+    line-height: 1;
+  }
+  .wedding-design.design-quiet .quiet-bottom {
+    grid-template-columns: minmax(0, 1fr) 90px;
+    gap: 18px;
+  }
+  .wedding-design.design-quiet .quiet-bottom h1 {
+    font-size: calc(29px * var(--site-scale));
+  }
+  .wedding-design.design-quiet .quiet-photo {
+    width: 90px;
+    height: 130px;
+  }
+  .wedding-design.design-quiet .hero-quiet > .site-button {
+    margin-top: 28px;
+  }
+  .wedding-design.design-quiet .site-story-image {
+    order: 0;
+  }
+  .wedding-design.design-quiet .site-story-image img {
+    height: auto;
+  }
+  .wedding-design.design-quiet .site-timeline article {
+    grid-template-columns: 30px 65px 1fr;
+    gap: 12px;
+  }
+  .wedding-design.design-quiet .site-timeline h3 {
+    font-size: calc(24px * var(--site-scale));
+  }
+  .wedding-design.design-quiet .site-gallery-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .wedding-design.design-quiet .site-gallery-grid figure img {
+    height: auto;
+  }
+  .wedding-design.design-quiet .site-venue-copy {
+    display: block;
+  }
+  .wedding-design.design-poruwa .poruwa-frame {
+    width: 100%;
+    padding-inline: 18px;
+  }
+  .wedding-design.design-poruwa .poruwa-frame h1 {
+    font-size: calc(12.5vw * var(--site-scale));
+  }
+  .wedding-design.design-poruwa .poruwa-side {
+    height: 330px;
+    width: 76%;
+    margin: 32px auto 0;
+  }
+  .wedding-design.design-poruwa .site-family-names {
+    flex-direction: column;
+    gap: 18px;
+  }
+  .wedding-design.design-poruwa .site-timeline {
+    grid-template-columns: 1fr;
+  }
+  .wedding-design.design-poruwa .site-gallery-grid {
+    grid-template-columns: 1fr;
+    padding-inline: 4%;
+  }
+  .wedding-design.design-poruwa .site-rsvp {
+    margin-inline: 7%;
+    padding-inline: 8%;
+  }
+  .wedding-design.design-bloom .hero-bloom {
+    padding-top: 100px;
+    gap: 40px;
+  }
+  .wedding-design.design-bloom .bloom-photo {
+    height: 360px;
+    width: 78%;
+  }
+  .wedding-design.design-bloom .bloom-message .site-script {
+    font-size: 32px;
+  }
+  .wedding-design.design-bloom .bloom-message h1 {
+    font-size: calc(13vw * var(--site-scale));
+  }
+  .wedding-design.design-bloom .ornament-flower {
+    top: 365px;
+    bottom: auto;
+    left: 4%;
+    width: 110px;
+    height: 110px;
+  }
+  .wedding-design.design-bloom .site-story-image {
+    width: 90%;
+  }
+  .wedding-design.design-bloom .site-schedule {
+    margin-inline: 0;
+    padding-top: 90px;
+  }
+  .wedding-design.design-bloom .site-timeline article {
+    grid-template-columns: 25px 65px 1fr;
+    gap: 10px;
+  }
+  .wedding-design.design-bloom .site-gallery-grid {
+    grid-template-columns: 1fr;
+    padding-inline: 7%;
+    gap: 45px;
+  }
+  .wedding-design.design-bloom .site-gallery-grid figure:nth-child(even) {
+    margin-top: 0;
+  }
+  .wedding-design.design-film .hero-film {
+    padding-inline: 5%;
+  }
+  .wedding-design.design-film .film-photo {
+    height: 355px;
+    border-width: 16px;
+  }
+  .wedding-design.design-film .film-edge {
+    font-size: 7px;
+    left: 10px;
+    bottom: 10px;
+    max-width: 55%;
+  }
+  .wedding-design.design-film .film-caption {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 17px;
+  }
+  .wedding-design.design-film .film-caption h1 {
+    font-size: calc(13vw * var(--site-scale));
+    margin: 0;
+    justify-content: center;
+  }
+  .wedding-design.design-film .film-caption .site-hero-detail {
+    align-items: center;
+  }
+  .wedding-design.design-film .film-caption .site-button {
+    margin-top: 0;
+  }
+  .wedding-design.design-film .site-gallery {
+    padding-inline: 0;
+  }
+  .wedding-design.design-film .site-gallery-grid {
+    gap: 16px;
+  }
+  .wedding-design.design-film .site-gallery-grid figure {
+    flex-basis: 85%;
+  }
+  .wedding-design.design-film .site-timeline article {
+    grid-template-columns: 25px 70px 1fr;
+  }
+  .wedding-design.design-film .site-rsvp {
+    margin-inline: 7%;
+    padding-inline: 0;
+  }
+  .wedding-design.design-film .site-rsvp-form {
+    margin-top: 0;
+  }
+  .wedding-design.design-thali .hero-thali {
+    border-width: 8px;
+    outline-offset: -17px;
+    padding-top: 112px;
+  }
+  .wedding-design.design-thali .thali-copy > .ornament-flower {
+    margin-inline: auto;
+    width: 70px;
+    height: 70px;
+  }
+  .wedding-design.design-thali .thali-copy h1 {
+    font-size: calc(18vw * var(--site-scale));
+  }
+  .wedding-design.design-thali .thali-photo {
+    height: 330px;
+    width: 75%;
+  }
+  .wedding-design.design-thali .site-timeline {
+    grid-template-columns: 1fr;
+  }
+  .wedding-design.design-thali .site-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+  .wedding-design.design-thali .site-gallery-grid figure:nth-child(even) {
+    width: 80%;
+    margin-inline: auto;
+  }
+  .wedding-design.design-thali .site-rsvp {
+    margin-inline: 0;
+  }
+  .wedding-design.design-shoreline .hero-shoreline {
+    padding: 95px 5% 70px;
+    min-height: 780px;
+  }
+  .wedding-design.design-shoreline .shoreline-copy {
+    width: 100%;
+    margin-top: 0;
+  }
+  .wedding-design.design-shoreline .shoreline-copy h1 {
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-size: calc(16vw * var(--site-scale));
+    letter-spacing: 0.07em;
+  }
+  .wedding-design.design-shoreline .ornament-sun {
+    width: 75px;
+    height: 75px;
+  }
+  .wedding-design.design-shoreline .site-gallery-grid {
+    gap: 30px;
+    grid-template-columns: 1fr;
+  }
+  .wedding-design.design-shoreline .site-gallery-grid figure:nth-child(even) {
+    margin-top: 0;
+    width: 84%;
+    margin-left: auto;
+  }
+  .wedding-design.design-shoreline .site-timeline {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .wedding-design.design-deco .hero-deco {
+    padding-inline: 5%;
+  }
+  .wedding-design.design-deco .deco-frame {
+    padding: 32px 7% 40px;
+  }
+  .wedding-design.design-deco .deco-frame h1 {
+    font-size: calc(11.5vw * var(--site-scale));
+  }
+  .wedding-design.design-deco .ornament-fan {
+    width: 85px;
+    height: 85px;
+  }
+  .wedding-design.design-deco .site-gallery-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+  .wedding-design.design-deco .site-gallery-grid figure img {
+    height: 270px;
+    padding: 5px;
+  }
+  .wedding-design.design-deco .site-gallery-grid figure:nth-child(even) {
+    margin-top: 50px;
+  }
+  .wedding-design.design-deco .site-rsvp {
+    padding-inline: 8%;
+    margin-inline: 7%;
+  }
+  .wedding-design.design-chapel .chapel-photo {
+    height: 360px;
+    width: 82%;
+  }
+  .wedding-design.design-chapel .chapel-copy {
+    width: 100%;
+  }
+  .wedding-design.design-chapel .ornament-arch {
+    width: 65px;
+    height: 65px;
+  }
+  .wedding-design.design-chapel .chapel-copy h1 {
+    font-size: calc(18vw * var(--site-scale));
+  }
+  .wedding-design.design-chapel .site-story-image {
+    max-width: 290px;
+  }
+  .wedding-design.design-chapel .site-timeline article {
+    grid-template-columns: 80px 1fr;
+  }
+  .wedding-design.design-chapel .site-venue-image {
+    order: 0;
+  }
+  .wedding-design.design-chapel .site-gallery-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .wedding-design.design-chapel .site-gallery-grid figure img {
+    height: 270px;
+  }
+  .wedding-design.design-chapel .site-rsvp {
+    padding: 90px 10% 60px;
+    margin-inline: 5%;
+  }
+  .wedding-design.design-chapel .site-rsvp-form {
+    margin-top: 0;
+  }
+  .wedding-design.design-nikkah .hero-nikkah {
+    padding-inline: 9%;
+    gap: 40px;
+  }
+  .wedding-design.design-nikkah .nikkah-arch h1 {
+    font-size: calc(16vw * var(--site-scale));
+  }
+  .wedding-design.design-nikkah .nikkah-photo {
+    height: 355px;
+    width: 82%;
+  }
+  .wedding-design.design-nikkah .site-story-image {
+    order: 0;
+  }
+  .wedding-design.design-nikkah .site-venue-copy {
+    display: block;
+  }
+  .wedding-design.design-nikkah .site-gallery-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .wedding-design.design-nikkah .site-gallery-grid figure:nth-child(n) img {
+    height: 270px;
+  }
+  .wedding-design.design-nikkah .site-rsvp {
+    padding-inline: 0;
+  }
+}
+
+/* User overrides take priority over each composition, including at small widths. */
+.collection-design.wedding-design .space-compact > .site-section {
+  padding-block: 35px;
+}
+.collection-design.wedding-design .space-airy > .site-section {
+  padding-block: clamp(85px, 12vw, 145px);
+}
+.collection-design.wedding-design .section-style-feature > .site-section {
+  background: var(--site-secondary);
+}
+.collection-design.wedding-design .section-style-minimal > .site-section {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+}
+.collection-design.wedding-design .section-width-narrow > .site-section {
+  max-width: 850px;
+  margin-inline: auto;
+}
+.collection-design.wedding-design .section-width-wide > .site-section {
+  max-width: none;
+  padding-inline: 5%;
+}
+.collection-design.wedding-design
+  .section-align-center
+  :is(
+    .site-story-copy,
+    .site-section-heading,
+    .site-venue-copy,
+    .site-rsvp-intro
+  ) {
+  text-align: center;
+}
+.collection-design.wedding-design
+  .section-align-left
+  :is(
+    .site-story-copy,
+    .site-section-heading,
+    .site-venue-copy,
+    .site-rsvp-intro
+  ) {
+  text-align: left;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .collection-design.wedding-design[data-motion="gentle"]
+    :is(
+      .editorial-title,
+      .noir-type,
+      .garden-heading,
+      .bloom-message,
+      .film-caption,
+      .quiet-wordmark,
+      .thali-copy,
+      .shoreline-copy,
+      .deco-frame,
+      .chapel-copy,
+      .nikkah-arch,
+      .poruwa-frame
+    ) {
+    animation: collection-reveal 0.8s ease-out both;
+  }
+  @keyframes collection-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

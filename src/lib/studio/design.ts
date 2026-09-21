@@ -1,3 +1,6 @@
+import { object, str, clamp, isHexColor, safeUrl } from "./validation.ts";
+export { isHexColor, safeUrl } from "./validation.ts";
+import { normalizeCanvas, type CanvasDesign } from "./canvas.ts";
 import type { CSSProperties } from "react";
 
 export const SECTION_TYPES = [
@@ -22,9 +25,11 @@ export const SECTION_TYPES = [
   "calendar",
   "seating",
   "footer",
+  "canvas",
 ] as const;
 export type SectionType = (typeof SECTION_TYPES)[number];
 export const SECTION_LABELS: Record<SectionType, string> = {
+  canvas: "Custom canvas",
   hero: "Welcome",
   introduction: "Couple introduction",
   date: "Wedding date",
@@ -70,6 +75,13 @@ export type DesignSection = {
   style: "default" | "feature" | "minimal";
   background: string;
   spacing: "compact" | "comfortable" | "airy";
+  canvas?: CanvasDesign;
+  layout?: {
+    alignment: "original" | "left" | "center";
+    width: "original" | "narrow" | "wide";
+    visibility: "both" | "desktop" | "mobile";
+    photoPosition?: { x: number; y: number };
+  };
 };
 export type DesignConfig = {
   version: 1;
@@ -250,35 +262,6 @@ export function newSection(
   };
 }
 
-const object = (v: unknown): Record<string, unknown> =>
-  v && typeof v === "object" && !Array.isArray(v)
-    ? (v as Record<string, unknown>)
-    : {};
-const str = (v: unknown, max = 5000) =>
-  typeof v === "string" ? v.slice(0, max) : "";
-const clamp = (v: unknown, fallback: number, min: number, max: number) =>
-  typeof v === "number" && Number.isFinite(v)
-    ? Math.max(min, Math.min(max, v))
-    : fallback;
-export const isHexColor = (v: unknown): v is string =>
-  typeof v === "string" && /^#[\da-f]{6}$/i.test(v);
-export function safeUrl(value: unknown, media = false): string {
-  if (typeof value !== "string") return "";
-  // Relative bundled assets and local preview blobs are also valid media.
-  if (media && (/^\/(?!\/)/.test(value) || value.startsWith("blob:")))
-    return value;
-  try {
-    const url = new URL(value);
-    return ["https:", "http:", ...(media ? [] : ["mailto:", "tel:"])].includes(
-      url.protocol,
-    )
-      ? value
-      : "";
-  } catch {
-    return "";
-  }
-}
-
 /** Treat stored JSON as untrusted. Unknown versions keep the legacy site intact. */
 export function normalizeDesign(value: unknown): DesignConfig | null {
   const data = object(value);
@@ -298,17 +281,53 @@ export function normalizeDesign(value: unknown): DesignConfig | null {
   const font = (v: unknown) =>
     FONT_CHOICES.some((f) => f.id === v) ? String(v) : "";
   const seen = new Set<string>();
+  const ids = new Set<string>();
+  let canvases = 0;
   const sections = data.sections
     .slice(0, 30)
     .flatMap((value, index): DesignSection[] => {
       const s = object(value);
       if (!SECTION_TYPES.includes(s.type as SectionType)) return [];
       // One instance of each section keeps anchors, RSVP and seating unambiguous.
-      if (seen.has(s.type as string)) return [];
+      if (s.type === "canvas") {
+        if (++canvases > 8) return [];
+      } else if (seen.has(s.type as string)) return [];
       seen.add(s.type as string);
+      let id = str(s.id, 80) || `${s.type}-${index}`;
+      while (ids.has(id)) id = `${id}-${index}`;
+      ids.add(id);
+      const layout = object(s.layout);
       return [
         {
-          id: str(s.id, 80) || `${s.type}-${index}`,
+          id,
+          ...(s.type === "canvas" ? { canvas: normalizeCanvas(s.canvas) } : {}),
+          ...(s.layout
+            ? {
+                layout: {
+                  alignment:
+                    layout.alignment === "left" || layout.alignment === "center"
+                      ? layout.alignment
+                      : "original",
+                  width:
+                    layout.width === "narrow" || layout.width === "wide"
+                      ? layout.width
+                      : "original",
+                  visibility:
+                    layout.visibility === "mobile" ||
+                    layout.visibility === "desktop"
+                      ? layout.visibility
+                      : "both",
+                  ...(layout.photoPosition
+                    ? {
+                        photoPosition: {
+                          x: clamp(object(layout.photoPosition).x, 50, 0, 100),
+                          y: clamp(object(layout.photoPosition).y, 50, 0, 100),
+                        },
+                      }
+                    : {}),
+                } as NonNullable<DesignSection["layout"]>,
+              }
+            : {}),
           type: s.type as SectionType,
           enabled: s.enabled !== false,
           title: str(s.title, 200),
@@ -369,6 +388,9 @@ export function customFontHref(design: DesignConfig): string | null {
       design.typography.heading,
       design.typography.body,
       design.typography.accent,
+      ...design.sections.flatMap(
+        (s) => s.canvas?.elements.map((e) => e.font) || [],
+      ),
     ].includes(f.id),
   ).map((f) => f.query);
   return queries.length

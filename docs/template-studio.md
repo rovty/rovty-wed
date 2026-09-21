@@ -28,3 +28,45 @@ The public `/templates` studio runs without an account. Anonymous image previews
 The browser suite uses sample data only. Authenticated cloud uploads, RLS enforcement, concurrent database writes and live publishing still require staging verification after the migration; no production database or account was modified during local validation.
 
 The editor is a separate lazy bundle. Bundled photos have responsive 480/960-pixel variants, with the largest sample under 180 KB. New uploads are bounded to 1920 pixels and encoded to WebP; video is limited to 20 MB and loads only on request. Unique media paths prevent an unsaved replacement from altering a currently published image. Abandoned draft uploads are not automatically deleted, because they may still be referenced by another editor session; storage retention can be added independently.
+
+## September 2026 collection and canvas editor
+
+The architecture review for this iteration found that the studio already had dependable content separation, isolated live previews, uploads, save/publish and undo history. The main gaps were shared body compositions and the inability to author a section freely. This iteration extends those systems without replacing the account, identity, RSVP or publishing flows.
+
+`collection.css` gives Editorial, Garden, Noir, Quiet, Poruwa, Bloom, Film, Thali, Shoreline, Deco, Chapel and Nikkah individual hero, story, event, gallery, venue, RSVP and footer treatments. Original vector ornaments live in `TemplateOrnament.tsx`. These styles are scoped to the 12 designs. Lotus and Classic retain their original appearance, catalog defaults and hero markup. Existing invitations with a null `design` continue to use the original guest renderer.
+
+The **Elements** panel adds custom canvas sections with text, photographs, shapes and link buttons. Couples can begin with a blank canvas, love note, memory board or party poster. Dragging, resizing, rotation, snapping, an optional grid, text editing on the canvas, font selection, image positioning, borders, opacity, layer order, locks, visibility and duplicate/delete actions share the existing undo history. A selected overflowing text box offers a fit action. Plain form controls provide alternatives to pointer gestures.
+
+Keyboard shortcuts work in both the panel document and preview iframe: Cmd/Ctrl+Z, Shift+Z/Y, S, D and C/V for studio layers. Arrow keys nudge a selected object; Shift makes larger adjustments. Shortcuts leave native text fields alone. Copy/paste is internal to the studio, not a system clipboard importer. Editing handles and selection state never appear on the guest website.
+
+### Backward-compatible design data
+
+The existing version 1 JSON structure accepts optional additions. **No new database migration is required** if the original `weddings.design` migration has already been applied.
+
+- `sections[].type = "canvas"` stores a `canvas` object: desktop/mobile height, background image/color/dimming and an ordered element array.
+- Each element has its own ID, type, content, style, desktop `frame` and independent `mobile` frame, plus separate text sizes. Frames use percentages of a fixed-aspect canvas. Typography scales with the canvas width through container query units.
+- Optional standard-section `layout` stores text alignment, content width, device visibility and a photo position override. Omitted values retain the template composition and global photo position.
+- `canvas.ts` and `validation.ts` normalize all persisted values. Limits are eight custom sections and 24 elements per section; text, dimensions, URLs and font choices are bounded. Other section types, including RSVP and seating, remain singletons. IDs are deduplicated.
+- Template changes preserve custom sections, layers, media and both layouts. Template-derived colors/fonts follow the newly selected design; explicit element colors/fonts remain intact. Anonymous session-only image URLs are removed on draft restoration, including canvas images.
+
+### Responsive behavior and performance
+
+Desktop preview is 1100px, tablet is 768px and the phone viewport is 375px. Phone canvas geometry activates at 650px. Fit and 50/75/100/125% zoom scale the surrounding frame without changing the guest viewport or reloading the document. Phones use separate editing and preview views; selecting a section scrolls it into view when the preview becomes visible.
+
+Phone auto-arrangement stacks content while preserving desktop geometry. It refuses layouts that exceed the height limit or would move locked content, so it cannot silently overlap or shrink readable text. Shapes retain their authored positions. Layers and custom sections can also be duplicated or hidden for a screen size. Long names and responsive template layouts are checked at 320, 375, 768, 1100 and 1600px.
+
+The editor remains lazy loaded and uses the existing optimized upload pipeline. Static wedding sections are memoized so canvas gestures do not rerender the rest of the wedding. Canvas images reserve their space before loading. Decorative vectors add no image requests; font stylesheets include only the selected template and chosen custom fonts. Animations respect the existing motion setting and reduced-motion preferences.
+
+### Additional verification
+
+With the local test app running at `http://127.0.0.1:5178`:
+
+```sh
+python3 tests/studio_browser.py http://127.0.0.1:5178 --canvas
+python3 tests/studio_browser.py http://127.0.0.1:5178 --visual
+python3 tests/studio_browser.py http://127.0.0.1:5178 --save
+```
+
+The canvas suite exercises actual pointer gestures, inline edits, fitting text, locks, layers, shortcuts, undo/redo, image uploads, zoom, independent phone geometry, tablet preview, section overrides, template switching, the public renderer and restored drafts. The visual suite writes full-page captures under `/tmp/rovty-studio-after-*`; it compares Lotus and Classic with their original committed CSS in the same document with loaded fonts to avoid false differences from network timing. It checks every template at five widths, including long names.
+
+The save suite reuses the adjacent dashboard project's mocked account fixture and the Wed test origin. It verifies that custom canvas data survives the authenticated save/reload path, couple identity stays locked, and conflicting saves retain the latest edits. All account and data writes are mocked; live Supabase uploads and deployment still need staging verification. `tests/canvas.test.ts` covers hostile JSON, limits, ID collisions, geometry, snapping, duplication, presets and storage compatibility.

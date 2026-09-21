@@ -8,6 +8,24 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright, expect
 
 base = sys.argv[1] if len(sys.argv) > 1 else 'http://127.0.0.1:8081'
+sys.dont_write_bytecode = True
+if '--save' in sys.argv:
+    import asyncio
+    from studio_save_browser import run
+    asyncio.run(run())
+    sys.exit(0)
+if '--canvas' in sys.argv:
+    from studio_canvas_browser import run
+    run(base)
+    sys.exit(0)
+if '--baseline' in sys.argv:
+    from studio_visual import capture
+    capture(base, 'before')
+    sys.exit(0)
+if '--visual' in sys.argv:
+    from studio_visual import capture
+    capture(base, 'after')
+    sys.exit(0)
 with sync_playwright() as p:
     browser = p.chromium.launch(channel='chrome', headless=True)
     context = browser.new_context(viewport={"width":1440,"height":1000}, reduced_motion='reduce')

@@ -1,3 +1,5 @@
+@import "./canvas.css";
+@import "./collection.css";
 /* Rovty studio shell. All tokens are scoped away from existing admin/guest UI. */
 .studio-shell {
   --studio-paper: #f7f7f2;

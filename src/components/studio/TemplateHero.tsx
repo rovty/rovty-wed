@@ -5,6 +5,7 @@ import couplePhoto from "@/assets/studio-couple.webp";
 import { studioImageSources } from "@/lib/studio/images";
 import roses from "@/assets/roses-corner.webp";
 import lotus from "@/assets/lotus-vine-sm.webp";
+import { TemplateOrnament } from "./TemplateOrnament";
 
 export function TemplateHero({
   wedding: w,
@@ -105,6 +106,9 @@ export function TemplateHero({
             <span className="site-photo-caption">THE BEGINNING OF ALWAYS</span>
           </div>
           <div className="editorial-aside">
+            <span className="editorial-edition">
+              THE WEDDING ISSUE / {w.date.getFullYear()}
+            </span>
             {eyebrow}
             {detail}
             {action}
@@ -119,6 +123,7 @@ export function TemplateHero({
             <p className="site-script">An evening, a lifetime.</p>
             {detail}
             {action}
+            <span className="noir-signature">ONE NIGHT. OUR FOREVER.</span>
           </div>
         </>
       ) : id === "quiet" ? (
@@ -142,6 +147,9 @@ export function TemplateHero({
           <div className="film-photo">
             {photo}
             <span className="film-counter">01 / FOREVER</span>
+            <span className="film-edge" aria-hidden="true">
+              35 MM · A LOVE STORY IN THE MAKING
+            </span>
           </div>
           <div className="film-caption">
             <p className="site-eyebrow">A film by fate</p>
@@ -154,6 +162,7 @@ export function TemplateHero({
         <>
           <div className="shoreline-photo">{photo}</div>
           <div className="shoreline-copy">
+            <TemplateOrnament kind="sun" />
             <p className="site-script">Meet us by the sea</p>
             <h1>{names}</h1>
             {detail}
@@ -175,9 +184,7 @@ export function TemplateHero({
             {action}
           </div>
           <div className="bloom-photo">{photo}</div>
-          <span className="bloom-flower" aria-hidden="true">
-            ✳
-          </span>
+          <TemplateOrnament kind="flower" />
         </>
       ) : id === "garden" ? (
         <>
@@ -191,7 +198,7 @@ export function TemplateHero({
             {detail}
             {action}
           </div>
-          <img className="garden-botanical" src={lotus} alt="" loading="lazy" />
+          <TemplateOrnament kind="branch" />
         </>
       ) : id === "thali" ? (
         <>
@@ -199,6 +206,7 @@ export function TemplateHero({
             ✦ · ✦ · ✦ · ✦ · ✦ · ✦ · ✦ · ✦ · ✦
           </div>
           <div className="thali-copy">
+            <TemplateOrnament kind="flower" />
             {eyebrow}
             <p className="site-script">With joy in our hearts</p>
             <h1>{names}</h1>
@@ -211,9 +219,7 @@ export function TemplateHero({
         <>
           <div className="chapel-photo">{photo}</div>
           <div className="chapel-copy">
-            <span className="chapel-mark" aria-hidden="true">
-              ✧
-            </span>
+            <TemplateOrnament kind="arch" />
             {copy}
           </div>
         </>
@@ -231,9 +237,7 @@ export function TemplateHero({
       ) : id === "deco" ? (
         <>
           <div className="deco-frame">
-            <span className="deco-fan" aria-hidden="true">
-              ╱│╲
-            </span>
+            <TemplateOrnament kind="fan" />
             <p className="site-eyebrow">The pleasure of your company</p>
             <h1>{names}</h1>
             <div className="deco-diamond" aria-hidden="true">
@@ -246,9 +250,7 @@ export function TemplateHero({
       ) : id === "poruwa" ? (
         <>
           <div className="poruwa-frame">
-            <span className="site-symbol" aria-hidden="true">
-              ❧
-            </span>
+            <TemplateOrnament kind="sun" />
             {copy}
             <p className="site-script">With the blessings of our families</p>
           </div>

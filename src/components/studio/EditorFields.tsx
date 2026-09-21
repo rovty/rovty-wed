@@ -1,4 +1,11 @@
-import { useEffect, useState } from "react";
+import {
+  Children,
+  cloneElement,
+  isValidElement,
+  useEffect,
+  useState,
+  type ReactElement,
+} from "react";
 import { isHexColor } from "@/lib/studio/design";
 
 export function PanelHeading({
@@ -28,7 +35,18 @@ export function Field({
   return (
     <label className="editor-field">
       <span>{label}</span>
-      {children}
+      {Children.map(children, (child) => {
+        if (
+          !isValidElement(child) ||
+          typeof child.type !== "string" ||
+          !["input", "textarea", "select"].includes(child.type)
+        )
+          return child;
+        const control = child as ReactElement<{ "aria-label"?: string }>;
+        return cloneElement(control, {
+          "aria-label": control.props["aria-label"] || label,
+        });
+      })}
     </label>
   );
 }
