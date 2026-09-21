@@ -1,3 +1,5 @@
+import { IdentityNotice } from "@/components/admin/IdentityNotice";
+import { preserveWeddingIdentity } from "@/lib/wedding-identity";
 import { useBlocker } from "@tanstack/react-router";
 import { PanelHeading, Field, HexInput } from "./EditorFields";
 import { SectionFields } from "./SectionFields";
@@ -113,18 +115,30 @@ export default function WeddingEditor({
   const currentSection = draft.design.sections.find(
     (s) => s.id === selectedSection,
   );
-  const update = useCallback((next: StudioDraft, discrete = false) => {
-    const now = Date.now();
-    const previous = draftRef.current;
-    if (discrete || now - editTime.current > 650)
-      setHistory((h) => [...h.slice(-59), previous]);
-    editTime.current = now;
-    draftRef.current = next;
-    setDraft(next);
-    setFuture([]);
-    setError("");
-    setStatus("");
-  }, []);
+  const update = useCallback(
+    (next: StudioDraft, discrete = false) => {
+      const now = Date.now();
+      const previous = draftRef.current;
+      if (discrete || now - editTime.current > 650)
+        setHistory((h) => [...h.slice(-59), previous]);
+      editTime.current = now;
+      const safe = weddingId
+        ? {
+            ...next,
+            wedding: preserveWeddingIdentity(
+              next.wedding,
+              initialDraft.wedding,
+            ),
+          }
+        : next;
+      draftRef.current = safe;
+      setDraft(safe);
+      setFuture([]);
+      setError("");
+      setStatus("");
+    },
+    [weddingId, initialDraft.wedding],
+  );
   const undo = () => {
     if (!history.length) return;
     const previous = history[history.length - 1];
@@ -343,6 +357,7 @@ export default function WeddingEditor({
         <Field label="Partner one">
           <input
             value={draft.wedding.bride}
+            readOnly={Boolean(weddingId)}
             maxLength={80}
             onChange={(e) => wedding({ bride: e.target.value })}
           />
@@ -350,11 +365,15 @@ export default function WeddingEditor({
         <Field label="Partner two">
           <input
             value={draft.wedding.groom}
+            readOnly={Boolean(weddingId)}
             maxLength={80}
             onChange={(e) => wedding({ groom: e.target.value })}
           />
         </Field>
       </div>
+      {weddingId && (
+        <IdentityNotice wedding={{ id: weddingId, ...initialDraft.wedding }} />
+      )}
       <Field label="Wedding date & time">
         <input
           type="datetime-local"

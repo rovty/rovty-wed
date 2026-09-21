@@ -118,7 +118,9 @@ export function Onboarding({
                   Who's getting married?
                 </h1>
                 <p className="mt-2 text-[13px] leading-relaxed text-[var(--admin-muted)]">
-                  Names print on the invitation exactly as you type them.
+                  Names print on the invitation exactly as you type them. Your
+                  names and username lock when you create your wedding. The
+                  Rovty team can help correct a mistake later.
                 </p>
               </div>
               <div>
@@ -210,7 +212,8 @@ export function Onboarding({
                   Choose a design
                 </h1>
                 <p className="mt-2 text-[13px] leading-relaxed text-[var(--admin-muted)]">
-                  Switch anytime from Design; nothing here is final.
+                  You can switch designs anytime without changing your wedding
+                  details.
                 </p>
               </div>
               <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3">
@@ -278,6 +281,17 @@ export function Onboarding({
                   </button>
                 ))}
               </div>
+              <p className="mt-4 text-sm leading-relaxed text-[var(--admin-muted)]">
+                Creating for{" "}
+                <strong>
+                  {groom.trim()} &amp; {bride.trim()}
+                </strong>
+                <span className="mt-1 block break-all font-mono text-xs">
+                  wed.rovty.com/{slug}
+                </span>
+                Names and username lock after creation. Please check the
+                spelling.
+              </p>
               {error && (
                 <p className="mt-4 text-center text-xs text-[var(--admin-accent-active)]">
                   {error}

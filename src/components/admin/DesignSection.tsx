@@ -3,8 +3,7 @@ import { Eye, EyeOff, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { WEDDING_TEMPLATES } from "@/lib/wedding";
 import type { Wedding } from "./types";
-import { slugify } from "./utils";
-import { AButton, AInput } from "./ui";
+import { AButton } from "./ui";
 import { DetailsForm } from "./DetailsForm";
 import { Templates } from "./Templates";
 const DesignStudio = lazy(() => import("./DesignStudio"));
@@ -116,10 +115,6 @@ function PublishCard({
   onChange: (w: Wedding) => void;
   inviteUrl: string;
 }) {
-  const [editingSlug, setEditingSlug] = useState(false);
-  const [slugInput, setSlugInput] = useState(wedding.slug);
-  const [slugBusy, setSlugBusy] = useState(false);
-  const [slugError, setSlugError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const togglePublish = async () => {
@@ -139,50 +134,6 @@ function PublishCard({
       return;
     }
     onChange(data);
-  };
-
-  const startEditSlug = () => {
-    setSlugInput(wedding.slug);
-    setSlugError(null);
-    setEditingSlug(true);
-  };
-
-  const saveSlug = async () => {
-    const next = slugify(slugInput);
-    if (!next) {
-      setSlugError("Enter a link.");
-      return;
-    }
-    if (next === wedding.slug) {
-      setEditingSlug(false);
-      return;
-    }
-    if (
-      wedding.published &&
-      !confirm(
-        `Change your public link to wed.rovty.com/${next}? Anyone using the current link (wed.rovty.com/${wedding.slug}), including any invitations already sent, will stop being able to open your invitation there.`,
-      )
-    )
-      return;
-    setSlugBusy(true);
-    setSlugError(null);
-    const { data, error } = await supabase
-      .from("weddings")
-      .update({ slug: next, updated_at: new Date().toISOString() })
-      .eq("id", wedding.id)
-      .select("*")
-      .single();
-    setSlugBusy(false);
-    if (error) {
-      setSlugError(
-        error.code === "23505"
-          ? "That link is already taken, try another."
-          : error.message,
-      );
-      return;
-    }
-    onChange(data);
-    setEditingSlug(false);
   };
 
   return (
@@ -217,57 +168,12 @@ function PublishCard({
         </div>
       </div>
 
-      {editingSlug ? (
-        <div className="mt-3">
-          <div className="flex h-11 items-center gap-1.5 border-2 border-[var(--admin-ink)] bg-[var(--admin-surface)] px-3 font-mono text-sm">
-            <span className="text-[var(--admin-faint)]">wed.rovty.com/</span>
-            <input
-              autoFocus
-              value={slugInput}
-              onChange={(e) => setSlugInput(slugify(e.target.value))}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  saveSlug();
-                }
-                if (e.key === "Escape") setEditingSlug(false);
-              }}
-              className="min-w-0 flex-1 bg-transparent outline-none"
-            />
-          </div>
-          {slugError && (
-            <p className="mt-1.5 text-xs text-[var(--admin-accent-active)]">
-              {slugError}
-            </p>
-          )}
-          <div className="mt-2 flex gap-2">
-            <AButton
-              variant="primary"
-              onClick={saveSlug}
-              disabled={slugBusy}
-              className="h-9 text-[11px]"
-            >
-              {slugBusy ? "Saving…" : "Save link"}
-            </AButton>
-            <AButton
-              onClick={() => setEditingSlug(false)}
-              className="h-9 text-[11px]"
-            >
-              Cancel
-            </AButton>
-          </div>
-        </div>
-      ) : (
-        <p className="mt-2.5 flex items-center gap-1.5 text-xs text-[var(--admin-muted)]">
-          <span className="font-mono">wed.rovty.com/{wedding.slug}</span>
-          <button
-            onClick={startEditSlug}
-            className="inline-flex items-center gap-1 text-[var(--admin-accent-active)]"
-          >
-            <Pencil className="h-3 w-3" /> Edit
-          </button>
-        </p>
-      )}
+      <p className="mt-2.5 break-all font-mono text-xs text-[var(--admin-muted)]">
+        wed.rovty.com/{wedding.slug}
+      </p>
+      <p className="mt-1 text-xs text-[var(--admin-muted)]">
+        Username locked · Request corrections under Couple below.
+      </p>
     </div>
   );
 }

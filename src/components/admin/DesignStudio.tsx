@@ -44,8 +44,6 @@ export default function DesignStudio({
       .update({
         template: w.template,
         design: validated as unknown as Json,
-        bride: w.bride.trim(),
-        groom: w.groom.trim(),
         bride_parents_names: w.brideParentsNames,
         groom_parents_names: w.groomParentsNames,
         event_date: w.date.toISOString(),

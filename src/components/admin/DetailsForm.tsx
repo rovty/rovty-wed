@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { IdentityNotice } from "./IdentityNotice";
 import { Music2, Image as ImageIcon, Check, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { uploadWeddingMedia, type WeddingMediaKind } from "@/lib/wedding";
@@ -18,8 +19,6 @@ export function DetailsForm({
   onChange: (w: Wedding) => void;
 }) {
   const [form, setForm] = useState({
-    bride: wedding.bride,
-    groom: wedding.groom,
     groom_parents_names: wedding.groom_parents_names ?? "",
     bride_parents_names: wedding.bride_parents_names ?? "",
     event_date: toDatetimeLocalValue(wedding.event_date),
@@ -105,8 +104,6 @@ export function DetailsForm({
     const { data, error } = await supabase
       .from("weddings")
       .update({
-        bride: form.bride.trim(),
-        groom: form.groom.trim(),
         groom_parents_names: form.groom_parents_names.trim() || null,
         bride_parents_names: form.bride_parents_names.trim() || null,
         event_date: new Date(form.event_date).toISOString(),
@@ -164,9 +161,16 @@ export function DetailsForm({
       <section>
         <Kicker>Couple</Kicker>
         <div className="mt-2.5 grid grid-cols-2 gap-2.5">
-          {field("groom", "Groom")}
-          {field("bride", "Bride")}
+          <div>
+            <ALabel>Groom</ALabel>
+            <AInput aria-label="Groom" value={wedding.groom} readOnly />
+          </div>
+          <div>
+            <ALabel>Bride</ALabel>
+            <AInput aria-label="Bride" value={wedding.bride} readOnly />
+          </div>
         </div>
+        <IdentityNotice wedding={wedding} />
         <p className="mt-3.5 text-[11px] text-[var(--admin-muted)]">
           Parents' names (optional), shown as "Together with the families of
           ..." on the invitation instead of the generic line. Leave blank to
