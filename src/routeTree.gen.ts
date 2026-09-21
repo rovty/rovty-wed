@@ -19,6 +19,8 @@ import { Route as TemplatesRouteImport } from './routes/templates'
 import { Route as SlugIndexRouteImport } from './routes/$slug.index'
 import { Route as SlugCalendarDoticsRouteImport } from './routes/$slug.calendar[.]ics'
 import { Route as SlugSeatingRouteImport } from './routes/$slug.seating'
+import { Route as AdminManageRouteImport } from './routes/admin_.manage'
+import { Route as ApiManageRouteImport } from './routes/api.manage'
 import { Route as ApiTeamRouteImport } from './routes/api.team'
 
 const IndexRoute = IndexRouteImport.update({
@@ -71,6 +73,16 @@ const SlugSeatingRoute = SlugSeatingRouteImport.update({
   path: '/seating',
   getParentRoute: () => SlugRoute,
 } as any)
+const AdminManageRoute = AdminManageRouteImport.update({
+  id: '/admin_/manage',
+  path: '/admin/manage',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiManageRoute = ApiManageRouteImport.update({
+  id: '/api/manage',
+  path: '/api/manage',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiTeamRoute = ApiTeamRouteImport.update({
   id: '/api/team',
   path: '/api/team',
@@ -87,6 +99,8 @@ export interface FileRoutesByFullPath {
   '/templates': typeof TemplatesRoute
   '/$slug/calendar.ics': typeof SlugCalendarDoticsRoute
   '/$slug/seating': typeof SlugSeatingRoute
+  '/admin/manage': typeof AdminManageRoute
+  '/api/manage': typeof ApiManageRoute
   '/api/team': typeof ApiTeamRoute
   '/$slug/': typeof SlugIndexRoute
 }
@@ -99,6 +113,8 @@ export interface FileRoutesByTo {
   '/templates': typeof TemplatesRoute
   '/$slug/calendar.ics': typeof SlugCalendarDoticsRoute
   '/$slug/seating': typeof SlugSeatingRoute
+  '/admin/manage': typeof AdminManageRoute
+  '/api/manage': typeof ApiManageRoute
   '/api/team': typeof ApiTeamRoute
   '/$slug': typeof SlugIndexRoute
 }
@@ -113,6 +129,8 @@ export interface FileRoutesById {
   '/templates': typeof TemplatesRoute
   '/$slug/calendar.ics': typeof SlugCalendarDoticsRoute
   '/$slug/seating': typeof SlugSeatingRoute
+  '/admin_/manage': typeof AdminManageRoute
+  '/api/manage': typeof ApiManageRoute
   '/api/team': typeof ApiTeamRoute
   '/$slug/': typeof SlugIndexRoute
 }
@@ -128,6 +146,8 @@ export interface FileRouteTypes {
     | '/templates'
     | '/$slug/calendar.ics'
     | '/$slug/seating'
+    | '/admin/manage'
+    | '/api/manage'
     | '/api/team'
     | '/$slug/'
   fileRoutesByTo: FileRoutesByTo
@@ -140,6 +160,8 @@ export interface FileRouteTypes {
     | '/templates'
     | '/$slug/calendar.ics'
     | '/$slug/seating'
+    | '/admin/manage'
+    | '/api/manage'
     | '/api/team'
     | '/$slug'
   id:
@@ -153,6 +175,8 @@ export interface FileRouteTypes {
     | '/templates'
     | '/$slug/calendar.ics'
     | '/$slug/seating'
+    | '/admin_/manage'
+    | '/api/manage'
     | '/api/team'
     | '/$slug/'
   fileRoutesById: FileRoutesById
@@ -165,6 +189,8 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SsoRoute: typeof SsoRoute
   TemplatesRoute: typeof TemplatesRoute
+  AdminManageRoute: typeof AdminManageRoute
+  ApiManageRoute: typeof ApiManageRoute
   ApiTeamRoute: typeof ApiTeamRoute
 }
 
@@ -240,6 +266,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SlugSeatingRouteImport
       parentRoute: typeof SlugRoute
     }
+    '/admin_/manage': {
+      id: '/admin_/manage'
+      path: '/admin/manage'
+      fullPath: '/admin/manage'
+      preLoaderRoute: typeof AdminManageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/manage': {
+      id: '/api/manage'
+      path: '/api/manage'
+      fullPath: '/api/manage'
+      preLoaderRoute: typeof ApiManageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/team': {
       id: '/api/team'
       path: '/api/team'
@@ -272,6 +312,8 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SsoRoute: SsoRoute,
   TemplatesRoute: TemplatesRoute,
+  AdminManageRoute: AdminManageRoute,
+  ApiManageRoute: ApiManageRoute,
   ApiTeamRoute: ApiTeamRoute,
 }
 export const routeTree = rootRouteImport

@@ -357,6 +357,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      rovty_manage: {
+        Args: { _actor: string; _action: string; _params: Json };
+        Returns: Json;
+      };
       get_guest_by_code: {
         Args: { _slug: string; _code: string };
         Returns: {

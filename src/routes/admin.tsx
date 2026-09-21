@@ -65,6 +65,25 @@ function AdminPage() {
         navigate({ to: "/auth", replace: true });
         return;
       }
+      // Staff use a separate server-authorized console. Ordinary wedding roles
+      // retain the existing RLS-based portal, including during a staff API outage.
+      try {
+        const response = await fetch("/api/manage?action=access", {
+          headers: { Authorization: `Bearer ${data.session.access_token}` },
+          cache: "no-store",
+          signal: AbortSignal.timeout(4000),
+        });
+        if (response.ok) {
+          const access = await response.json();
+          if (active && ["admin", "viewer"].includes(access.role)) {
+            void navigate({ to: "/admin/manage", replace: true });
+            return;
+          }
+        }
+      } catch {
+        // Staff authorization must never block a couple's existing dashboard.
+      }
+      if (!active) return;
       await loadWedding();
       if (active) setReady(true);
     };
