@@ -20,7 +20,7 @@ create function auth.jwt() returns jsonb language sql stable as $$ select coales
 grant usage on schema auth to authenticated;
 '''
 def who(query,user=3,session=103,gateway=False):
-    headers={'x-rovty-gateway':'local-test-gateway'} if gateway else {}
+    headers={'x-rovty-gateway':'local-test-gateway','x-rovty-plans':json.dumps({uid(201):{'features':['website','seating','canvas']}}),'x-rovty-owner-plan':json.dumps({'features':['website','seating','canvas']})} if gateway else {}
     return f"set role authenticated; set request.jwt.claim.sub='{uid(user)}'; set request.jwt.claims='{json.dumps({'sub':uid(user),'session_id':uid(session)})}'; set request.headers='{json.dumps(headers)}'; "+query
 
 def status(user=1,session=101,product='wed'):
@@ -88,6 +88,20 @@ try:
     sql(f"insert into storage.objects(id,bucket_id,name) values(gen_random_uuid(),'wedding-media','{uid(201)}/photo.webp')",'wedding')
     assert 'row-level security' in sql(who(f"insert into storage.objects(id,bucket_id,name) values(gen_random_uuid(),'wedding-media','{uid(202)}/photo.webp')",gateway=True),'wedding',False)
     assert sql('set role anon; select count(*) from storage.objects','wedding')=='1'
+    # Paid feature gates complement wedding membership and cannot be spoofed with a JWT.
+    limited={'x-rovty-gateway':'local-test-gateway','x-rovty-plans':json.dumps({uid(201):{'features':['website']}}),'x-rovty-owner-plan':json.dumps({'features':['website']})}
+    def plan_query(query):return who('',gateway=True)+f"set request.headers='{json.dumps(limited)}'; "+query
+    sql(f"insert into seating_tables(id,wedding_id,table_number,capacity) values('{uid(301)}','{uid(201)}',1,8)",'wedding')
+    assert sql(plan_query('select count(*) from seating_tables'),'wedding')=='0'
+    assert 'row-level security' in sql(plan_query(f"insert into seating_tables(wedding_id,table_number,capacity) values('{uid(201)}',2,8)"),'wedding',False)
+    canvas=json.dumps({'version':1,'sections':[{'type':'canvas','id':'canvas-1','canvas':{'elements':[]}}]})
+    assert 'included in Studio' in sql(plan_query(f"update weddings set design='{canvas}'::jsonb"),'wedding',False)
+    assert sql(plan_query("update weddings set venue='Essential plan' returning venue"),'wedding')=='Essential plan'
+    assert sql(who(f"update weddings set design='{canvas}'::jsonb returning id",gateway=True),'wedding')==uid(201)
+    limited['x-rovty-plans']=json.dumps({uid(201):{'features':[]}})
+    assert sql(plan_query('select count(*) from guests'),'wedding')=='0'
+    limited['x-rovty-owner-plan']=json.dumps({'features':[]})
+    assert 'Choose a Rovty Wed plan' in sql(plan_query(f"insert into weddings(owner_id,slug,bride,groom,event_date) values('{uid(3)}','unpaid-wedding','A','B',now())"),'wedding',False)
     # Row locking makes legacy email linking unique under concurrent handoffs.
     def claim(n):
         try:return sql(f"set role service_role; select rovty_link_account('{uid(n)}','other@example.test')",'wedding')

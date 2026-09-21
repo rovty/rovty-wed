@@ -87,33 +87,24 @@ export interface WedPlan {
   name: string;
   badge?: string;
   description: string;
-  price: string;
   priceNote: string;
-  cta: string;
   features: string[];
 }
 
-// Same one-time, per-wedding prices as rovty.com/pricing/wed — this page
-// doesn't run a second, possibly-drifting copy of the numbers, it just
-// states them (see WedPricingPage.tsx in the rovty.com repo).
+// Presentation copy only. Prices and hosting terms come from the central billing catalog.
 export const PLANS: WedPlan[] = [
   {
     name: "Essential",
     description: "For couples who want a beautiful digital wedding invitation.",
-    price: "LKR 4,900",
     priceNote: "One-time · one wedding",
-    cta: "Get started",
     features: [
-      "Curated collection of wedding templates",
-      "Digital wedding invitation",
-      "Custom invitation link",
-      "Event details",
-      "Google Maps location",
-      "Countdown",
-      "RSVP collection",
-      "Guest list",
-      "Mobile-optimized design",
-      "6 months hosting",
+      "All wedding templates",
+      "Wedding website and custom invitation link",
+      "Colors, typography and section customization",
+      "Online RSVP and guest management",
+      "Personalized invitations and WhatsApp sharing",
+      "Photo galleries and multiple events",
+      "Maps, countdown and mobile layouts",
       "Standard support",
     ],
   },
@@ -122,21 +113,13 @@ export const PLANS: WedPlan[] = [
     badge: "Most popular",
     description:
       "Everything you need to invite, manage, and arrange your guests.",
-    price: "LKR 7,900",
     priceNote: "One-time · one wedding",
-    cta: "Get started",
     features: [
       "Everything in Essential",
-      "Full Rovty Wed template collection",
-      "Personalized guest invitations",
-      "Advanced RSVP management",
-      "Guest management dashboard",
-      "Seating plans",
-      "Find Your Seat",
-      "Table assignments",
-      "Guest notifications",
-      "WhatsApp sharing",
-      "12 months hosting",
+      "Seating planner and table assignments",
+      "Find Your Seat for guests",
+      "Shared wedding team access",
+      "Admin and viewer team permissions",
       "Priority support",
     ],
   },
@@ -144,19 +127,13 @@ export const PLANS: WedPlan[] = [
     name: "Studio",
     description:
       "For couples who want a completely personalized wedding experience.",
-    price: "LKR 9,900",
     priceNote: "One-time · one wedding",
-    cta: "Talk to us",
     features: [
       "Everything in Complete",
-      "Bespoke invitation design",
-      "Custom animations",
-      "Custom domain",
-      "Wedding photo gallery",
-      "Multiple events",
-      "Custom RSVP experience",
-      "Custom seating experience",
-      "24 months hosting",
+      "Custom canvases with text, photos and shapes",
+      "Layers, alignment and responsive canvas layouts",
+      "Bespoke design assistance from the Rovty team",
+      "Custom domain setup with the Rovty team",
       "Dedicated support",
     ],
   },
@@ -177,7 +154,7 @@ export const FAQS = [
   },
   {
     q: "Is it really one payment?",
-    a: "Yes. One-time, per wedding: Essential LKR 4,900, Complete LKR 7,900, Studio LKR 9,900. Hosting is included for 6, 12 or 24 months depending on the plan.",
+    a: "Yes. One-time, per wedding: Choose Essential, Complete or Studio. See current prices and hosting periods in the plans section.",
   },
   {
     q: "Can we use our own domain?",

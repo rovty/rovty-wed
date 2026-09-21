@@ -22,6 +22,7 @@ import { Route as SlugSeatingRouteImport } from './routes/$slug.seating'
 import { Route as AdminManageRouteImport } from './routes/admin_.manage'
 import { Route as ApiDataRouteImport } from './routes/api.data'
 import { Route as ApiManageRouteImport } from './routes/api.manage'
+import { Route as ApiPlanRouteImport } from './routes/api.plan'
 import { Route as ApiSessionRouteImport } from './routes/api.session'
 import { Route as ApiTeamRouteImport } from './routes/api.team'
 
@@ -90,6 +91,11 @@ const ApiManageRoute = ApiManageRouteImport.update({
   path: '/api/manage',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPlanRoute = ApiPlanRouteImport.update({
+  id: '/api/plan',
+  path: '/api/plan',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiSessionRoute = ApiSessionRouteImport.update({
   id: '/api/session',
   path: '/api/session',
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/admin/manage': typeof AdminManageRoute
   '/api/data': typeof ApiDataRoute
   '/api/manage': typeof ApiManageRoute
+  '/api/plan': typeof ApiPlanRoute
   '/api/session': typeof ApiSessionRoute
   '/api/team': typeof ApiTeamRoute
   '/$slug/': typeof SlugIndexRoute
@@ -130,6 +137,7 @@ export interface FileRoutesByTo {
   '/admin/manage': typeof AdminManageRoute
   '/api/data': typeof ApiDataRoute
   '/api/manage': typeof ApiManageRoute
+  '/api/plan': typeof ApiPlanRoute
   '/api/session': typeof ApiSessionRoute
   '/api/team': typeof ApiTeamRoute
   '/$slug': typeof SlugIndexRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/admin_/manage': typeof AdminManageRoute
   '/api/data': typeof ApiDataRoute
   '/api/manage': typeof ApiManageRoute
+  '/api/plan': typeof ApiPlanRoute
   '/api/session': typeof ApiSessionRoute
   '/api/team': typeof ApiTeamRoute
   '/$slug/': typeof SlugIndexRoute
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/admin/manage'
     | '/api/data'
     | '/api/manage'
+    | '/api/plan'
     | '/api/session'
     | '/api/team'
     | '/$slug/'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/admin/manage'
     | '/api/data'
     | '/api/manage'
+    | '/api/plan'
     | '/api/session'
     | '/api/team'
     | '/$slug'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/admin_/manage'
     | '/api/data'
     | '/api/manage'
+    | '/api/plan'
     | '/api/session'
     | '/api/team'
     | '/$slug/'
@@ -216,6 +228,7 @@ export interface RootRouteChildren {
   AdminManageRoute: typeof AdminManageRoute
   ApiDataRoute: typeof ApiDataRoute
   ApiManageRoute: typeof ApiManageRoute
+  ApiPlanRoute: typeof ApiPlanRoute
   ApiSessionRoute: typeof ApiSessionRoute
   ApiTeamRoute: typeof ApiTeamRoute
 }
@@ -313,6 +326,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiManageRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/plan': {
+      id: '/api/plan'
+      path: '/api/plan'
+      fullPath: '/api/plan'
+      preLoaderRoute: typeof ApiPlanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/session': {
       id: '/api/session'
       path: '/api/session'
@@ -355,6 +375,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminManageRoute: AdminManageRoute,
   ApiDataRoute: ApiDataRoute,
   ApiManageRoute: ApiManageRoute,
+  ApiPlanRoute: ApiPlanRoute,
   ApiSessionRoute: ApiSessionRoute,
   ApiTeamRoute: ApiTeamRoute,
 }

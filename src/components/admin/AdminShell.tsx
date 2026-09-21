@@ -1,3 +1,4 @@
+import { PlanGate } from "@/components/billing/PlanAccess";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type {
@@ -157,19 +158,21 @@ export function AdminShell({
               ))}
 
             {section === "seating" && (
-              <SeatingSection
-                key={seatingKey}
-                wedding={wedding}
-                guests={guests}
-                rsvps={rsvps}
-                tables={tables}
-                assignments={assignments}
-                published={seatingPublished}
-                reload={load}
-                inviteUrl={inviteUrl}
-                initialView={seatingView}
-                onWeddingChange={onWeddingChange}
-              />
+              <PlanGate feature="seating">
+                <SeatingSection
+                  key={seatingKey}
+                  wedding={wedding}
+                  guests={guests}
+                  rsvps={rsvps}
+                  tables={tables}
+                  assignments={assignments}
+                  published={seatingPublished}
+                  reload={load}
+                  inviteUrl={inviteUrl}
+                  initialView={seatingView}
+                  onWeddingChange={onWeddingChange}
+                />
+              </PlanGate>
             )}
 
             {section === "design" && (

@@ -1,3 +1,4 @@
+import { hostingAvailable } from "@/lib/platform/hosting.functions";
 // Wedding data — was a hardcoded single-tenant constant here; the
 // 20260904000000_multi_tenant.sql migration moved it into the `weddings`
 // table (one row per customer), but nothing on the public site was ever
@@ -562,6 +563,7 @@ export async function uploadWeddingMedia(
 export async function fetchWeddingBySlug(
   slug: string,
 ): Promise<PublicWedding | null> {
+  if (!(await hostingAvailable({ data: slug }))) return null;
   const { data, error } = await supabase
     .from("weddings")
     .select(`${WEDDING_COLUMNS}, design`)

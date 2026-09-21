@@ -82,7 +82,7 @@ try:
     params = {'weddingId':uid(101),'version':d['wedding']['updated_at'],'changes':{'bride':'Alexandra','slug':'alexandra-sam'},'reason':'Requested by couple'}
     assert 'Editing requires' in request('wedding',params,actor=2,ok=False)
     # Couple identity protection remains intact, even with forged metadata.
-    assert 'are locked' in sql(f"select set_config('request.headers',(select json_build_object('x-rovty-gateway',secret)::text from platform_gateway),false); set role authenticated; set request.jwt.claim.sub='{uid(3)}'; set request.jwt.claims='{{\"role\":\"service_role\"}}'; update weddings set bride='Other' where id='{uid(101)}'",ok=False)
+    assert 'are locked' in sql(f"select set_config('request.headers',(select json_build_object('x-rovty-gateway',secret,'x-rovty-plans',json_build_object('00000000-0000-4000-8000-000000000101',json_build_object('features',array['website','canvas']))::text)::text from platform_gateway),false); set role authenticated; set request.jwt.claim.sub='{uid(3)}'; set request.jwt.claims='{{\"role\":\"service_role\"}}'; update weddings set bride='Other' where id='{uid(101)}'",ok=False)
     request('wedding',params)
     updated = detail()
     assert updated['wedding']['bride'] == 'Alexandra' and updated['wedding']['design'] == d['wedding']['design']

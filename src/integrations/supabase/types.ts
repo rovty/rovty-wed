@@ -357,6 +357,8 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      rovty_hosting_owner: { Args: { _slug: string }; Returns: Json };
+      rovty_billing_weddings: { Args: { _user: string }; Returns: Json };
       rovty_media_access: {
         Args: { _user: string; _wedding: string; _edit: boolean };
         Returns: boolean;

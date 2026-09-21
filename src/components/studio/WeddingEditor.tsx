@@ -1,3 +1,5 @@
+import { PlanGate } from "@/components/billing/PlanAccess";
+import { useWeddingPlan } from "@/lib/billing-plan";
 import { CanvasPanel } from "./CanvasPanel";
 import {
   CANVAS_PRESETS,
@@ -98,6 +100,8 @@ export default function WeddingEditor({
   published?: boolean;
   initiallyUnsaved?: boolean;
 }) {
+  const plan = useWeddingPlan();
+  const canCanvas = !weddingId || Boolean(plan?.features.includes("canvas"));
   const [draft, setDraft] = useState(initialDraft);
   const [saved, setSaved] = useState(
     initiallyUnsaved ? "" : JSON.stringify(initialDraft),
@@ -348,6 +352,12 @@ export default function WeddingEditor({
       ? currentSection.canvas || emptyCanvas()
       : null;
   const addCanvas = (preset: CanvasPreset) => {
+    if (!canCanvas) {
+      setError(
+        "Custom canvases are included in Studio. View plans in your Rovty dashboard.",
+      );
+      return;
+    }
     if (
       draftRef.current.design.sections.filter((s) => s.type === "canvas")
         .length >= 8
@@ -474,7 +484,7 @@ export default function WeddingEditor({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
   const elementsPanel = (
-    <>
+    <PlanGate feature="canvas">
       <PanelHeading
         eyebrow="Your imagination, invited"
         title="Make something yours."
@@ -615,7 +625,7 @@ export default function WeddingEditor({
         ⌘ / Ctrl + Z to undo · D to duplicate · C / V to copy and paste layers
         in the studio.
       </p>
-    </>
+    </PlanGate>
   );
   const detailsPanel = (
     <>
@@ -1398,7 +1408,7 @@ export default function WeddingEditor({
               selectedSection={selectedSection}
               onKeyDown={handleKeyDown}
               canvasEditing={
-                currentCanvas
+                currentCanvas && canCanvas
                   ? {
                       selected: selectedElement,
                       grid,

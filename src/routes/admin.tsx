@@ -1,3 +1,4 @@
+import { PlanProvider } from "@/components/billing/PlanAccess";
 import { platformSignOut } from "@/lib/platform/session";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
@@ -137,25 +138,29 @@ function AdminPage() {
       <div className="flex h-dvh flex-col">
         <PlatformBar />
         <div className="min-h-0 flex-1">
-          <Onboarding onCreated={setWedding} onSignOut={signOut} />
+          <PlanProvider>
+            <Onboarding onCreated={setWedding} onSignOut={signOut} />
+          </PlanProvider>
         </div>
       </div>
     );
   }
 
   return (
-    <AdminShell
-      wedding={wedding}
-      onSignOut={signOut}
-      onWeddingChange={setWedding}
-      section={section}
-      onSectionChange={(next) =>
-        void navigate({
-          to: "/admin",
-          search: next === "home" ? {} : { section: next },
-          resetScroll: false,
-        })
-      }
-    />
+    <PlanProvider wedding={wedding.id}>
+      <AdminShell
+        wedding={wedding}
+        onSignOut={signOut}
+        onWeddingChange={setWedding}
+        section={section}
+        onSectionChange={(next) =>
+          void navigate({
+            to: "/admin",
+            search: next === "home" ? {} : { section: next },
+            resetScroll: false,
+          })
+        }
+      />
+    </PlanProvider>
   );
 }

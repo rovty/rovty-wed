@@ -69,6 +69,11 @@ async function requireOwner(request: Request, weddingId: string) {
     .eq("id", weddingId)
     .maybeSingle();
   if (error || !wedding || wedding.owner_id !== session.user.id) return null;
+  if (request.method !== "DELETE") {
+    const { requireWeddingFeature } =
+      await import("@/lib/platform/plans.server");
+    await requireWeddingFeature(session, weddingId, "team");
+  }
   return { userId: session.user.id };
 }
 

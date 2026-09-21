@@ -121,5 +121,10 @@ export async function requirePlatformSession(token: string) {
       401,
       "RECONNECT_REQUIRED",
     );
-  return session;
+  if (!identity.entitlement || !Array.isArray(identity.entitlement.features))
+    throw new PlatformError("Product plans are unavailable. Please try again.");
+  return {
+    ...session,
+    entitlement: identity.entitlement as import("./plans.server").Entitlement,
+  };
 }

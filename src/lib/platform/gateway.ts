@@ -7,7 +7,9 @@ import {
   isId,
 } from "./contracts.ts";
 export interface GatewayBackend {
-  session(token: string): Promise<{ user: { id: string } }>;
+  session(
+    token: string,
+  ): Promise<{ user: { id: string }; planHeaders?: Record<string, string> }>;
   mediaAccess(user: string, wedding: string, edit: boolean): Promise<boolean>;
   serviceKey: string;
   key(): Promise<string>;
@@ -186,6 +188,7 @@ export async function handleGateway(
         apikey: backend.publicKey,
         Authorization: `Bearer ${token}`,
         "x-rovty-gateway": await backend.key(),
+        ...session.planHeaders,
       });
     }
     for (const name of [

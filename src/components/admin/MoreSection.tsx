@@ -1,3 +1,4 @@
+import { PlanGate } from "@/components/billing/PlanAccess";
 import { LogOut } from "lucide-react";
 import type { Wedding } from "./types";
 import { AButton } from "./ui";
@@ -22,7 +23,9 @@ export function MoreSection({
         </p>
       </div>
       <div className="flex-1 overflow-y-auto px-5 pt-4">
-        <Team wedding={wedding} />
+        <PlanGate feature="team">
+          <Team wedding={wedding} />
+        </PlanGate>
       </div>
       <div className="border-t-2 border-[var(--admin-ink)] px-5 py-3.5">
         <AButton onClick={onSignOut} className="h-12 w-full">

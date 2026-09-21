@@ -1,6 +1,8 @@
+import { useWedPricing } from "@/hooks/useWedPricing";
 import { PLANS, WHATSAPP_HREF } from "./content";
 
 export function PricingSection() {
+  const pricing = useWedPricing();
   return (
     <section
       id="pricing"
@@ -15,14 +17,14 @@ export function PricingSection() {
             One payment, per wedding
           </h2>
           <p className="m-0 max-w-[50ch] text-[15.5px] leading-relaxed text-[#3c3a39]">
-            No subscription and no per-guest fee. Hosting is included: 6, 12 or
-            24 months depending on the plan.
+            No subscription and no per-guest fee. Hosting is included for the
+            period shown with each plan.
           </p>
         </div>
         <div className="mt-6 h-0.5 bg-wl-ink" />
 
         <div className="grid gap-6 py-[34px] sm:grid-cols-3">
-          {PLANS.map((p) => (
+          {PLANS.filter((p) => pricing.available(p.name)).map((p) => (
             <div
               key={p.name}
               className="flex flex-col border-2 border-wl-ink p-6"
@@ -39,21 +41,22 @@ export function PricingSection() {
                 )}
               </div>
               <div className="mt-3 text-[34px] font-extrabold leading-none tracking-[-0.03em]">
-                {p.price}
+                {pricing.price(p.name)}
               </div>
               <div className="mt-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-[#605d5d]">
                 {p.priceNote}
+                {pricing.months(p.name)
+                  ? ` · ${pricing.months(p.name)} months hosting`
+                  : ""}
               </div>
               <p className="mt-3.5 text-sm leading-relaxed text-[#605d5d]">
                 {p.description}
               </p>
               <a
-                href={WHATSAPP_HREF}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={pricing.href(p.name)}
                 className="mt-[18px] inline-flex items-center justify-center gap-2 border-2 border-wed bg-wed px-[18px] py-3 text-[12.5px] font-bold uppercase tracking-[0.12em] text-white no-underline hover:border-wed-deep hover:bg-wed-deep"
               >
-                {p.cta}
+                Choose {p.name}
               </a>
 
               <div className="mt-7 h-0.5 bg-wl-ink" />

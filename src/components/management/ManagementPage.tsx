@@ -249,6 +249,13 @@ export function ManagementPage() {
                   : "Administrator"}
               </span>
             </div>
+            <a
+              className="manage-button primary"
+              href={`${DASHBOARD_ORIGIN}/billing/manage/wed`}
+              style={{ marginBottom: 24 }}
+            >
+              Users, plans & payments <ArrowUpRight size={16} />
+            </a>
             {wedding ? (
               <WeddingDetail
                 key={wedding}

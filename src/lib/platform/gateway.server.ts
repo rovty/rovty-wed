@@ -1,5 +1,6 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requirePlatformSession, PlatformError } from "./session.server";
+import { weddingPlans, type Entitlement } from "./plans.server";
 import { handleGateway } from "./gateway";
 let keyCache: { key: string; until: number } | undefined;
 async function gatewayKey() {
@@ -11,10 +12,23 @@ async function gatewayKey() {
   return data;
 }
 export function handleDataRequest(request: Request) {
+  let requestPlans: Record<string, Entitlement> = {};
   return handleGateway(request, {
-    session: requirePlatformSession,
+    session: async (token) => {
+      const session = await requirePlatformSession(token);
+      const plans = await weddingPlans(session);
+      requestPlans = plans;
+      return {
+        ...session,
+        planHeaders: {
+          "x-rovty-plans": JSON.stringify(plans),
+          "x-rovty-owner-plan": JSON.stringify(session.entitlement),
+        },
+      };
+    },
     serviceKey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
     mediaAccess: async (user, wedding, edit) => {
+      if (!requestPlans[wedding]?.features.includes("website")) return false;
       const { data, error } = await supabaseAdmin.rpc("rovty_media_access", {
         _user: user,
         _wedding: wedding,
