@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { templateFontsHref, type PublicWedding } from "@/lib/wedding";
+import { isSignatureTemplate } from "@/lib/wedding-signature";
 import { customFontHref, type DesignConfig } from "@/lib/studio/design";
 import { StudioWeddingSite } from "./StudioWeddingSite";
+import { SignatureWeddingSite } from "@/components/wedding-templates";
 import appCss from "@/styles.css?url";
 import studioCss from "./studio.css?url";
 import type { CanvasEditing } from "./CustomCanvas";
@@ -100,7 +102,8 @@ export function PreviewFrame({
   const width = device === "mobile" ? 389 : device === "tablet" ? 768 : 1100;
   const scale = zoom ?? Math.min(size.width / width, 1);
   const height = Math.max(300, size.height / Math.max(scale, 0.1));
-  const fontHref = customFontHref(design);
+  const signature = isSignatureTemplate(wedding.template);
+  const fontHref = signature ? undefined : customFontHref(design);
   return (
     <div className="preview-frame" ref={container} data-device={device}>
       {!ready && (
@@ -152,14 +155,18 @@ export function PreviewFrame({
             frame.contentDocument.head,
           )}
           {createPortal(
-            <StudioWeddingSite
-              wedding={wedding}
-              design={design}
-              preview
-              onSectionSelect={onSectionSelect}
-              selectedSection={selectedSection}
-              canvasEditing={canvasEditing}
-            />,
+            signature ? (
+              <SignatureWeddingSite wedding={wedding} />
+            ) : (
+              <StudioWeddingSite
+                wedding={wedding}
+                design={design}
+                preview
+                onSectionSelect={onSectionSelect}
+                selectedSection={selectedSection}
+                canvasEditing={canvasEditing}
+              />
+            ),
             frame.contentDocument.body,
           )}
         </>

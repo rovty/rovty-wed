@@ -16,7 +16,12 @@ import {
   X,
 } from "lucide-react";
 import { templateFontsHref, type WeddingTemplate } from "@/lib/wedding";
-import { SIGNATURE_TEMPLATES } from "@/lib/wedding-signature";
+import {
+  isSignatureTemplate,
+  signatureTemplate,
+  SIGNATURE_TEMPLATES,
+  type SignatureTemplateId,
+} from "@/lib/wedding-signature";
 import {
   COLLECTIONS,
   DEMO_WEDDING,
@@ -70,6 +75,18 @@ export function TemplateDiscovery({
       design: resume?.design || createDesign(template),
     });
   };
+  // Signature designs have no Studio section data, so — same as the
+  // SignatureCollection card's click used to do before it gained a preview
+  // step — they never go through `choose` above (which would open the
+  // Studio-only in-page editor on the public /templates page). This just
+  // moves that existing dispatch to run after the preview modal's "Make it
+  // yours" instead of before it.
+  const previewChoose = (id: WeddingTemplate) =>
+    isSignatureTemplate(id)
+      ? onChoose
+        ? onChoose(id)
+        : (window.location.href = "/auth")
+      : choose(id);
   const filtered = TEMPLATE_CATALOG.filter(
     (t) =>
       (category === "All designs" || category === t.collection) &&
@@ -263,7 +280,10 @@ export function TemplateDiscovery({
           )}
         </div>
         {category === "All designs" && (
-          <SignatureCollection query={query} onChoose={onChoose} />
+          <SignatureCollection
+            query={query}
+            onPreview={(id) => setPreview([id])}
+          />
         )}
       </main>
       <section className="discovery-ending">
@@ -312,7 +332,7 @@ export function TemplateDiscovery({
           templates={preview}
           draft={weddingDraft}
           onClose={() => setPreview([])}
-          onChoose={choose}
+          onChoose={previewChoose}
         />
       )}
     </div>
@@ -323,15 +343,16 @@ export function TemplateDiscovery({
 // a palette built on the Studio's shared hero/section primitives, so unlike
 // the grid above they can't get a live TemplateMiniature preview from
 // createDesign()+TemplateHero — there's no DesignConfig to build one from.
-// A color-and-type card stands in for that; choosing one saves the template
-// directly (Templates.tsx intercepts it before it would ever reach
-// DesignStudio, which assumes every template has Studio section data).
+// A color-and-type card stands in for that on this browsing grid; clicking
+// it opens the same TemplatePreviewModal (now signature-aware — see
+// PreviewFrame.tsx) the regular grid uses, so nothing commits until the
+// couple has actually seen the design.
 function SignatureCollection({
   query,
-  onChoose,
+  onPreview,
 }: {
   query: string;
-  onChoose?: (id: WeddingTemplate) => void;
+  onPreview: (id: SignatureTemplateId) => void;
 }) {
   const filtered = SIGNATURE_TEMPLATES.filter((t) =>
     `${t.label} ${t.note}`.toLowerCase().includes(query.toLowerCase()),
@@ -349,10 +370,8 @@ function SignatureCollection({
           <article className="template-card" key={t.id}>
             <button
               className="template-card-image"
-              aria-label={`Choose ${t.label}`}
-              onClick={() =>
-                onChoose ? onChoose(t.id) : (window.location.href = "/auth")
-              }
+              aria-label={`Preview ${t.label}`}
+              onClick={() => onPreview(t.id)}
             >
               <div
                 className="template-miniature"
@@ -387,7 +406,7 @@ function SignatureCollection({
                 />
               </div>
               <span className="template-card-hover">
-                <Eye size={13} /> Choose this design <ArrowUpRight size={12} />
+                <Eye size={13} /> Preview this design <ArrowUpRight size={12} />
               </span>
             </button>
             <div className="template-card-meta">
@@ -503,6 +522,19 @@ export function DeviceToggle({
   );
 }
 
+// getTemplate() is Studio-only and silently falls back to "Classic" for any
+// id it doesn't recognize (see its own comment in catalog.ts) — needed here
+// so a signature id previewed in the modal below shows its own name/note
+// instead of a wrong "Classic" one.
+function templateMeta(id: WeddingTemplate): { name: string; note: string } {
+  if (isSignatureTemplate(id)) {
+    const t = signatureTemplate(id);
+    return { name: t.label, note: t.note };
+  }
+  const t = getTemplate(id);
+  return { name: t.name, note: t.note };
+}
+
 export function TemplatePreviewModal({
   templates,
   draft,
@@ -536,7 +568,7 @@ export function TemplatePreviewModal({
       aria-label={
         templates.length > 1
           ? "Compare wedding designs"
-          : `${getTemplate(templates[0]).name} preview`
+          : `${templateMeta(templates[0]).name} preview`
       }
     >
       <div className="studio-modal-content">
@@ -545,12 +577,12 @@ export function TemplatePreviewModal({
             <h2>
               {templates.length > 1
                 ? "Two possibilities. One beautiful story."
-                : getTemplate(templates[0]).name}
+                : templateMeta(templates[0]).name}
             </h2>
             <p>
               {templates.length > 1
                 ? "Scroll each design to explore the full experience."
-                : getTemplate(templates[0]).note}
+                : templateMeta(templates[0]).note}
             </p>
           </div>
           <div className="studio-modal-header-actions">

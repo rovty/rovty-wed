@@ -1,7 +1,16 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { ArrowRight, Check, LogOut } from "lucide-react";
+import { ArrowRight, Check, Eye, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { WEDDING_TEMPLATES, type WeddingTemplate } from "@/lib/wedding";
+import type { PublicWedding, WeddingTemplate } from "@/lib/wedding";
+import {
+  createDesign,
+  sampleWedding,
+  TEMPLATE_CATALOG,
+} from "@/lib/studio/catalog";
+import {
+  TemplateMiniature,
+  TemplatePreviewModal,
+} from "@/components/studio/TemplateDiscovery";
 import type { Wedding } from "./types";
 import { slugify } from "./utils";
 import { AButton, AInput, ALabel } from "./ui";
@@ -27,8 +36,23 @@ export function Onboarding({
   const [venue, setVenue] = useState("");
   const [hall, setHall] = useState("");
   const [template, setTemplate] = useState<WeddingTemplate>("classic");
+  const [previewing, setPreviewing] = useState<WeddingTemplate | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // What's already been typed in steps 1-2, laid over the generic demo data
+  // — so the full preview modal shows the couple their own names/date/venue
+  // instead of "Amelia & James", the same way Templates.tsx does for an
+  // existing wedding (toPublicWedding(wedding)). Nothing's saved yet; this
+  // is only for the preview.
+  const previewWedding = (id: WeddingTemplate): PublicWedding => ({
+    ...sampleWedding(id),
+    bride: bride.trim() || sampleWedding(id).bride,
+    groom: groom.trim() || sampleWedding(id).groom,
+    date: eventDate ? new Date(eventDate) : sampleWedding(id).date,
+    venue: venue.trim() || sampleWedding(id).venue,
+    hall: hall.trim() || sampleWedding(id).hall,
+  });
 
   useEffect(() => {
     if (!slugTouched && bride && groom)
@@ -217,70 +241,75 @@ export function Onboarding({
                 </p>
               </div>
               <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3">
-                {WEDDING_TEMPLATES.map((t) => (
-                  <button
-                    key={t.id}
-                    type="button"
-                    onClick={() => setTemplate(t.id)}
-                    className="border-2 bg-[var(--admin-surface)] text-left"
-                    style={{
-                      borderColor:
-                        template === t.id
-                          ? "var(--admin-accent-hover)"
-                          : "var(--admin-ink)",
-                    }}
-                  >
-                    {/* A live swatch of the actual theme, not just its name
-                      in a plain box — the old version was all identical
-                      white cards with no visual difference between
-                      "Classic" and "Luxe" until you'd already picked one. */}
-                    <div
-                      className={`theme-${t.id} flex h-16 flex-col items-center justify-center gap-1 overflow-hidden`}
-                    >
-                      <span className="font-script text-[9px] italic text-rose">
-                        Together forever
-                      </span>
-                      <span className="font-display text-sm text-foreground">
-                        {groom.trim().charAt(0).toUpperCase() || "G"}{" "}
-                        <span
-                          style={{
-                            background: "var(--gradient-gold)",
-                            WebkitBackgroundClip: "text",
-                            backgroundClip: "text",
-                            color: "transparent",
-                          }}
-                        >
-                          &amp;
-                        </span>{" "}
-                        {bride.trim().charAt(0).toUpperCase() || "B"}
-                      </span>
-                      <span
-                        className="h-px w-6"
-                        style={{ background: "var(--gradient-gold)" }}
-                      />
-                    </div>
-                    <div
-                      className="border-t-2 p-2.5"
-                      style={{
-                        borderColor:
-                          template === t.id
+                {/* A real live-rendered miniature of the actual theme, not a
+                  hand-built mock — the old version was one generic script-
+                  text box reused for every card, with no visual difference
+                  between "Classic" and "Luxe" until you'd already picked
+                  one. Same TemplateMiniature the Design tab's template
+                  picker uses, so what you see here is what you get. */}
+                {TEMPLATE_CATALOG.map((t) => {
+                  const selected = template === t.id;
+                  return (
+                    <div key={t.id} className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setTemplate(t.id)}
+                        aria-pressed={selected}
+                        className="block w-full border-2 bg-[var(--admin-surface)] text-left"
+                        style={{
+                          borderColor: selected
                             ? "var(--admin-accent-hover)"
                             : "var(--admin-ink)",
-                      }}
-                    >
-                      <p className="flex items-center gap-1.5 text-[12px] font-bold">
-                        {t.label}
-                        {template === t.id && (
-                          <Check className="h-3 w-3 text-[var(--admin-accent-active)]" />
-                        )}
-                      </p>
-                      <p className="mt-0.5 text-[10px] leading-snug text-[var(--admin-muted)]">
-                        {t.description}
-                      </p>
+                        }}
+                      >
+                        <div className="relative aspect-[1.14] overflow-hidden">
+                          <TemplateMiniature template={t} />
+                        </div>
+                        <div
+                          className="border-t-2 p-2.5"
+                          style={{
+                            borderColor: selected
+                              ? "var(--admin-accent-hover)"
+                              : "var(--admin-ink)",
+                          }}
+                        >
+                          <p className="flex items-center gap-1.5 text-[12px] font-bold">
+                            {t.name}
+                            {selected && (
+                              <Check className="h-3 w-3 text-[var(--admin-accent-active)]" />
+                            )}
+                          </p>
+                          <p className="mt-0.5 text-[10px] leading-snug text-[var(--admin-muted)]">
+                            {t.note}
+                          </p>
+                        </div>
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={`Preview ${t.name}`}
+                        onClick={() => setPreviewing(t.id)}
+                        className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center border-2 border-[var(--admin-ink)] bg-[var(--admin-surface)]"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                      </button>
                     </div>
-                  </button>
-                ))}
+                  );
+                })}
               </div>
+              {previewing && (
+                <TemplatePreviewModal
+                  templates={[previewing]}
+                  draft={{
+                    wedding: previewWedding(previewing),
+                    design: createDesign(previewing),
+                  }}
+                  onClose={() => setPreviewing(null)}
+                  onChoose={(id) => {
+                    setTemplate(id);
+                    setPreviewing(null);
+                  }}
+                />
+              )}
               <p className="mt-4 text-sm leading-relaxed text-[var(--admin-muted)]">
                 Creating for{" "}
                 <strong>
