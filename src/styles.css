@@ -3369,3 +3369,22 @@
   color: #33362c;
   border-radius: 4px;
 }
+
+/* ── Wed marketing homepage ("Rovty Wed Home" redesign) ───────────────── */
+@keyframes wl-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+.wl-float {
+  animation: wl-float 6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wl-float {
+    animation: none;
+  }
+}

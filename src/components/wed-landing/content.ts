@@ -30,33 +30,33 @@ export const PAGE_SECTIONS = [
 export const FEATURES: { icon: LucideIcon; title: string; body: string }[] = [
   {
     icon: Sparkles,
-    title: "21 wedding themes",
-    body: "Rose, Lotus, Olive, Nikkah, Chapel, Noir and more, each with its own hero layout and opening animation, not just a recolour of the same page.",
+    title: "Designs that open",
+    body: "Each design has its own layout and opening animation, not a recolour of one page.",
   },
   {
     icon: MessageCircle,
-    title: "Personalised links, sent on WhatsApp",
-    body: "Every guest gets their own link with their name on it. Pick who to invite and Rovty Wed opens WhatsApp pre-filled, one chat at a time.",
+    title: "Sent on WhatsApp",
+    body: "Every guest gets a link with their name on it, pre-filled in WhatsApp, one chat at a time.",
   },
   {
     icon: CalendarCheck,
-    title: "RSVP right on the page",
-    body: "Guests reply on the invitation itself: no app to install, no account to create.",
+    title: "RSVP on the page",
+    body: "Guests reply on the invitation itself. Replies land in your dashboard live.",
   },
   {
     icon: Grid2x2,
     title: "Seating, sorted",
-    body: "Their link opens their invitation with their table already on it, so there's no code to look up. You lay out the whole floor plan and assign tables from your dashboard.",
+    body: "Their table is already on their invitation. You plan the floor from your dashboard.",
   },
   {
     icon: CalendarClock,
     title: "Countdown & calendar",
-    body: 'A live countdown to the big day, plus one-tap "Add to calendar" for Apple and Google.',
+    body: 'A live countdown, plus one-tap "Add to calendar" for Apple and Google.',
   },
   {
     icon: MapPin,
-    title: "Everything in one link",
-    body: "Venue details, Google Maps directions, your own photos, and background music, all on the one page you share.",
+    title: "Venue, photos, music",
+    body: "Google Maps directions, your own photos and background music, all on one page.",
   },
 ];
 
@@ -64,22 +64,22 @@ export const STEPS = [
   {
     n: "01",
     title: "Choose a design",
-    body: "Pick from 21 themes and add your names, date, venue and photos.",
+    body: "Add names, date, venue and photos.",
   },
   {
     n: "02",
     title: "Add your guests",
-    body: "Add your guest list, and Rovty Wed builds each guest their own personalised link.",
+    body: "Each one gets a personal link.",
   },
   {
     n: "03",
     title: "Send on WhatsApp",
-    body: "Select guests and send their personalised links straight from your dashboard.",
+    body: "Straight from your dashboard.",
   },
   {
     n: "04",
     title: "Watch it come together",
-    body: "RSVPs and seating fill in live in your admin as guests reply.",
+    body: "RSVPs and seating fill in live.",
   },
 ];
 
@@ -95,45 +95,35 @@ export interface WedPlan {
 export const PLANS: WedPlan[] = [
   {
     name: "Essential",
-    description: "For couples who want a beautiful digital wedding invitation.",
+    description: "A beautiful digital invitation, RSVPs and guest list.",
     priceNote: "One-time · one wedding",
     features: [
-      "All wedding templates",
-      "Wedding website and custom invitation link",
-      "Colors, typography and section customization",
-      "Online RSVP and guest management",
-      "Personalized invitations and WhatsApp sharing",
-      "Photo galleries and multiple events",
-      "Maps, countdown and mobile layouts",
-      "Standard support",
+      "All designs and your own invitation link",
+      "Colors, typography and sections",
+      "RSVP, guest list and WhatsApp sharing",
+      "Galleries, multiple events, maps, countdown",
     ],
   },
   {
     name: "Complete",
     badge: "Most popular",
-    description:
-      "Everything you need to invite, manage, and arrange your guests.",
+    description: "Everything to invite, manage and seat your guests.",
     priceNote: "One-time · one wedding",
     features: [
       "Everything in Essential",
-      "Seating planner and table assignments",
-      "Find Your Seat for guests",
-      "Shared wedding team access",
-      "Admin and viewer team permissions",
+      "Seating planner and Find Your Seat",
+      "Shared team with admin and viewer roles",
       "Priority support",
     ],
   },
   {
     name: "Studio",
-    description:
-      "For couples who want a completely personalized wedding experience.",
+    description: "A completely personalized wedding experience.",
     priceNote: "One-time · one wedding",
     features: [
       "Everything in Complete",
-      "Custom canvases with text, photos and shapes",
-      "Layers, alignment and responsive canvas layouts",
-      "Bespoke design assistance from the Rovty team",
-      "Custom domain setup with the Rovty team",
+      "Custom canvases, layers and layouts",
+      "Design help and custom domain from our team",
       "Dedicated support",
     ],
   },
@@ -150,19 +140,19 @@ export const FAQS = [
   },
   {
     q: "Do guests have to look up their table?",
-    a: "No. Their personalised link opens the invitation with their name and their table already on the page, along with who else is on that table and where it sits on the hall plan. You publish the seating only when you're ready.",
+    a: "No. Their link opens the invitation with their name and table already on it, along with who else is at that table. You publish the seating only when you're ready.",
   },
   {
     q: "Is it really one payment?",
-    a: "Yes. One-time, per wedding: Choose Essential, Complete or Studio. See current prices and hosting periods in the plans section.",
+    a: "Yes. One-time, per wedding: choose Essential, Complete or Studio. Current prices and hosting periods are shown with each plan.",
   },
   {
     q: "Can we use our own domain?",
-    a: "Custom domains are part of the Studio plan. Every other plan gets a link on wed.rovty.com, for example wed.rovty.com/amara-kavin.",
+    a: "Custom domains are part of Studio. Every other plan gets a link on wed.rovty.com, for example wed.rovty.com/amara-kavin.",
   },
   {
-    q: "What if details change after we've sent invitations?",
-    a: "Edit them in your dashboard. The invitation link stays the same, so the page your guests already have updates itself, and guest notifications keep everyone informed of the change.",
+    q: "What if details change after we've sent it?",
+    a: "Edit them in your dashboard. The link stays the same, so the page your guests already have updates itself.",
   },
   {
     q: "Do you work with wedding planners?",

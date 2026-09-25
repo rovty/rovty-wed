@@ -1,16 +1,27 @@
-import { useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Music2, VolumeX } from "lucide-react";
 
 // Default track, used until a wedding uploads its own (Details tab).
 const DEFAULT_MUSIC_SRC =
   "https://raw.githubusercontent.com/emiresh/wedrsvp/main/music.mp3";
 
+// Real invitations always want their music; the wed.rovty.com marketing
+// homepage's live template picker (LivePreviewPhone.tsx) is the one place
+// that renders a full template purely as a decorative preview and needs it
+// silenced — wrapping just that subtree in this provider, rather than
+// threading a "preview" prop through every one of the 16 signature
+// templates that render <MusicPlayer> inline.
+const MusicDisabledContext = createContext(false);
+export const MusicDisabledProvider = MusicDisabledContext.Provider;
+
 export function MusicPlayer({ src }: { src?: string | null } = {}) {
+  const disabled = useContext(MusicDisabledContext);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState(false);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    if (disabled) return;
     const a = new Audio(src || DEFAULT_MUSIC_SRC);
     a.loop = true;
     a.volume = 0.2;
@@ -46,7 +57,7 @@ export function MusicPlayer({ src }: { src?: string | null } = {}) {
       a.pause();
       audioRef.current = null;
     };
-  }, [src]);
+  }, [src, disabled]);
 
   const toggle = () => {
     const a = audioRef.current;
@@ -60,6 +71,8 @@ export function MusicPlayer({ src }: { src?: string | null } = {}) {
         .catch(() => setPlaying(false));
     }
   };
+
+  if (disabled) return null;
 
   return (
     <button

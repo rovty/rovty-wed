@@ -9,7 +9,14 @@
 // the actual page (implements the "Rovty Wed Landing B" design canvas).
 import { createFileRoute } from "@tanstack/react-router";
 import { WedLandingPage } from "@/components/wed-landing/WedLandingPage";
-import { UI_FONTS_HREF, fontLinks } from "@/lib/wedding";
+import { fontLinks } from "@/lib/wedding";
+
+// This route's own font, not the shared UI_FONTS_HREF (Archivo) every other
+// admin/marketing route uses — the "Rovty Wed Home" redesign is set in
+// Geist, not Archivo. Signature-template previews in the live picker load
+// their own per-template fonts separately (LivePreviewPhone.tsx).
+const HOME_FONTS_HREF =
+  "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap";
 
 const TITLE = "Rovty Wed | Wedding Invitations Your Guests Actually Open";
 const DESCRIPTION =
@@ -39,7 +46,7 @@ export const Route = createFileRoute("/")({
     // Template previews load their own fonts when they become visible.
     links: [
       { rel: "canonical", href: CANONICAL },
-      ...fontLinks(UI_FONTS_HREF),
+      ...fontLinks(HOME_FONTS_HREF),
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap",

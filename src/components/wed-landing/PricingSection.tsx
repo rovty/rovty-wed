@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import { useWedPricing } from "@/hooks/useWedPricing";
 import { PLANS, WHATSAPP_HREF } from "./content";
 
@@ -6,90 +7,114 @@ export function PricingSection() {
   return (
     <section
       id="pricing"
-      className="scroll-mt-16 border-b-2 border-wl-ink bg-white"
+      className="relative z-[2] flex scroll-mt-16 flex-col gap-9 px-5 pt-[90px] sm:px-10 lg:px-[120px]"
     >
-      <div className="mx-auto max-w-[1280px] px-5 pt-12 sm:px-7">
-        <div className="grid items-end gap-6 sm:grid-cols-[1fr,auto]">
-          <h2 className="font-archivo m-0 text-[30px] font-extrabold leading-[0.98] tracking-[-0.035em] text-wl-ink sm:text-5xl">
-            <span className="mr-3.5 align-top text-[11px] font-bold tracking-[0.2em] text-wed">
-              06
-            </span>
-            One payment, per wedding
-          </h2>
-          <p className="m-0 max-w-[50ch] text-[15.5px] leading-relaxed text-[#3c3a39]">
-            No subscription and no per-guest fee. Hosting is included for the
-            period shown with each plan.
-          </p>
-        </div>
-        <div className="mt-6 h-0.5 bg-wl-ink" />
+      <div className="flex flex-wrap items-end justify-between gap-10">
+        <h2 className="m-0 text-[34px] font-semibold leading-none tracking-[-0.04em] text-wl-ink sm:text-[52px]">
+          One payment,{" "}
+          <span className="font-['Instrument_Serif',Georgia,serif] font-normal italic">
+            per wedding.
+          </span>
+        </h2>
+        <p className="m-0 max-w-[340px] text-[15.5px] leading-relaxed text-[#4f494b]">
+          No subscription, no per-guest fee. Hosting included for the period
+          shown.
+        </p>
+      </div>
 
-        <div className="grid gap-6 py-[34px] sm:grid-cols-3">
-          {PLANS.filter((p) => pricing.available(p.name)).map((p) => (
+      <div className="grid grid-cols-1 items-stretch gap-4 sm:grid-cols-3">
+        {PLANS.filter((p) => pricing.available(p.name)).map((p) => {
+          const dark = !!p.badge;
+          return (
             <div
               key={p.name}
-              className="flex flex-col border-2 border-wl-ink p-6"
-              style={p.badge ? { boxShadow: "6px 6px 0 #201e1d" } : undefined}
+              className={
+                dark
+                  ? "relative flex flex-col overflow-hidden rounded-[30px] bg-wl-ink p-[30px_28px] text-[#f6f1ee] shadow-[0_30px_70px_-30px_rgba(29,26,27,0.6)]"
+                  : "flex flex-col rounded-[30px] border border-white/85 bg-white/50 p-[30px_28px] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_24px_50px_-34px_rgba(90,25,55,0.35)] backdrop-blur-[30px] backdrop-saturate-[1.7]"
+              }
             >
-              <div className="flex flex-wrap items-center gap-2.5">
-                <h3 className="font-archivo m-0 text-2xl font-extrabold tracking-[-0.025em]">
+              {dark && (
+                <div
+                  aria-hidden="true"
+                  className="absolute -left-[60px] -top-[110px] h-[300px] w-[300px] rounded-full opacity-85 blur-[90px]"
+                  style={{ background: "var(--color-wed)" }}
+                />
+              )}
+              <div className="relative flex items-center justify-between">
+                <div className="text-xl font-semibold tracking-[-0.02em]">
                   {p.name}
-                </h3>
+                </div>
                 {p.badge && (
-                  <span className="bg-wed px-[9px] py-[5px] text-[9.5px] font-bold uppercase tracking-[0.14em] text-white">
+                  <span className="flex h-[26px] items-center rounded-full border border-white/25 bg-white/14 px-[11px] text-[11.5px] font-semibold">
                     {p.badge}
                   </span>
                 )}
               </div>
-              <div className="mt-3 text-[34px] font-extrabold leading-none tracking-[-0.03em]">
-                {pricing.price(p.name)}
-              </div>
-              <div className="mt-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-[#605d5d]">
-                {p.priceNote}
-                {pricing.months(p.name)
-                  ? ` · ${pricing.months(p.name)} months hosting`
-                  : ""}
-              </div>
-              <p className="mt-3.5 text-sm leading-relaxed text-[#605d5d]">
+              <p
+                className="relative m-0 mt-1.5 min-h-10 text-sm leading-relaxed"
+                style={{ color: dark ? "rgba(246,241,238,0.75)" : "#55504f" }}
+              >
                 {p.description}
               </p>
-              <a
-                href={pricing.href(p.name)}
-                className="mt-[18px] inline-flex items-center justify-center gap-2 border-2 border-wed bg-wed px-[18px] py-3 text-[12.5px] font-bold uppercase tracking-[0.12em] text-white no-underline hover:border-wed-deep hover:bg-wed-deep"
-              >
-                Choose {p.name}
-              </a>
-
-              <div className="mt-7 h-0.5 bg-wl-ink" />
-              <div className="mt-4 text-[10px] font-bold uppercase tracking-[0.2em] text-[#9b9797]">
-                Included
+              <div className="relative mt-4 flex items-baseline gap-2.5">
+                <span className="text-[38px] font-semibold leading-none tracking-[-0.035em]">
+                  {pricing.price(p.name)}
+                </span>
+                <span
+                  className="text-[12.5px]"
+                  style={{ color: dark ? "rgba(246,241,238,0.7)" : "#6b6567" }}
+                >
+                  {p.priceNote}
+                  {pricing.months(p.name)
+                    ? ` · ${pricing.months(p.name)} months hosting`
+                    : ""}
+                </span>
               </div>
-              <ul className="m-0 mt-3 list-none p-0">
+              <ul
+                className="relative m-0 mb-[22px] mt-5 flex list-none flex-col gap-2.5 p-0 text-[13.5px] leading-[1.4]"
+                style={{ color: dark ? undefined : "#2e2a2b" }}
+              >
                 {p.features.map((f) => (
-                  <li
-                    key={f}
-                    className="flex gap-[9px] border-t border-[rgba(32,30,29,.1)] py-[7px] text-[13.5px] leading-[1.45]"
-                  >
-                    <span className="mt-[7px] h-[5px] w-[5px] flex-shrink-0 bg-wed" />
+                  <li key={f} className="flex gap-2.5">
+                    <Check
+                      size={15}
+                      strokeWidth={2.4}
+                      className="mt-0.5 flex-shrink-0"
+                      color={dark ? "#f0b5cf" : "var(--color-wed)"}
+                    />
                     {f}
                   </li>
                 ))}
               </ul>
+              <a
+                href={pricing.href(p.name)}
+                className={
+                  dark
+                    ? "relative mt-auto flex h-12 items-center justify-center rounded-full bg-white text-[14.5px] font-semibold text-wl-ink no-underline"
+                    : "mt-auto flex h-12 items-center justify-center rounded-full border border-black/8 bg-white/85 text-[14.5px] font-semibold text-wl-ink no-underline"
+                }
+              >
+                Choose {p.name}
+              </a>
             </div>
-          ))}
-        </div>
+          );
+        })}
+      </div>
 
-        <div className="py-5 pb-11 text-[13px] text-[#605d5d]">
-          Planning several weddings?{" "}
-          <a
-            href={WHATSAPP_HREF}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-bold text-wl-ink"
-          >
-            Message us
-          </a>{" "}
-          about planner and vendor pricing.
-        </div>
+      <div className="text-center text-sm text-[#5a5456]">
+        <a href="/pricing/wed" className="font-semibold text-wl-ink">
+          Compare every feature
+        </a>{" "}
+        · Planning several weddings?{" "}
+        <a
+          href={WHATSAPP_HREF}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-wl-ink"
+        >
+          Message us
+        </a>
       </div>
     </section>
   );

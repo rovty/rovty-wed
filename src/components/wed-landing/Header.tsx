@@ -2,38 +2,65 @@ import { WHATSAPP_HREF } from "./content";
 
 const SIGN_IN_URL = "/admin";
 
+// Floating glass pill nav — replaces the old sticky ink/paper bar to match
+// the "Rovty Wed Home" redesign (glassmorphism over ambient colour, not the
+// flat Modernist header). See Hero.tsx for the ambient background it floats
+// over.
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b-2 border-wl-ink bg-wl-paper">
-      <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-5 px-5 sm:px-7">
-        <a href="#b-top" className="flex items-center gap-2.5 no-underline">
-          <span className="h-3.5 w-3.5 flex-shrink-0 bg-wed" />
-          <span className="text-base font-black uppercase tracking-tight text-wl-ink">
-            Rovty Wed
+    <header className="relative z-[5] flex justify-center pt-5">
+      <nav
+        aria-label="Main"
+        className="flex h-[60px] w-full max-w-[1200px] items-center justify-between gap-4 rounded-full border border-white/80 bg-white/55 py-0 pl-[22px] pr-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_18px_40px_-24px_rgba(90,25,55,0.35)] backdrop-blur-[28px] backdrop-saturate-[1.7]"
+      >
+        <a
+          href="#top"
+          className="flex items-center gap-2.5 text-wl-ink no-underline"
+        >
+          <span
+            className="h-[22px] w-[22px] flex-shrink-0 rounded-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.5)]"
+            style={{
+              background:
+                "radial-gradient(circle at 30% 30%, #b44d7b, var(--color-wed) 70%)",
+            }}
+          />
+          <span className="text-base font-semibold tracking-[-0.02em]">
+            Rovty{" "}
+            <span className="font-['Instrument_Serif',Georgia,serif] text-[19px] font-normal italic">
+              Wed
+            </span>
           </span>
         </a>
-        <nav className="flex items-center gap-4 sm:gap-5">
+        <div className="hidden items-center gap-[30px] md:flex">
           <a
-            href="/templates"
-            className="hidden text-[12.5px] font-semibold text-wl-ink no-underline hover:text-wed-deep lg:inline"
+            href="#designs"
+            className="text-sm font-medium text-[#3a3536] no-underline"
           >
-            The collection
+            Designs
           </a>
           <a
-            href="#how"
-            className="hidden text-[12.5px] font-semibold text-wl-ink no-underline hover:text-wed-deep lg:inline"
+            href="#features"
+            className="text-sm font-medium text-[#3a3536] no-underline"
           >
-            How it works
+            Features
           </a>
           <a
             href="#pricing"
-            className="hidden text-[12.5px] font-semibold text-wl-ink no-underline hover:text-wed-deep lg:inline"
+            className="text-sm font-medium text-[#3a3536] no-underline"
           >
             Pricing
           </a>
           <a
+            href="#faq"
+            className="text-sm font-medium text-[#3a3536] no-underline"
+          >
+            Questions
+          </a>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <a
             href={SIGN_IN_URL}
-            className="text-[12.5px] font-semibold text-wl-ink no-underline hover:text-wed-deep"
+            className="flex h-11 items-center rounded-full px-[18px] text-sm font-medium text-wl-ink no-underline"
           >
             Sign in
           </a>
@@ -41,12 +68,12 @@ export function Header() {
             href={WHATSAPP_HREF}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 border-2 border-wed bg-wed px-3.5 py-2.5 text-[12.5px] font-bold uppercase tracking-[0.12em] text-white no-underline hover:border-wed-deep hover:bg-wed-deep sm:px-[18px]"
+            className="flex h-11 items-center rounded-full bg-wl-ink px-5 text-sm font-semibold text-white no-underline shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]"
           >
             WhatsApp us
           </a>
-        </nav>
-      </div>
+        </div>
+      </nav>
     </header>
   );
 }

@@ -1,41 +1,30 @@
-// Rovty Wed's marketing homepage — implements the "Rovty Wed Landing B"
-// design canvas (claude.ai/design) section for section. This is what `/`
-// renders instead of "whichever wedding happens to be published" (see
-// routes/index.tsx's header comment for why that changed).
+// Rovty Wed's marketing homepage — implements the "Rovty Wed Home" redesign
+// (glassmorphism over an ambient colour wash, Geist type, a live picker of
+// the 16 signature templates with a real phone preview) rather than the
+// earlier flat "Modernist" shell. See AmbientBackground.tsx and
+// LivePreviewPhone.tsx for the two pieces that make that possible.
 //
-// Deliberately its own visual system ("Modernist": ink/paper, hard 2px
-// borders, Archivo type, one warm-red accent — see the --wl-* / --wed*
-// tokens in styles.css) rather than the rose-and-gold .theme-* invitation
-// look: this is the product's own marketing shell, the same idea as
-// .admin-portal's back-office shell but with the accent the design
-// specifies. Every demo below (BuilderDemo, SeatingDemo, AdminDemo) is
-// wired to the product's real template themes and copy — nothing here is
-// aspirational.
+// BuildSection, SeatSection, DashboardSection and the standalone CtaBanner
+// aren't part of this redesign's information architecture (folded into
+// Hero's live picker and FaqSection's embedded WhatsApp CTA) — their files
+// are left in place, just unused here, rather than deleted sight unseen.
+import { AmbientBackground } from "./AmbientBackground";
 import { Header } from "./Header";
 import { Hero } from "./Hero";
-import { BuildSection } from "./BuildSection";
 import { FeaturesSection } from "./FeaturesSection";
-import { HowSection } from "./HowSection";
-import { SeatSection } from "./SeatSection";
-import { DashboardSection } from "./DashboardSection";
 import { PricingSection } from "./PricingSection";
 import { FaqSection } from "./FaqSection";
-import { CtaBanner } from "./CtaBanner";
 import { Footer } from "./Footer";
 
 export function WedLandingPage() {
   return (
-    <div className="overflow-x-hidden bg-wl-paper font-archivo text-wl-ink">
+    <div className="relative min-h-screen overflow-x-hidden bg-[#f6f1ee] font-['Geist',-apple-system,'Helvetica_Neue',sans-serif] text-wl-ink">
+      <AmbientBackground />
       <Header />
       <Hero />
-      <BuildSection />
       <FeaturesSection />
-      <HowSection />
-      <SeatSection />
-      <DashboardSection />
       <PricingSection />
       <FaqSection />
-      <CtaBanner />
       <Footer />
     </div>
   );

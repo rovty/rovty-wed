@@ -1,118 +1,44 @@
-import { WHATSAPP_HREF } from "./content";
-
 const SIGN_IN_URL = "/admin";
 
 export function Footer() {
-  const year = new Date().getFullYear();
-
   return (
-    <footer className="bg-wl-ink text-wl-paper">
-      <div
-        className="mx-auto grid max-w-[1280px] gap-8 px-5 py-11 pb-10 sm:px-7"
-        style={{ gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))" }}
-      >
-        <div>
-          <div className="flex items-center gap-2.5">
-            <span className="h-3.5 w-3.5 bg-wed" />
-            <span className="text-[17px] font-black uppercase tracking-tight">
-              Rovty Wed
+    <footer className="relative z-[2] mt-auto px-5 pb-10 pt-[90px] sm:px-10 lg:px-[120px]">
+      <div className="flex flex-col items-start gap-4 border-t border-black/10 pt-6 text-[13.5px] text-[#5a5456] sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2.5">
+          <span
+            className="h-[18px] w-[18px] rounded-full"
+            style={{
+              background:
+                "radial-gradient(circle at 30% 30%, #b44d7b, var(--color-wed) 70%)",
+            }}
+          />
+          <span className="font-semibold text-wl-ink">
+            Rovty{" "}
+            <span className="font-['Instrument_Serif',Georgia,serif] text-base font-normal italic">
+              Wed
             </span>
-          </div>
-          <p className="mt-3.5 max-w-[30ch] text-[13px] leading-relaxed text-wl-paper/70">
-            Wedding invitations, guest lists, RSVPs and seating in one link. A
-            product by Rovty (Pvt) Ltd.
-          </p>
+          </span>
+          <span>· A product by Rovty</span>
         </div>
-
-        <div>
-          <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-wl-paper/50">
-            Product
-          </div>
-          <div className="mt-3.5 flex flex-col gap-2.5 text-[13.5px]">
-            <a
-              href="#build"
-              className="text-wl-paper no-underline hover:text-wed-soft"
-            >
-              Build one
-            </a>
-            <a
-              href="#pricing"
-              className="text-wl-paper no-underline hover:text-wed-soft"
-            >
-              Pricing
-            </a>
-            <a
-              href="https://rovty.com/pricing/wed"
-              className="text-wl-paper no-underline hover:text-wed-soft"
-            >
-              Full pricing page
-            </a>
-          </div>
-        </div>
-
-        <div>
-          <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-wl-paper/50">
-            Company
-          </div>
-          <div className="mt-3.5 flex flex-col gap-2.5 text-[13.5px]">
-            <a
-              href="https://rovty.com"
-              className="text-wl-paper no-underline hover:text-wed-soft"
-            >
-              Rovty.com
-            </a>
-            <a
-              href="https://rovty.com/privacy"
-              className="text-wl-paper no-underline hover:text-wed-soft"
-            >
-              Privacy
-            </a>
-            <a
-              href="https://rovty.com/terms"
-              className="text-wl-paper no-underline hover:text-wed-soft"
-            >
-              Terms
-            </a>
-            <a
-              href="https://rovty.com/security"
-              className="text-wl-paper no-underline hover:text-wed-soft"
-            >
-              Security
-            </a>
-          </div>
-        </div>
-
-        <div>
-          <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-wl-paper/50">
-            Get started
-          </div>
-          <div className="mt-3.5 flex flex-col gap-2.5 text-[13.5px]">
-            <a
-              href={WHATSAPP_HREF}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-wl-paper no-underline hover:text-wed-soft"
-            >
-              WhatsApp us
-            </a>
-            <a
-              href={SIGN_IN_URL}
-              className="text-wl-paper no-underline hover:text-wed-soft"
-            >
-              Sign in
-            </a>
-            <a
-              href="https://rovty.com/contact"
-              className="text-wl-paper no-underline hover:text-wed-soft"
-            >
-              Contact form
-            </a>
-          </div>
-        </div>
-      </div>
-      <div className="border-t border-wl-paper/20">
-        <div className="mx-auto max-w-[1280px] px-5 py-[18px] pb-[26px] text-xs text-wl-paper/60 sm:px-7">
-          © {year} Rovty (Pvt) Ltd. wed.rovty.com
+        <div className="flex flex-wrap gap-6">
+          <a href="/templates" className="text-[#3a3536] no-underline">
+            Collection
+          </a>
+          <a
+            href="https://rovty.com/privacy"
+            className="text-[#3a3536] no-underline"
+          >
+            Privacy
+          </a>
+          <a
+            href="https://rovty.com/terms"
+            className="text-[#3a3536] no-underline"
+          >
+            Terms
+          </a>
+          <a href={SIGN_IN_URL} className="text-[#3a3536] no-underline">
+            Sign in
+          </a>
         </div>
       </div>
     </footer>
