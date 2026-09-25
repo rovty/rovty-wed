@@ -1,3 +1,15 @@
+import {
+  WEDDING_THEMES,
+  LEGACY_TEMPLATE_IDS,
+  baseTemplate,
+  type LegacyTemplate,
+  type SupportedTemplate,
+} from "./wedding-themes";
+import {
+  isSignatureTemplate,
+  signatureFontsHref,
+  type SignatureTemplateId,
+} from "./wedding-signature";
 import { hostingAvailable } from "@/lib/platform/hosting.functions";
 // Wedding data — was a hardcoded single-tenant constant here; the
 // 20260904000000_multi_tenant.sql migration moved it into the `weddings`
@@ -13,67 +25,20 @@ import { normalizeDesign, type DesignConfig } from "@/lib/studio/design";
 // local equivalent, and so SSR output and client hydration always agree.
 const TZ = "Asia/Colombo";
 
-// Unlike the site's other shared-tree templates historically, each of
-// these 14 has a genuinely different hero layout and opening animation —
-// not just a recolor. TEMPLATE_META carries that structural choice per
-// template; WEDDING_TEMPLATES (label/description only) is what the admin
-// picker UI iterates over. Keep both, plus isDecorativeTemplate/
-// hasLotusPetals below and the `weddings.template` check constraint
-// (migration 20260907000000_wedding_templates_v2.sql), in sync.
-export const WEDDING_TEMPLATES = [
-  {
-    id: "classic",
-    label: "Classic",
-    description: "Rose & gold, soft cards, falling petals.",
-  },
-  {
-    id: "poruwa",
-    label: "Poruwa",
-    description: "Antique gold, double-ruled frame.",
-  },
-  {
-    id: "thali",
-    label: "Thali",
-    description: "Marigold & vermilion, bold band.",
-  },
-  { id: "chapel", label: "Chapel", description: "Powder blue, arched photos." },
-  {
-    id: "nikkah",
-    label: "Nikkah",
-    description: "Sage & gold, geometric hairlines.",
-  },
-  {
-    id: "noir",
-    label: "Noir",
-    description: "Champagne on charcoal, full-bleed.",
-  },
-  {
-    id: "editorial",
-    label: "Editorial",
-    description: "Magazine layout, ink rules.",
-  },
-  {
-    id: "quiet",
-    label: "Quiet",
-    description: "Pearl white, a single hairline.",
-  },
-  {
-    id: "garden",
-    label: "Garden",
-    description: "Sage & cream, arched, italic serif.",
-  },
-  {
-    id: "shoreline",
-    label: "Shoreline",
-    description: "Sea glass & sand, poster photo.",
-  },
-  { id: "deco", label: "Deco", description: "Jade, black & gilt, square." },
-  { id: "film", label: "Film", description: "Warm sepia, photo-led, dark." },
-  { id: "lotus", label: "Lotus", description: "Ivory & gold, falling lotus." },
-  { id: "bloom", label: "Bloom", description: "Blush & rose-gold, arched." },
-] as const;
-export type WeddingTemplate = (typeof WEDDING_TEMPLATES)[number]["id"];
-const TEMPLATE_IDS = WEDDING_TEMPLATES.map((t) => t.id);
+// Rose retains the persisted `classic` ID. Legacy invitations remain readable.
+export const WEDDING_TEMPLATES = WEDDING_THEMES;
+// The 16 bespoke "signature" designs (wedding-signature.ts) are a separate,
+// parallel collection — see that file's header for why they can't join
+// WEDDING_THEMES. WeddingTemplate covers both; TEMPLATE_META, TEMPLATE_
+// FONT_FAMILIES and the rest of the palette/hero machinery below stay keyed
+// by SupportedTemplate only, since signature ids never reach them —
+// WeddingSite.tsx dispatches to components/wedding-templates/ for those
+// before any of that runs.
+export type WeddingTemplate = SupportedTemplate | SignatureTemplateId;
+const TEMPLATE_IDS: string[] = [
+  ...LEGACY_TEMPLATE_IDS,
+  ...WEDDING_THEMES.map((t) => t.id),
+];
 
 export type HeroLayout =
   "centered" | "framed" | "band" | "typo" | "photoTop" | "split" | "lotus";
@@ -100,8 +65,8 @@ export type PhotoFrame =
 // alternate with the page background ("band").
 export type SectionStyle = "card" | "rule" | "band";
 
-export const TEMPLATE_META: Record<
-  WeddingTemplate,
+const LEGACY_TEMPLATE_META: Record<
+  LegacyTemplate,
   {
     hero: HeroLayout;
     opener: OpenerKind;
@@ -210,6 +175,17 @@ export const TEMPLATE_META: Record<
   },
 };
 
+// Keyed by SupportedTemplate, not the wider WeddingTemplate — the 16
+// signature ids (wedding-signature.ts) never index this. Every call site
+// below only runs for a non-signature wedding.template, since WeddingSite()
+// dispatches signature ids to components/wedding-templates/ first.
+export const TEMPLATE_META = Object.fromEntries(
+  TEMPLATE_IDS.map((id) => [
+    id,
+    LEGACY_TEMPLATE_META[baseTemplate(id as SupportedTemplate)],
+  ]),
+) as Record<SupportedTemplate, (typeof LEGACY_TEMPLATE_META)[LegacyTemplate]>;
+
 // Google Fonts families each template actually uses (display / script /
 // kicker — see the matching `.theme-*` blocks in styles.css). Loading only
 // the current template's families instead of all 23 at once cuts the guest
@@ -221,7 +197,7 @@ const FONT_CORMORANT =
   "family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500";
 const FONT_PLAYFAIR =
   "family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400";
-const TEMPLATE_FONT_FAMILIES: Record<WeddingTemplate, string[]> = {
+const TEMPLATE_FONT_FAMILIES: Record<LegacyTemplate, string[]> = {
   classic: [FONT_PLAYFAIR, FONT_CORMORANT],
   poruwa: [
     "family=Cinzel:wght@400;600",
@@ -261,7 +237,11 @@ function googleFontsHref(families: string[]): string {
 
 /** Stylesheet URL for exactly the fonts one template needs (plus Inter). */
 export function templateFontsHref(template: WeddingTemplate): string {
-  return googleFontsHref([FONT_INTER, ...TEMPLATE_FONT_FAMILIES[template]]);
+  if (isSignatureTemplate(template)) return signatureFontsHref(template);
+  return googleFontsHref([
+    FONT_INTER,
+    ...TEMPLATE_FONT_FAMILIES[baseTemplate(template)],
+  ]);
 }
 
 /** Stylesheet URL for the admin portal / product landing (Archivo + Inter). */
@@ -305,7 +285,7 @@ export function hasLotusPetals(template: WeddingTemplate): boolean {
   return LOTUS_PETAL_TEMPLATE_IDS.has(template);
 }
 export function isWeddingTemplate(v: string): v is WeddingTemplate {
-  return (TEMPLATE_IDS as string[]).includes(v);
+  return (TEMPLATE_IDS as string[]).includes(v) || isSignatureTemplate(v);
 }
 
 export type PublicWedding = {

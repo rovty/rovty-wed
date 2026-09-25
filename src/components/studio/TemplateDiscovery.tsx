@@ -1,3 +1,5 @@
+import { themeArtworkStyle } from "@/lib/studio/theme-art";
+import { templateClasses } from "@/lib/wedding-themes";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
@@ -14,6 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { templateFontsHref, type WeddingTemplate } from "@/lib/wedding";
+import { SIGNATURE_TEMPLATES } from "@/lib/wedding-signature";
 import {
   COLLECTIONS,
   DEMO_WEDDING,
@@ -259,6 +262,9 @@ export function TemplateDiscovery({
             </div>
           )}
         </div>
+        {category === "All designs" && (
+          <SignatureCollection query={query} onChoose={onChoose} />
+        )}
       </main>
       <section className="discovery-ending">
         <p className="studio-eyebrow">The template is only the beginning</p>
@@ -273,6 +279,9 @@ export function TemplateDiscovery({
           rovty<span>wed</span>
         </a>
         <span>For the moments that become forever.</span>
+        <a href="/theme-artwork-credits.html" target="_blank" rel="noreferrer">
+          Artwork credits
+        </a>
         <span>© {new Date().getFullYear()} Rovty</span>
       </footer>
       {compared.length > 0 && (
@@ -310,6 +319,99 @@ export function TemplateDiscovery({
   );
 }
 
+// The 16 designs in wedding-signature.ts: each is a fully bespoke page, not
+// a palette built on the Studio's shared hero/section primitives, so unlike
+// the grid above they can't get a live TemplateMiniature preview from
+// createDesign()+TemplateHero — there's no DesignConfig to build one from.
+// A color-and-type card stands in for that; choosing one saves the template
+// directly (Templates.tsx intercepts it before it would ever reach
+// DesignStudio, which assumes every template has Studio section data).
+function SignatureCollection({
+  query,
+  onChoose,
+}: {
+  query: string;
+  onChoose?: (id: WeddingTemplate) => void;
+}) {
+  const filtered = SIGNATURE_TEMPLATES.filter((t) =>
+    `${t.label} ${t.note}`.toLowerCase().includes(query.toLowerCase()),
+  );
+  if (!filtered.length) return null;
+  return (
+    <div className="discovery-signature">
+      <div className="discovery-count">
+        <span>
+          Signature collection · {filtered.length} fully custom designs
+        </span>
+      </div>
+      <div className="discovery-grid">
+        {filtered.map((t) => (
+          <article className="template-card" key={t.id}>
+            <button
+              className="template-card-image"
+              aria-label={`Choose ${t.label}`}
+              onClick={() =>
+                onChoose ? onChoose(t.id) : (window.location.href = "/auth")
+              }
+            >
+              <div
+                className="template-miniature"
+                style={{
+                  background: t.swatch.background,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                  textAlign: "center",
+                  padding: "0 16px",
+                }}
+                aria-hidden="true"
+              >
+                <span
+                  style={{
+                    color: t.swatch.ink,
+                    fontFamily: "'Instrument Serif', Georgia, serif",
+                    fontStyle: "italic",
+                    fontSize: 30,
+                  }}
+                >
+                  {t.label}
+                </span>
+                <span
+                  style={{
+                    width: 28,
+                    height: 2,
+                    background: t.swatch.accent,
+                  }}
+                />
+              </div>
+              <span className="template-card-hover">
+                <Eye size={13} /> Choose this design <ArrowUpRight size={12} />
+              </span>
+            </button>
+            <div className="template-card-meta">
+              <div>
+                <h2>{t.label}</h2>
+                <p>Signature · {t.note}</p>
+              </div>
+              <div className="template-card-tools">
+                <span className="template-swatches" aria-hidden="true">
+                  {[t.swatch.background, t.swatch.ink, t.swatch.accent].map(
+                    (c, i) => (
+                      <i key={i} style={{ background: c }} />
+                    ),
+                  )}
+                </span>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function TemplateMiniature({
   template,
 }: {
@@ -341,18 +443,21 @@ export function TemplateMiniature({
     <div
       ref={root}
       className="template-miniature"
-      style={designVariables(
-        createDesign(template.id),
-        template.palette,
-        template.fonts,
-      )}
+      style={{
+        ...themeArtworkStyle(template.id),
+        ...designVariables(
+          createDesign(template.id),
+          template.palette,
+          template.fonts,
+        ),
+      }}
       aria-hidden="true"
     >
       {visible && (
         <>
           <link rel="stylesheet" href={templateFontsHref(template.id)} />
           <div
-            className={`template-miniature-inner wedding-design design-${template.id} ${template.id === "lotus" || template.id === "classic" ? "" : `collection-design theme-${template.id}`}`}
+            className={`template-miniature-inner wedding-design wedding-stationery collection-design ${templateClasses(template.id)} experience-${template.id}`}
             data-motion="none"
             style={{ transform: `scale(${width / 1100})` }}
           >
@@ -484,6 +589,12 @@ export function TemplatePreviewModal({
                 </header>
               )}
               <PreviewFrame
+                onKeyDown={(event) => {
+                  if (event.key === "Escape") {
+                    event.preventDefault();
+                    onClose();
+                  }
+                }}
                 wedding={{
                   ...(draft?.wedding || sampleWedding(id)),
                   template: id,

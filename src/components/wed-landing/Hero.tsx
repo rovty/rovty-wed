@@ -30,7 +30,7 @@ export function Hero() {
         </div>
         <div className="marketing-studio-benefits">
           <span>
-            <Check size={12} /> 14 distinctive designs
+            <Check size={12} /> 21 distinctive themes
           </span>
           <span>
             <Check size={12} /> Made for every screen
@@ -49,16 +49,16 @@ export function Hero() {
         <a
           href="/templates"
           className="marketing-featured-template"
-          aria-label="Explore Editorial wedding design"
+          aria-label="Explore Rose wedding design"
         >
-          <TemplateMiniature template={getTemplate("editorial")} />
+          <TemplateMiniature template={getTemplate("classic")} />
         </a>
         <a
           href="/templates"
           className="marketing-overlaid-template"
-          aria-label="Explore Garden wedding design"
+          aria-label="Explore Lotus wedding design"
         >
-          <TemplateMiniature template={getTemplate("garden")} />
+          <TemplateMiniature template={getTemplate("lotus")} />
         </a>
         <span className="marketing-art-caption">
           A starting point. Endlessly yours.

@@ -8,7 +8,7 @@ export const Route = createFileRoute("/templates")({
       {
         name: "description",
         content:
-          "Discover 14 distinctive wedding websites. Preview, compare and personalize every detail in the Rovty Wed studio.",
+          "Discover 21 wedding themes, from Rose and Lotus to Ocean Waves. Preview, compare and personalize every detail in the Rovty Wed studio.",
       },
     ],
     links: [

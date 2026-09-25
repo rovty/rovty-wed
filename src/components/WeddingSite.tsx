@@ -1,3 +1,8 @@
+import { weddingTheme, type SupportedTemplate } from "@/lib/wedding-themes";
+import { isSignatureTemplate } from "@/lib/wedding-signature";
+import { SignatureWeddingSite } from "@/components/wedding-templates";
+import { StudioWeddingSite } from "@/components/studio/StudioWeddingSite";
+import { createDesign } from "@/lib/studio/catalog";
 // The full public invitation page body, rendered by /$slug. Every "Public
 // link" and personalised WhatsApp link the admin hands out points here.
 import {
@@ -20,6 +25,7 @@ import { InvitationOpener } from "@/components/InvitationOpener";
 import { Monogram } from "@/components/Monogram";
 import { Motif } from "@/components/Motif";
 import { Reveal } from "@/components/wedding/Reveal";
+import { WeddingAtmosphere } from "@/components/wedding/WeddingAtmosphere";
 import {
   formatWeekdayYear,
   formatTime,
@@ -64,9 +70,28 @@ export function WeddingNotLive() {
 // (hasLotusPetals) instead of joining that set — see that function's own
 // comment in lib/wedding.ts for why.
 export function WeddingSite({ wedding }: { wedding: PublicWedding }) {
+  // The 16 bespoke "signature" designs (wedding-signature.ts) are their own
+  // fixed, fully custom pages — see components/wedding-templates/index.tsx.
+  // They must be checked before weddingTheme() below, which knows nothing
+  // about them and would otherwise fall through to the legacy tree beneath
+  // (TEMPLATE_META has no entry for a signature id).
+  if (isSignatureTemplate(wedding.template)) {
+    return <SignatureWeddingSite wedding={wedding} />;
+  }
+  if (
+    weddingTheme(wedding.template) &&
+    !["classic", "lotus"].includes(wedding.template)
+  ) {
+    return (
+      <StudioWeddingSite
+        wedding={wedding}
+        design={createDesign(wedding.template)}
+      />
+    );
+  }
   const decorative = isDecorativeTemplate(wedding.template);
   const lotusDecor = hasLotusPetals(wedding.template);
-  const meta = TEMPLATE_META[wedding.template];
+  const meta = TEMPLATE_META[wedding.template as SupportedTemplate];
   return (
     // overflow-x-hidden (not -clip) here used to leave <main> as its own
     // independently-scrollable container: per spec, when one axis is
@@ -82,7 +107,7 @@ export function WeddingSite({ wedding }: { wedding: PublicWedding }) {
     // bleed past the edge) without that side effect, since "clip" doesn't
     // carry the "other axis becomes auto" rule "hidden" does.
     <main
-      className={`theme-${wedding.template} relative`}
+      className={`wedding-stationery theme-${wedding.template} relative`}
       style={{ overflowX: "clip" }}
     >
       <div className="tpl-pattern" aria-hidden="true" />
@@ -110,7 +135,7 @@ function Hero({
   wedding: PublicWedding;
   decorative: boolean;
 }) {
-  const { hero, motif } = TEMPLATE_META[wedding.template];
+  const { hero, motif } = TEMPLATE_META[wedding.template as SupportedTemplate];
   const initials = `${wedding.groom.charAt(0)} & ${wedding.bride.charAt(0)}`;
   const photo = wedding.couplePhotoUrl ?? coupleImg;
   const names = `${wedding.groom} & ${wedding.bride}`;
@@ -118,7 +143,10 @@ function Hero({
   const placeLine = [wedding.venue, wedding.hall].filter(Boolean).join(" · ");
 
   return (
-    <section className="relative">
+    <section className="wedding-legacy-hero relative">
+      {!decorative && !hasLotusPetals(wedding.template) && (
+        <WeddingAtmosphere template={wedding.template} />
+      )}
       {/* ── centered: classic / chapel / garden — monogram, family line,
           names stacked large, motif. The most "invitation card" layout. */}
       {hero === "centered" && (
@@ -290,7 +318,7 @@ function Hero({
             <Photo
               src={photo}
               alt={names}
-              frame={TEMPLATE_META[wedding.template].photo}
+              frame={TEMPLATE_META[wedding.template as SupportedTemplate].photo}
               priority
             />
             <div className="text-center md:text-left">
@@ -530,7 +558,8 @@ function Details({
   wedding: PublicWedding;
   decorative: boolean;
 }) {
-  const { motif, sections } = TEMPLATE_META[wedding.template];
+  const { motif, sections } =
+    TEMPLATE_META[wedding.template as SupportedTemplate];
   const rows: { label: string; value: string; sub?: string }[] = [
     {
       label: "The day",
@@ -592,7 +621,7 @@ function Details({
 /* ── Gallery: the couple photo, framed per template ──────────────────── */
 
 function Gallery({ wedding }: { wedding: PublicWedding }) {
-  const { hero, photo } = TEMPLATE_META[wedding.template];
+  const { hero, photo } = TEMPLATE_META[wedding.template as SupportedTemplate];
   // photoTop/split heroes already lead with the photo.
   if (hero === "photoTop" || hero === "split") return null;
   return (
@@ -651,7 +680,8 @@ function CalendarSection({
   wedding: PublicWedding;
   decorative: boolean;
 }) {
-  const { motif, sections } = TEMPLATE_META[wedding.template];
+  const { motif, sections } =
+    TEMPLATE_META[wedding.template as SupportedTemplate];
   return (
     <section className="relative px-5 py-14 sm:py-20">
       {decorative && <RoseCorner position="tl" size={140} opacity={0.25} />}
@@ -776,7 +806,8 @@ function Location({
     !wedding.venuePhotoUrl
   )
     return null;
-  const { sections, photo } = TEMPLATE_META[wedding.template];
+  const { sections, photo } =
+    TEMPLATE_META[wedding.template as SupportedTemplate];
   const mapsHref =
     wedding.mapsUrl ||
     `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(wedding.address ?? wedding.venue ?? "")}`;

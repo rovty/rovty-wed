@@ -5,6 +5,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { WeddingSite, WeddingNotLive } from "@/components/WeddingSite";
 import { StudioWeddingSite } from "@/components/studio/StudioWeddingSite";
+import { SignatureWeddingSite } from "@/components/wedding-templates";
+import { isSignatureTemplate } from "@/lib/wedding-signature";
 import { customFontHref } from "@/lib/studio/design";
 import {
   fetchWeddingBySlug,
@@ -98,7 +100,12 @@ function SlugIndexPage() {
   return (
     <>
       {preview && <TemplateFontLoader template={preview} />}
-      {shown.design ? (
+      {isSignatureTemplate(shown.template) ? (
+        // A leftover `design` from a previous Studio template must never
+        // route this to StudioWeddingSite below — signature designs are
+        // fixed, bespoke pages with no Studio section data to render.
+        <SignatureWeddingSite key={shown.template} wedding={shown} />
+      ) : shown.design ? (
         <StudioWeddingSite
           key={shown.template}
           wedding={shown}

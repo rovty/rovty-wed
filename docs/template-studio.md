@@ -2,7 +2,7 @@
 
 ## Architecture review and implementation proposal
 
-The existing TanStack Start / React 19 app has 14 stable template IDs, CSS themes, per-template opening animations and hero layouts. Supabase owns wedding details, membership permissions, media, guest codes, RSVP and seating. Public pages resolve one published wedding by slug. The original picker only shows text swatches; the separate marketing builder approximates the guest page. Details save independently with no live canvas. Guest pages share most of their body composition.
+The TanStack Start / React 19 app has 21 selectable wedding themes and retains all 14 original IDs for saved invitations. Supabase owns wedding details, membership permissions, media, guest codes, RSVP and seating. Public pages resolve one published wedding by slug. The original picker only shows text swatches; the separate marketing builder approximates the guest page. Details save independently with no live canvas. Guest pages share most of their body composition.
 
 1. **Template system:** retain all IDs and existing invitations. Add a typed catalog of compositions, curated categories, palettes and suggested section orders. The full renderer is shared by live previews and saved studio designs.
 2. **Design system:** ivory studio surfaces, ink typography, olive actions, thin dividers and generous spacing. Guest websites inherit their own visual system. No UI controls leak into a published invitation.
@@ -23,7 +23,7 @@ The public `/templates` studio runs without an account. Anonymous image previews
 
 - `npm test`: normalizes untrusted JSON, rejects unsafe URLs/CSS values, bounds settings and preserves hidden content/order.
 - `npm run typecheck`, `npm run lint`, `npm run build`: TypeScript, repository conventions and the Cloudflare production bundle.
-- With the development server running, `python3 tests/studio_browser.py http://127.0.0.1:8081` uses Python Playwright and Chrome. It covers search/filtering, two-design comparison, modal keyboard dismissal, actual desktop/mobile viewports, local RSVP simulation, live edits without document reloads, fonts, palettes, hidden sections, content retention across templates, undo/redo, local image uploads, draft restoration and all 14 phone layouts. It asserts that no anonymous preview makes Supabase requests.
+- With the development server running, `python3 tests/studio_browser.py http://127.0.0.1:8081` uses Python Playwright and Chrome. It covers search/filtering, two-design comparison, modal keyboard dismissal, actual desktop/mobile viewports, local RSVP simulation, live edits without document reloads, fonts, palettes, hidden sections, content retention across templates, undo/redo, local image uploads, draft restoration and all 21 phone layouts. It asserts that no anonymous preview makes Supabase requests.
 
 The browser suite uses sample data only. Authenticated cloud uploads, RLS enforcement, concurrent database writes and live publishing still require staging verification after the migration; no production database or account was modified during local validation.
 
@@ -33,7 +33,7 @@ The editor is a separate lazy bundle. Bundled photos have responsive 480/960-pix
 
 The architecture review for this iteration found that the studio already had dependable content separation, isolated live previews, uploads, save/publish and undo history. The main gaps were shared body compositions and the inability to author a section freely. This iteration extends those systems without replacing the account, identity, RSVP or publishing flows.
 
-`collection.css` gives Editorial, Garden, Noir, Quiet, Poruwa, Bloom, Film, Thali, Shoreline, Deco, Chapel and Nikkah individual hero, story, event, gallery, venue, RSVP and footer treatments. Original vector ornaments live in `TemplateOrnament.tsx`. These styles are scoped to the 12 designs. Lotus and Classic retain their original appearance, catalog defaults and hero markup. Existing invitations with a null `design` continue to use the original guest renderer.
+`collection.css` retains the legacy layout systems. `wedding-themes.ts` defines the new 21-theme collection, and `wedding/themes.css` composes real artwork around guest information. The original Rose and Lotus floral assets and falling petals are retained; plain geometric template ornaments were removed. Legacy invitations with a null `design` retain their original renderer. New theme IDs use the shared studio renderer even when `design` is null.
 
 The **Elements** panel adds custom canvas sections with text, photographs, shapes and link buttons. Couples can begin with a blank canvas, love note, memory board or party poster. Dragging, resizing, rotation, snapping, an optional grid, text editing on the canvas, font selection, image positioning, borders, opacity, layer order, locks, visibility and duplicate/delete actions share the existing undo history. A selected overflowing text box offers a fit action. Plain form controls provide alternatives to pointer gestures.
 
@@ -41,7 +41,7 @@ Keyboard shortcuts work in both the panel document and preview iframe: Cmd/Ctrl+
 
 ### Backward-compatible design data
 
-The existing version 1 JSON structure accepts optional additions. **No new database migration is required** if the original `weddings.design` migration has already been applied.
+The existing version 1 JSON structure accepts optional additions. The canvas schema needs no additional migration beyond `weddings.design`. The 21-theme collection separately requires the template constraint migration described below.
 
 - `sections[].type = "canvas"` stores a `canvas` object: desktop/mobile height, background image/color/dimming and an ordered element array.
 - Each element has its own ID, type, content, style, desktop `frame` and independent `mobile` frame, plus separate text sizes. Frames use percentages of a fixed-aspect canvas. Typography scales with the canvas width through container query units.
@@ -55,7 +55,7 @@ Desktop preview is 1100px, tablet is 768px and the phone viewport is 375px. Phon
 
 Phone auto-arrangement stacks content while preserving desktop geometry. It refuses layouts that exceed the height limit or would move locked content, so it cannot silently overlap or shrink readable text. Shapes retain their authored positions. Layers and custom sections can also be duplicated or hidden for a screen size. Long names and responsive template layouts are checked at 320, 375, 768, 1100 and 1600px.
 
-The editor remains lazy loaded and uses the existing optimized upload pipeline. Static wedding sections are memoized so canvas gestures do not rerender the rest of the wedding. Canvas images reserve their space before loading. Decorative vectors add no image requests; font stylesheets include only the selected template and chosen custom fonts. Animations respect the existing motion setting and reduced-motion preferences.
+The editor remains lazy loaded and uses the existing optimized upload pipeline. Static wedding sections are memoized so canvas gestures do not rerender the rest of the wedding. Canvas images reserve their space before loading. Theme artwork uses optimized local WebP assets; font stylesheets include only the selected template and chosen custom fonts. Animations respect the existing motion setting and reduced-motion preferences.
 
 ### Additional verification
 
@@ -67,6 +67,24 @@ python3 tests/studio_browser.py http://127.0.0.1:5178 --visual
 python3 tests/studio_browser.py http://127.0.0.1:5178 --save
 ```
 
-The canvas suite exercises actual pointer gestures, inline edits, fitting text, locks, layers, shortcuts, undo/redo, image uploads, zoom, independent phone geometry, tablet preview, section overrides, template switching, the public renderer and restored drafts. The visual suite writes full-page captures under `/tmp/rovty-studio-after-*`; it compares Lotus and Classic with their original committed CSS in the same document with loaded fonts to avoid false differences from network timing. It checks every template at five widths, including long names.
+The canvas suite exercises actual pointer gestures, inline edits, fitting text, locks, layers, shortcuts, undo/redo, image uploads, zoom, independent phone geometry, tablet preview, section overrides, template switching, the public renderer and restored drafts. The visual suite writes full-page captures under `/tmp/rovty-studio-after-*`. It checks every template at five widths, including long names.
 
 The save suite reuses the adjacent dashboard project's mocked account fixture and the Wed test origin. It verifies that custom canvas data survives the authenticated save/reload path, couple identity stays locked, and conflicting saves retain the latest edits. All account and data writes are mocked; live Supabase uploads and deployment still need staging verification. `tests/canvas.test.ts` covers hostile JSON, limits, ID collisions, geometry, snapping, duplication, presets and storage compatibility.
+
+## Twenty-one wedding themes and preview navigation
+
+`src/lib/wedding-themes.ts` is the source of truth for the selectable order, main elements, palettes, motion and base typography. Rose keeps the persisted `classic` ID, followed by Lotus, Olive, Cherry Blossom, Orchid, Jasmine, Palm, Butterfly, Moon & Stars, Dove, Ring, Feather, Eucalyptus, Sunflower, Wheat, Candlelight, Traditional Oil Lamp, Peacock, Ocean Waves, Tree of Love and Greenery Forest.
+
+The other 12 original IDs remain accepted by public reads, draft restoration, fonts, metadata and `getTemplate()`. They remain renderable but are no longer presented as new choices. Existing wedding rows are not renamed or rewritten. Apply `supabase/migrations/20260925000000_wedding_nature_themes.sql` **before deploying** this collection; it only expands the allowed `weddings.template` values. This change does not apply migrations or deploy automatically.
+
+Rose and Lotus use their existing corner florals, blossoms and falling petals. The other themes use their own licensed photographs with soft edges, foliage sway, floating movement, candle glow or ocean drift. Traditional Oil Lamp features a Sri Lankan heritage lamp. Each theme carries its palette, fonts and main element through its cover, opening experience, RSVP, closing note and seating card. Couple and venue photos remain editable in their own sections. New artwork provenance and licenses are documented in `docs/theme-artwork.md` and the guest-facing `/theme-artwork-credits.html` page.
+
+`TemplateHero.tsx` shares semantic guest information. `theme-experiences.ts` defines theme-specific starter section orders and copy, and `experiences.css` gives each unapproved theme its own hero composition, body arrangements, opener and seating treatment. The approved Rose, Lotus and Candlelight heroes are preserved exactly. Examples include Olive’s botanical folio, Orchid’s tall editorial panel, Jasmine’s central garland invitation, Palm’s tropical postcard, Moon & Stars’ centered night sky, Ocean’s panoramic shoreline and Greenery Forest’s immersive woodland setting. Existing customized section content remains untouched when switching themes. Navigation links only to enabled sections and respects desktop/mobile section visibility. “Join our celebration” scrolls to RSVP. Interactive targets are at least 44px high. Default text and primary buttons meet WCAG AA normal-text contrast; long names wrap on narrow displays. Motion off and system reduced-motion preferences suppress animation and falling petals. Collection thumbnails are static.
+
+`PreviewFrame` handles fragment links in its own document because srcdoc iframes otherwise resolve them against the embedding editor URL. It focuses and scrolls to the requested section without navigating or rebuilding the document. Escape closes the modal even when focus is inside the preview. Published pages use native section anchors.
+
+`SeatingExperience` uses the invitation's palette, typography, artwork and motion settings. The place card includes the guest's name, table name/number, tablemates and the uploaded hall plan. Missing plans direct guests to the hosts. Loading, missing personal links, unpublished seating and request errors have explicit states. The return link retains the guest code.
+
+Run `python3 tests/studio_browser.py http://127.0.0.1:5178 --stationery` for all 21 themes at five viewport sizes, artwork loading, touch targets, mouse/keyboard anchor navigation, editor draft retention, section visibility, all opening covers, legacy compatibility, seating states and motion preferences. Screenshots are saved under `/tmp/rovty-stationery-*` and `/tmp/rovty-seating-*`. The fixture under `tests/` is not in the production app. The standard browser suite also checks all 21 choices, comparison, local RSVP, fonts, colors, content, undo/redo and draft restoration. Unit checks cover stable IDs, migration compatibility and default text/button contrast.
+
+The September 25 experience revision was checked across all 21 themes at five viewport widths, including opening covers, old saved IDs, draft retention, seating states and reduced motion. Pixel comparisons confirmed that the approved Rose, Lotus and Candlelight desktop hero captures remained identical.

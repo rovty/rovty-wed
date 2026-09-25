@@ -2327,3 +2327,1045 @@
   color: #3f2e2b;
   border-radius: 28px;
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   Signature collection (src/lib/wedding-signature.ts) — 16 fully bespoke
+   designs, each its own page in components/wedding-templates/. Unlike the
+   legacy themes above, these don't share a hero/section skeleton — the
+   blocks below exist only so each design can drop in the shared
+   InlineRsvp/Countdown/SeatingCta components (.tpl-card, .tpl-btn,
+   .tpl-choice, .tpl-input, .font-display/.font-script/.font-kicker) themed
+   to match, exactly the same contract every .theme-* block above fulfills.
+   Everything else about each design lives in its own component file.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Maison — editorial, terracotta on warm paper ── */
+.theme-maison {
+  background: #f4efe6;
+  --foreground: #1b1a17;
+  --muted-foreground: #6b655a;
+  --border: rgba(27, 26, 23, 0.18);
+  --gold: #a4502f;
+  --rose: #a4502f;
+  --gradient-gold: #a4502f;
+  --btn-ink: #ffffff;
+  --tpl-radius: 2px;
+  --tpl-radius-sm: 2px;
+  --tpl-surface: #fbf8f2;
+  --tpl-surface-border: rgba(27, 26, 23, 0.14);
+  --tpl-shadow: 0 20px 40px -28px rgba(27, 26, 23, 0.3);
+  --tpl-rule: rgba(27, 26, 23, 0.18);
+  --tpl-band-surface: rgba(164, 80, 47, 0.12);
+  --tpl-input-bg: #ffffff;
+}
+.theme-maison h1,
+.theme-maison h2,
+.theme-maison h3,
+.theme-maison h4,
+.theme-maison .font-display {
+  font-family: "Instrument Serif", serif !important;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: -0.02em;
+}
+.theme-maison .font-script {
+  font-family: "Instrument Serif", serif !important;
+}
+.theme-maison .font-kicker {
+  font-family: "DM Sans", sans-serif !important;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-style: normal;
+  font-weight: 600;
+}
+.theme-maison .glass-card {
+  background: #fbf8f2;
+  border: 1px solid rgba(27, 26, 23, 0.14);
+  box-shadow: 0 20px 40px -28px rgba(27, 26, 23, 0.3);
+  border-radius: 2px !important;
+  backdrop-filter: none;
+}
+.theme-maison .tpl-btn,
+.theme-maison .tpl-icon {
+  background: #a4502f;
+  color: #fff;
+  border-radius: 2px;
+}
+.theme-maison .tpl-photo {
+  border-radius: 0;
+  filter: none;
+}
+.theme-maison .tpl-band {
+  background: rgba(164, 80, 47, 0.12);
+  color: #1b1a17;
+  border-radius: 2px;
+}
+
+/* ── Mono — bold grid, save-the-date energy ── */
+.theme-mono {
+  background: #fafaf7;
+  --foreground: #111111;
+  --muted-foreground: #6b6b66;
+  --border: rgba(17, 17, 17, 0.16);
+  --gold: #d63d20;
+  --rose: #d63d20;
+  --gradient-gold: #d63d20;
+  --btn-ink: #ffffff;
+  --tpl-radius: 0px;
+  --tpl-radius-sm: 0px;
+  --tpl-surface: #ffffff;
+  --tpl-surface-border: rgba(17, 17, 17, 0.16);
+  --tpl-shadow: none;
+  --tpl-rule: rgba(17, 17, 17, 0.16);
+  --tpl-band-surface: rgba(214, 61, 32, 0.1);
+  --tpl-input-bg: #ffffff;
+}
+.theme-mono h1,
+.theme-mono h2,
+.theme-mono h3,
+.theme-mono h4,
+.theme-mono .font-display {
+  font-family: "Bricolage Grotesque", sans-serif !important;
+  font-weight: 800;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: -0.02em;
+}
+.theme-mono .font-script {
+  font-family: "Bricolage Grotesque", sans-serif !important;
+  font-style: normal !important;
+}
+.theme-mono .font-kicker {
+  font-family: "DM Mono", monospace !important;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-style: normal;
+  font-weight: 500;
+}
+.theme-mono .glass-card {
+  background: #ffffff;
+  border: 1px solid rgba(17, 17, 17, 0.16);
+  box-shadow: none;
+  border-radius: 0 !important;
+  backdrop-filter: none;
+}
+.theme-mono .tpl-btn,
+.theme-mono .tpl-icon {
+  background: #111111;
+  color: #fafaf7;
+  border-radius: 0;
+}
+.theme-mono .tpl-photo {
+  border-radius: 0;
+  filter: grayscale(1) contrast(1.08);
+}
+.theme-mono .tpl-band {
+  background: rgba(214, 61, 32, 0.1);
+  color: #111111;
+  border-radius: 0;
+}
+
+/* ── Pichcha Mala — jasmine and poruwa tradition, deep green and gold ── */
+.theme-pichcha {
+  background: #fbf8ef;
+  --foreground: #1d3a2f;
+  --muted-foreground: #5b7a6a;
+  --border: rgba(15, 61, 46, 0.18);
+  --gold: #b89a45;
+  --rose: #0f3d2e;
+  --gradient-gold: #b89a45;
+  --btn-ink: #1d2a1f;
+  --tpl-radius: 20px;
+  --tpl-radius-sm: 14px;
+  --tpl-surface: #ffffff;
+  --tpl-surface-border: rgba(15, 61, 46, 0.14);
+  --tpl-shadow: 0 20px 40px -28px rgba(15, 61, 46, 0.35);
+  --tpl-rule: rgba(15, 61, 46, 0.18);
+  --tpl-band-surface: rgba(184, 154, 69, 0.15);
+  --tpl-input-bg: #ffffff;
+}
+.theme-pichcha h1,
+.theme-pichcha h2,
+.theme-pichcha h3,
+.theme-pichcha h4,
+.theme-pichcha .font-display {
+  font-family: "Cormorant Upright", serif !important;
+  font-weight: 500;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.theme-pichcha .font-script {
+  font-family: "Cormorant Upright", serif !important;
+}
+.theme-pichcha .font-kicker {
+  font-family: "Hind", sans-serif !important;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-style: normal;
+  font-weight: 500;
+}
+.theme-pichcha .glass-card {
+  background: #ffffff;
+  border: 1px solid rgba(15, 61, 46, 0.14);
+  box-shadow: 0 20px 40px -28px rgba(15, 61, 46, 0.35);
+  border-radius: 20px !important;
+  backdrop-filter: none;
+}
+.theme-pichcha .tpl-btn,
+.theme-pichcha .tpl-icon {
+  background: #0f3d2e;
+  color: #fbf8ef;
+  border-radius: 999px;
+}
+.theme-pichcha .tpl-photo {
+  border-radius: 20px;
+  filter: none;
+}
+.theme-pichcha .tpl-band {
+  background: rgba(184, 154, 69, 0.15);
+  color: #1d3a2f;
+  border-radius: 20px;
+}
+
+/* ── Rouge — a single red rose, dramatic and romantic ── */
+.theme-rouge {
+  background: #4a0d17;
+  --foreground: #f6e7e2;
+  --muted-foreground: #cba9a2;
+  --border: rgba(246, 231, 226, 0.22);
+  --gold: #f0b6ae;
+  --rose: #f0b6ae;
+  --gradient-gold: #f0b6ae;
+  --btn-ink: #4a0d17;
+  --tpl-radius: 16px;
+  --tpl-radius-sm: 14px;
+  --tpl-surface: #5c1320;
+  --tpl-surface-border: rgba(246, 231, 226, 0.18);
+  --tpl-shadow: 0 24px 50px -30px rgba(0, 0, 0, 0.6);
+  --tpl-rule: rgba(246, 231, 226, 0.2);
+  --tpl-band-surface: rgba(240, 182, 174, 0.15);
+  --tpl-input-bg: rgba(0, 0, 0, 0.15);
+}
+.theme-rouge h1,
+.theme-rouge h2,
+.theme-rouge h3,
+.theme-rouge h4,
+.theme-rouge .font-display {
+  font-family: "Fraunces", serif !important;
+  font-weight: 300;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.theme-rouge .font-script {
+  font-family: "Fraunces", serif !important;
+  font-style: italic !important;
+}
+.theme-rouge .font-kicker {
+  font-family: "Outfit", sans-serif !important;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-style: normal;
+  font-weight: 500;
+}
+.theme-rouge .glass-card {
+  background: #5c1320;
+  border: 1px solid rgba(246, 231, 226, 0.18);
+  box-shadow: 0 24px 50px -30px rgba(0, 0, 0, 0.6);
+  border-radius: 16px !important;
+  backdrop-filter: none;
+}
+.theme-rouge .tpl-btn,
+.theme-rouge .tpl-icon {
+  background: #f0b6ae;
+  color: #4a0d17;
+  border-radius: 16px;
+}
+.theme-rouge .tpl-photo {
+  border-radius: 16px;
+  filter: saturate(1.1) contrast(1.05);
+}
+.theme-rouge .tpl-band {
+  background: rgba(240, 182, 174, 0.15);
+  color: #f6e7e2;
+  border-radius: 16px;
+}
+
+/* ── Salt & Sand — a minimal seaside invitation ── */
+.theme-salt-sand {
+  background: #efe6d6;
+  --foreground: #16323c;
+  --muted-foreground: #52646a;
+  --border: rgba(22, 50, 60, 0.16);
+  --gold: #1d5e74;
+  --rose: #1d5e74;
+  --gradient-gold: #1d5e74;
+  --btn-ink: #ffffff;
+  --tpl-radius: 12px;
+  --tpl-radius-sm: 12px;
+  --tpl-surface: #f7f1e6;
+  --tpl-surface-border: rgba(22, 50, 60, 0.14);
+  --tpl-shadow: 0 20px 40px -28px rgba(22, 50, 60, 0.3);
+  --tpl-rule: rgba(22, 50, 60, 0.16);
+  --tpl-band-surface: rgba(29, 94, 116, 0.12);
+  --tpl-input-bg: #f7f1e6;
+}
+.theme-salt-sand h1,
+.theme-salt-sand h2,
+.theme-salt-sand h3,
+.theme-salt-sand h4,
+.theme-salt-sand .font-display {
+  font-family: "Young Serif", serif !important;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.theme-salt-sand .font-script {
+  font-family: "Young Serif", serif !important;
+}
+.theme-salt-sand .font-kicker {
+  font-family: "Work Sans", sans-serif !important;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-style: normal;
+  font-weight: 600;
+}
+.theme-salt-sand .glass-card {
+  background: #f7f1e6;
+  border: 1px solid rgba(22, 50, 60, 0.14);
+  box-shadow: 0 20px 40px -28px rgba(22, 50, 60, 0.3);
+  border-radius: 12px !important;
+  backdrop-filter: none;
+}
+.theme-salt-sand .tpl-btn,
+.theme-salt-sand .tpl-icon {
+  background: #16323c;
+  color: #efe6d6;
+  border-radius: 12px;
+}
+.theme-salt-sand .tpl-photo {
+  border-radius: 12px;
+  filter: none;
+}
+.theme-salt-sand .tpl-band {
+  background: rgba(29, 94, 116, 0.12);
+  color: #16323c;
+  border-radius: 12px;
+}
+
+/* ── Ran Poruwa — the traditional poruwa ceremony, maroon and gold ── */
+.theme-ran-poruwa {
+  background: #f7eedb;
+  --foreground: #3a1a12;
+  --muted-foreground: #8a5a2b;
+  --border: rgba(138, 90, 43, 0.3);
+  --gold: #c9a24a;
+  --rose: #5b0e14;
+  --gradient-gold: #c9a24a;
+  --btn-ink: #3f080d;
+  --tpl-radius: 0px;
+  --tpl-radius-sm: 0px;
+  --tpl-surface: #fffaf0;
+  --tpl-surface-border: rgba(138, 90, 43, 0.3);
+  --tpl-shadow: none;
+  --tpl-rule: rgba(138, 90, 43, 0.35);
+  --tpl-band-surface: rgba(201, 162, 74, 0.15);
+  --tpl-input-bg: rgba(247, 238, 219, 0.5);
+}
+.theme-ran-poruwa h1,
+.theme-ran-poruwa h2,
+.theme-ran-poruwa h3,
+.theme-ran-poruwa h4,
+.theme-ran-poruwa .font-display {
+  font-family: "Marcellus", serif !important;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.theme-ran-poruwa .font-script {
+  font-family: "Cormorant", serif !important;
+  font-style: italic !important;
+}
+.theme-ran-poruwa .font-kicker {
+  font-family: "Jost", sans-serif !important;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-style: normal;
+  font-weight: 500;
+}
+.theme-ran-poruwa .glass-card {
+  background: #fffaf0;
+  border: 1px solid rgba(138, 90, 43, 0.3);
+  box-shadow: none;
+  border-radius: 0 !important;
+  backdrop-filter: none;
+}
+.theme-ran-poruwa .tpl-btn,
+.theme-ran-poruwa .tpl-icon {
+  background: #c9a24a;
+  color: #3f080d;
+  border-radius: 0;
+}
+.theme-ran-poruwa .tpl-photo {
+  border-radius: 0;
+  filter: none;
+}
+.theme-ran-poruwa .tpl-band {
+  background: rgba(201, 162, 74, 0.15);
+  color: #5b0e14;
+  border-radius: 0;
+}
+
+/* ── Evergreen — a misty forest, quiet and romantic ── */
+.theme-evergreen {
+  background: #1c2b24;
+  --foreground: #e9eee4;
+  --muted-foreground: #a7b8a0;
+  --border: rgba(200, 214, 192, 0.24);
+  --gold: #c8d6c0;
+  --rose: #c8d6c0;
+  --gradient-gold: #c8d6c0;
+  --btn-ink: #1c2b24;
+  --tpl-radius: 18px;
+  --tpl-radius-sm: 14px;
+  --tpl-surface: #243830;
+  --tpl-surface-border: rgba(200, 214, 192, 0.18);
+  --tpl-shadow: 0 24px 50px -30px rgba(0, 0, 0, 0.55);
+  --tpl-rule: rgba(200, 214, 192, 0.24);
+  --tpl-band-surface: rgba(200, 214, 192, 0.12);
+  --tpl-input-bg: rgba(0, 0, 0, 0.18);
+}
+.theme-evergreen h1,
+.theme-evergreen h2,
+.theme-evergreen h3,
+.theme-evergreen h4,
+.theme-evergreen .font-display {
+  font-family: "Bellefair", serif !important;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.theme-evergreen .font-script {
+  font-family: "Bellefair", serif !important;
+}
+.theme-evergreen .font-kicker {
+  font-family: "Manrope", sans-serif !important;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-style: normal;
+  font-weight: 600;
+}
+.theme-evergreen .glass-card {
+  background: #243830;
+  border: 1px solid rgba(200, 214, 192, 0.18);
+  box-shadow: 0 24px 50px -30px rgba(0, 0, 0, 0.55);
+  border-radius: 18px !important;
+  backdrop-filter: none;
+}
+.theme-evergreen .tpl-btn,
+.theme-evergreen .tpl-icon {
+  background: #c8d6c0;
+  color: #1c2b24;
+  border-radius: 999px;
+}
+.theme-evergreen .tpl-photo {
+  border-radius: 18px;
+  filter: saturate(0.85);
+}
+.theme-evergreen .tpl-band {
+  background: rgba(200, 214, 192, 0.12);
+  color: #e9eee4;
+  border-radius: 18px;
+}
+
+/* ── Fern — eucalyptus and fern, soft canopy light ── */
+.theme-fern {
+  background: #eef0e2;
+  --foreground: #243021;
+  --muted-foreground: #52604c;
+  --border: rgba(36, 48, 33, 0.16);
+  --gold: #3f5a2a;
+  --rose: #3f5a2a;
+  --gradient-gold: #3f5a2a;
+  --btn-ink: #eef0e2;
+  --tpl-radius: 24px;
+  --tpl-radius-sm: 16px;
+  --tpl-surface: #ffffff;
+  --tpl-surface-border: rgba(36, 48, 33, 0.1);
+  --tpl-shadow: 0 20px 40px -28px rgba(36, 48, 33, 0.3);
+  --tpl-rule: rgba(36, 48, 33, 0.16);
+  --tpl-band-surface: rgba(63, 90, 42, 0.12);
+  --tpl-input-bg: #ffffff;
+}
+.theme-fern h1,
+.theme-fern h2,
+.theme-fern h3,
+.theme-fern h4,
+.theme-fern .font-display {
+  font-family: "Castoro", serif !important;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: -0.01em;
+}
+.theme-fern .font-script {
+  font-family: "Castoro", serif !important;
+  font-style: italic !important;
+}
+.theme-fern .font-kicker {
+  font-family: "Instrument Sans", sans-serif !important;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-style: normal;
+  font-weight: 600;
+}
+.theme-fern .glass-card {
+  background: #ffffff;
+  border: 1px solid rgba(36, 48, 33, 0.1);
+  box-shadow: 0 20px 40px -28px rgba(36, 48, 33, 0.3);
+  border-radius: 24px !important;
+  backdrop-filter: none;
+}
+.theme-fern .tpl-btn,
+.theme-fern .tpl-icon {
+  background: #3f5a2a;
+  color: #eef0e2;
+  border-radius: 16px;
+}
+.theme-fern .tpl-photo {
+  border-radius: 24px;
+  filter: none;
+}
+.theme-fern .tpl-band {
+  background: rgba(63, 90, 42, 0.12);
+  color: #243021;
+  border-radius: 24px;
+}
+
+/* ── Jasmine Moon — jasmine and moonlight, minimal and serene ── */
+.theme-jasmine-moon {
+  background: #f7f4ec;
+  --foreground: #2c2e26;
+  --muted-foreground: #6b6d60;
+  --border: rgba(44, 46, 38, 0.16);
+  --gold: #5f6b4a;
+  --rose: #5f6b4a;
+  --gradient-gold: #5f6b4a;
+  --btn-ink: #ffffff;
+  --tpl-radius: 26px;
+  --tpl-radius-sm: 14px;
+  --tpl-surface: #ffffff;
+  --tpl-surface-border: rgba(221, 214, 195, 0.8);
+  --tpl-shadow: 0 1px 0 #ddd6c3;
+  --tpl-rule: rgba(221, 214, 195, 0.9);
+  --tpl-band-surface: rgba(95, 107, 74, 0.1);
+  --tpl-input-bg: #ffffff;
+}
+.theme-jasmine-moon h1,
+.theme-jasmine-moon h2,
+.theme-jasmine-moon h3,
+.theme-jasmine-moon h4,
+.theme-jasmine-moon .font-display {
+  font-family: "Newsreader", serif !important;
+  font-weight: 300;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: -0.01em;
+}
+.theme-jasmine-moon .font-script {
+  font-family: "Newsreader", serif !important;
+  font-style: italic !important;
+}
+.theme-jasmine-moon .font-kicker {
+  font-family: "Figtree", sans-serif !important;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-style: normal;
+  font-weight: 600;
+}
+.theme-jasmine-moon .glass-card {
+  background: #ffffff;
+  border: 1px solid rgba(221, 214, 195, 0.8);
+  box-shadow: 0 1px 0 #ddd6c3;
+  border-radius: 26px !important;
+  backdrop-filter: none;
+}
+.theme-jasmine-moon .tpl-btn,
+.theme-jasmine-moon .tpl-icon {
+  background: #5f6b4a;
+  color: #fff;
+  border-radius: 999px;
+}
+.theme-jasmine-moon .tpl-photo {
+  border-radius: 4px;
+  filter: saturate(0.85);
+}
+.theme-jasmine-moon .tpl-band {
+  background: rgba(95, 107, 74, 0.1);
+  color: #2c2e26;
+  border-radius: 26px;
+}
+
+/* ── Kolam — Tamil wedding tradition, kolam patterns in gold ── */
+.theme-kolam {
+  background: #fbf3e2;
+  --foreground: #2b1d14;
+  --muted-foreground: #6a5646;
+  --border: rgba(15, 76, 69, 0.18);
+  --gold: #e3a018;
+  --rose: #a3161b;
+  --gradient-gold: #a3161b;
+  --btn-ink: #fbf3e2;
+  --tpl-radius: 18px;
+  --tpl-radius-sm: 12px;
+  --tpl-surface: #fff8ea;
+  --tpl-surface-border: rgba(15, 76, 69, 0.18);
+  --tpl-shadow: none;
+  --tpl-rule: rgba(15, 76, 69, 0.18);
+  --tpl-band-surface: rgba(163, 22, 27, 0.1);
+  --tpl-input-bg: #fff8ea;
+}
+.theme-kolam h1,
+.theme-kolam h2,
+.theme-kolam h3,
+.theme-kolam h4,
+.theme-kolam .font-display {
+  font-family: "Gloock", serif !important;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.theme-kolam .font-script {
+  font-family: "Gloock", serif !important;
+}
+.theme-kolam .font-kicker {
+  font-family: "Mukta", sans-serif !important;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-style: normal;
+  font-weight: 600;
+}
+.theme-kolam .glass-card {
+  background: #fff8ea;
+  border: 1px solid rgba(15, 76, 69, 0.18);
+  box-shadow: none;
+  border-radius: 18px !important;
+  backdrop-filter: none;
+}
+.theme-kolam .tpl-btn,
+.theme-kolam .tpl-icon {
+  background: #a3161b;
+  color: #fbf3e2;
+  border-radius: 14px;
+}
+.theme-kolam .tpl-photo {
+  border-radius: 18px;
+  filter: none;
+}
+.theme-kolam .tpl-band {
+  background: rgba(163, 22, 27, 0.1);
+  color: #2b1d14;
+  border-radius: 18px;
+}
+
+/* ── Lotus Night — an evening lotus ceremony under a starlit sky ── */
+.theme-lotus-night {
+  background: #141a33;
+  --foreground: #ece6d8;
+  --muted-foreground: #b7b1ce;
+  --border: rgba(226, 192, 125, 0.3);
+  --gold: #e2c07d;
+  --rose: #e2c07d;
+  --gradient-gold: #e2c07d;
+  --btn-ink: #141a33;
+  --tpl-radius: 0px;
+  --tpl-radius-sm: 0px;
+  --tpl-surface: #1d2447;
+  --tpl-surface-border: rgba(226, 192, 125, 0.3);
+  --tpl-shadow: none;
+  --tpl-rule: rgba(226, 192, 125, 0.3);
+  --tpl-band-surface: rgba(226, 192, 125, 0.1);
+  --tpl-input-bg: rgba(236, 230, 216, 0.06);
+}
+.theme-lotus-night h1,
+.theme-lotus-night h2,
+.theme-lotus-night h3,
+.theme-lotus-night h4,
+.theme-lotus-night .font-display {
+  font-family: "Italiana", serif !important;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+.theme-lotus-night .font-script {
+  font-family: "Italiana", serif !important;
+}
+.theme-lotus-night .font-kicker {
+  font-family: "Jost", sans-serif !important;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-style: normal;
+  font-weight: 500;
+}
+.theme-lotus-night .glass-card {
+  background: #1d2447;
+  border: 1px solid rgba(226, 192, 125, 0.3);
+  box-shadow: none;
+  border-radius: 0 !important;
+  backdrop-filter: none;
+}
+.theme-lotus-night .tpl-btn,
+.theme-lotus-night .tpl-icon {
+  background: #e2c07d;
+  color: #141a33;
+  border-radius: 0;
+}
+.theme-lotus-night .tpl-photo {
+  border-radius: 0;
+  filter: none;
+}
+.theme-lotus-night .tpl-band {
+  background: rgba(226, 192, 125, 0.1);
+  color: #ece6d8;
+  border-radius: 0;
+}
+
+/* ── Lotus Pond — a lotus pond, calm and graceful ── */
+.theme-lotus-pond {
+  background: #f3f1ea;
+  --foreground: #22332f;
+  --muted-foreground: #5d6f6a;
+  --border: rgba(34, 51, 47, 0.14);
+  --gold: #b4486a;
+  --rose: #b4486a;
+  --gradient-gold: #b4486a;
+  --btn-ink: #ffffff;
+  --tpl-radius: 22px;
+  --tpl-radius-sm: 16px;
+  --tpl-surface: #ffffff;
+  --tpl-surface-border: rgba(34, 51, 47, 0.1);
+  --tpl-shadow: 0 16px 34px -26px rgba(34, 51, 47, 0.35);
+  --tpl-rule: rgba(34, 51, 47, 0.16);
+  --tpl-band-surface: rgba(180, 72, 106, 0.1);
+  --tpl-input-bg: #ffffff;
+}
+.theme-lotus-pond h1,
+.theme-lotus-pond h2,
+.theme-lotus-pond h3,
+.theme-lotus-pond h4,
+.theme-lotus-pond .font-display {
+  font-family: "Gilda Display", serif !important;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.theme-lotus-pond .font-script {
+  font-family: "Gilda Display", serif !important;
+}
+.theme-lotus-pond .font-kicker {
+  font-family: "Karla", sans-serif !important;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-style: normal;
+  font-weight: 600;
+}
+.theme-lotus-pond .glass-card {
+  background: #ffffff;
+  border: 1px solid rgba(34, 51, 47, 0.1);
+  box-shadow: 0 16px 34px -26px rgba(34, 51, 47, 0.35);
+  border-radius: 22px !important;
+  backdrop-filter: none;
+}
+.theme-lotus-pond .tpl-btn,
+.theme-lotus-pond .tpl-icon {
+  background: #b4486a;
+  color: #fff;
+  border-radius: 999px;
+}
+.theme-lotus-pond .tpl-photo {
+  border-radius: 22px;
+  filter: none;
+}
+.theme-lotus-pond .tpl-band {
+  background: rgba(180, 72, 106, 0.1);
+  color: #22332f;
+  border-radius: 22px;
+}
+
+/* ── Nocturne — black tie, monochrome drama ── */
+.theme-nocturne {
+  background: #0e0d0c;
+  --foreground: #efe8dc;
+  --muted-foreground: #b3a892;
+  --border: rgba(216, 195, 160, 0.28);
+  --gold: #d8c3a0;
+  --rose: #d8c3a0;
+  --gradient-gold: #d8c3a0;
+  --btn-ink: #0e0d0c;
+  --tpl-radius: 24px;
+  --tpl-radius-sm: 999px;
+  --tpl-surface: #181614;
+  --tpl-surface-border: rgba(216, 195, 160, 0.2);
+  --tpl-shadow: none;
+  --tpl-rule: rgba(216, 195, 160, 0.3);
+  --tpl-band-surface: rgba(216, 195, 160, 0.1);
+  --tpl-input-bg: #0e0d0c;
+}
+.theme-nocturne h1,
+.theme-nocturne h2,
+.theme-nocturne h3,
+.theme-nocturne h4,
+.theme-nocturne .font-display {
+  font-family: "Bodoni Moda", serif !important;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.theme-nocturne .font-script {
+  font-family: "Bodoni Moda", serif !important;
+  font-style: italic !important;
+}
+.theme-nocturne .font-kicker {
+  font-family: "Manrope", sans-serif !important;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.26em;
+  font-style: normal;
+  font-weight: 600;
+}
+.theme-nocturne .glass-card {
+  background: #181614;
+  border: 1px solid rgba(216, 195, 160, 0.2);
+  box-shadow: none;
+  border-radius: 24px !important;
+  backdrop-filter: none;
+}
+.theme-nocturne .tpl-btn,
+.theme-nocturne .tpl-icon {
+  background: #d8c3a0;
+  color: #0e0d0c;
+  border-radius: 999px;
+}
+.theme-nocturne .tpl-photo {
+  border-radius: 12px;
+  filter: none;
+}
+.theme-nocturne .tpl-band {
+  background: rgba(216, 195, 160, 0.1);
+  color: #efe8dc;
+  border-radius: 24px;
+}
+
+/* ── Rose Blush — soft rose blush, romantic and light ── */
+.theme-rose-blush {
+  background: #fbf1ee;
+  --foreground: #4a2a2e;
+  --muted-foreground: #7a5a5d;
+  --border: rgba(74, 42, 46, 0.14);
+  --gold: #a4424f;
+  --rose: #a4424f;
+  --gradient-gold: #a4424f;
+  --btn-ink: #ffffff;
+  --tpl-radius: 28px;
+  --tpl-radius-sm: 18px;
+  --tpl-surface: #ffffff;
+  --tpl-surface-border: rgba(229, 207, 207, 0.9);
+  --tpl-shadow: 0 20px 40px -24px rgba(164, 66, 79, 0.35);
+  --tpl-rule: rgba(164, 66, 79, 0.22);
+  --tpl-band-surface: rgba(164, 66, 79, 0.1);
+  --tpl-input-bg: #ffffff;
+}
+.theme-rose-blush h1,
+.theme-rose-blush h2,
+.theme-rose-blush h3,
+.theme-rose-blush h4,
+.theme-rose-blush .font-display {
+  font-family: "Parisienne", cursive !important;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.theme-rose-blush .font-script {
+  font-family: "Parisienne", cursive !important;
+}
+.theme-rose-blush .font-kicker {
+  font-family: "Nunito Sans", sans-serif !important;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-style: normal;
+  font-weight: 700;
+}
+.theme-rose-blush .glass-card {
+  background: #ffffff;
+  border: 1px solid rgba(229, 207, 207, 0.9);
+  box-shadow: 0 20px 40px -24px rgba(164, 66, 79, 0.35);
+  border-radius: 28px !important;
+  backdrop-filter: none;
+}
+.theme-rose-blush .tpl-btn,
+.theme-rose-blush .tpl-icon {
+  background: #a4424f;
+  color: #fff;
+  border-radius: 999px;
+}
+.theme-rose-blush .tpl-photo {
+  border-radius: 16px;
+  filter: none;
+}
+.theme-rose-blush .tpl-band {
+  background: rgba(164, 66, 79, 0.1);
+  color: #4a2a2e;
+  border-radius: 28px;
+}
+
+/* ── Sunset Coast — a warm coastal sunset ── */
+.theme-sunset-coast {
+  background: #fff6ea;
+  --foreground: #1f3a4a;
+  --muted-foreground: #6a7f8a;
+  --border: rgba(31, 58, 74, 0.14);
+  --gold: #d9532e;
+  --rose: #d9532e;
+  --gradient-gold: #d9532e;
+  --btn-ink: #ffffff;
+  --tpl-radius: 26px;
+  --tpl-radius-sm: 16px;
+  --tpl-surface: #ffffff;
+  --tpl-surface-border: rgba(31, 58, 74, 0.1);
+  --tpl-shadow: 0 20px 40px -28px rgba(31, 58, 74, 0.3);
+  --tpl-rule: rgba(31, 58, 74, 0.16);
+  --tpl-band-surface: rgba(217, 83, 46, 0.12);
+  --tpl-input-bg: #ffffff;
+}
+.theme-sunset-coast h1,
+.theme-sunset-coast h2,
+.theme-sunset-coast h3,
+.theme-sunset-coast h4,
+.theme-sunset-coast .font-display {
+  font-family: "DM Serif Display", serif !important;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.theme-sunset-coast .font-script {
+  font-family: "DM Serif Display", serif !important;
+  font-style: italic !important;
+}
+.theme-sunset-coast .font-kicker {
+  font-family: "Nunito Sans", sans-serif !important;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-style: normal;
+  font-weight: 800;
+}
+.theme-sunset-coast .glass-card {
+  background: #ffffff;
+  border: 1px solid rgba(31, 58, 74, 0.1);
+  box-shadow: 0 20px 40px -28px rgba(31, 58, 74, 0.3);
+  border-radius: 26px !important;
+  backdrop-filter: none;
+}
+.theme-sunset-coast .tpl-btn,
+.theme-sunset-coast .tpl-icon {
+  background: #d9532e;
+  color: #fff;
+  border-radius: 999px;
+}
+.theme-sunset-coast .tpl-photo {
+  border-radius: 20px;
+  filter: none;
+}
+.theme-sunset-coast .tpl-band {
+  background: rgba(217, 83, 46, 0.12);
+  color: #1f3a4a;
+  border-radius: 26px;
+}
+
+/* ── Wildflower — a wildflower garden, script and soft color ── */
+.theme-wildflower {
+  background: #f6f1e7;
+  --foreground: #33362c;
+  --muted-foreground: #5b5e50;
+  --border: rgba(94, 107, 78, 0.2);
+  --gold: #9a5242;
+  --rose: #9a5242;
+  --gradient-gold: #9a5242;
+  --btn-ink: #ffffff;
+  --tpl-radius: 4px;
+  --tpl-radius-sm: 4px;
+  --tpl-surface: #fffdf8;
+  --tpl-surface-border: rgba(51, 54, 44, 0.08);
+  --tpl-shadow: 0 18px 40px -20px rgba(51, 54, 44, 0.25);
+  --tpl-rule: rgba(94, 107, 78, 0.3);
+  --tpl-band-surface: rgba(94, 107, 78, 0.12);
+  --tpl-input-bg: #fffdf8;
+}
+.theme-wildflower h1,
+.theme-wildflower h2,
+.theme-wildflower h3,
+.theme-wildflower h4,
+.theme-wildflower .font-display {
+  font-family: "Pinyon Script", cursive !important;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.theme-wildflower .font-script {
+  font-family: "Pinyon Script", cursive !important;
+}
+.theme-wildflower .font-kicker {
+  font-family: "Figtree", sans-serif !important;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-style: normal;
+  font-weight: 600;
+}
+.theme-wildflower .glass-card {
+  background: #fffdf8;
+  border: 1px solid rgba(51, 54, 44, 0.08);
+  box-shadow: 0 18px 40px -20px rgba(51, 54, 44, 0.25);
+  border-radius: 4px !important;
+  backdrop-filter: none;
+}
+.theme-wildflower .tpl-btn,
+.theme-wildflower .tpl-icon {
+  background: #4f5c40;
+  color: #f6f1e7;
+  border-radius: 999px;
+}
+.theme-wildflower .tpl-photo {
+  border-radius: 4px;
+  filter: none;
+}
+.theme-wildflower .tpl-band {
+  background: rgba(94, 107, 78, 0.12);
+  color: #33362c;
+  border-radius: 4px;
+}

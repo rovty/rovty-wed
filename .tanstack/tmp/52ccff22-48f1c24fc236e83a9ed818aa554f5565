@@ -1,0 +1,31 @@
+// TEMPORARY — local QA only, deleted before this work is done.
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { SignatureWeddingSite } from "@/components/wedding-templates";
+import { sampleWedding } from "@/lib/studio/catalog";
+import { SIGNATURE_TEMPLATE_IDS } from "@/lib/wedding-signature";
+import type { SignatureTemplateId } from "@/lib/wedding-signature";
+
+export const Route = createFileRoute("/dev-preview-signature")({
+  component: DevPreview,
+});
+
+function DevPreview() {
+  const [id, setId] = useState<SignatureTemplateId>("maison");
+  return (
+    <div>
+      <select
+        value={id}
+        onChange={(e) => setId(e.target.value as SignatureTemplateId)}
+        style={{ position: "fixed", top: 8, left: 8, zIndex: 999 }}
+      >
+        {SIGNATURE_TEMPLATE_IDS.map((t) => (
+          <option key={t} value={t}>
+            {t}
+          </option>
+        ))}
+      </select>
+      <SignatureWeddingSite wedding={sampleWedding(id)} />
+    </div>
+  );
+}

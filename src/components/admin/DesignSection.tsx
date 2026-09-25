@@ -2,6 +2,7 @@ import { lazy, Suspense, useState } from "react";
 import { Eye, EyeOff, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { WEDDING_TEMPLATES } from "@/lib/wedding";
+import { SIGNATURE_TEMPLATES } from "@/lib/wedding-signature";
 import type { Wedding } from "./types";
 import { AButton } from "./ui";
 import { DetailsForm } from "./DetailsForm";
@@ -56,9 +57,9 @@ export function DesignSection({
     );
   }
 
-  const currentTemplate = WEDDING_TEMPLATES.find(
-    (t) => t.id === wedding.template,
-  );
+  const currentTemplate =
+    WEDDING_TEMPLATES.find((t) => t.id === wedding.template) ??
+    SIGNATURE_TEMPLATES.find((t) => t.id === wedding.template);
 
   return (
     <div className="flex flex-1 flex-col overflow-y-auto px-5 py-4">

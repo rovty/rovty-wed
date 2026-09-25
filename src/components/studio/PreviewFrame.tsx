@@ -55,6 +55,40 @@ export function PreviewFrame({
     return () => doc.removeEventListener("keydown", onKeyDown);
   }, [frame, onKeyDown]);
   useEffect(() => {
+    const doc = frame?.contentDocument;
+    if (!doc) return;
+    // srcdoc resolves fragment links against the embedding page's URL.
+    // Handle local anchors here so they never load the editor into the iframe.
+    const navigateSection = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0) return;
+      const anchor = (event.target as Element | null)?.closest?.(
+        'a[href^="#"]',
+      );
+      const href = anchor?.getAttribute("href");
+      if (!href) return;
+      event.preventDefault();
+      let id: string;
+      try {
+        id = decodeURIComponent(href.slice(1));
+      } catch {
+        return;
+      }
+      const target = doc.getElementById(id);
+      if (!target) return;
+      const reduced =
+        design.motion === "none" ||
+        doc.defaultView?.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      target.setAttribute("tabindex", "-1");
+      target.focus({ preventScroll: true });
+      target.scrollIntoView({
+        block: "start",
+        behavior: reduced ? "instant" : "smooth",
+      });
+    };
+    doc.addEventListener("click", navigateSection);
+    return () => doc.removeEventListener("click", navigateSection);
+  }, [frame, design.motion]);
+  useEffect(() => {
     if (!ready || !selectedSection) return;
     const target = Array.from(
       frame?.contentDocument?.querySelectorAll<HTMLElement>(

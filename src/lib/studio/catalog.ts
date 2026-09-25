@@ -1,4 +1,9 @@
-import { WED_TEMPLATES } from "@/components/wed-landing/templates";
+import { themeExperience } from "@/lib/theme-experiences";
+import { WEDDING_THEMES, weddingTheme } from "@/lib/wedding-themes";
+import {
+  WED_TEMPLATES,
+  LEGACY_WED_TEMPLATES,
+} from "@/components/wed-landing/templates";
 import {
   isWeddingTemplate,
   type PublicWedding,
@@ -211,8 +216,8 @@ const definitions: {
   },
 ];
 
-export const TEMPLATE_CATALOG: TemplateDefinition[] = definitions.map((def) => {
-  const theme = WED_TEMPLATES.find((t) => t.id === def.id)!;
+const LEGACY_CATALOG: TemplateDefinition[] = definitions.map((def) => {
+  const theme = LEGACY_WED_TEMPLATES.find((t) => t.id === def.id)!;
   return {
     ...def,
     name: theme.label,
@@ -247,8 +252,39 @@ export const TEMPLATE_CATALOG: TemplateDefinition[] = definitions.map((def) => {
     },
   };
 });
+export const TEMPLATE_CATALOG: TemplateDefinition[] = WEDDING_THEMES.map(
+  (theme) => {
+    const base = LEGACY_CATALOG.find((t) => t.id === theme.base)!;
+    const typography = WED_TEMPLATES.find((t) => t.id === theme.id)!;
+    return {
+      ...base,
+      id: theme.id,
+      name: theme.label,
+      collection: theme.collection,
+      note: theme.description,
+      palette: { ...theme.palette },
+      sections: [...(themeExperience(theme.id)?.sections ?? base.sections)],
+      fonts: {
+        heading: typography.disp,
+        body: '"Inter", sans-serif',
+        accent: typography.scr,
+      },
+    };
+  },
+);
+// Only Studio-compatible ids (LEGACY_CATALOG/TEMPLATE_CATALOG) ever resolve
+// here — never call this with one of the 16 signature ids (wedding-
+// signature.ts): they aren't Studio-customizable, so there's no
+// TemplateDefinition for them by design. Falls back to "classic" rather
+// than crashing if that ever happens anyway, since this feeds
+// createDesign() below and a thrown error there would take down the whole
+// design studio rather than just showing the wrong preview.
 export function getTemplate(id: WeddingTemplate): TemplateDefinition {
-  return TEMPLATE_CATALOG.find((t) => t.id === id)!;
+  return (
+    TEMPLATE_CATALOG.find((t) => t.id === id) ??
+    LEGACY_CATALOG.find((t) => t.id === id) ??
+    LEGACY_CATALOG.find((t) => t.id === "classic")!
+  );
 }
 
 export function createDesign(template: WeddingTemplate): DesignConfig {
@@ -264,8 +300,18 @@ export function createDesign(template: WeddingTemplate): DesignConfig {
       weight: 400,
     },
     motion: "gentle",
-    photoPosition: { x: 50, y: 50 },
-    sections: getTemplate(template).sections.map((type) => newSection(type)),
+    photoPosition: {
+      x: 50,
+      y: template === "quiet" || template === "shoreline" ? 85 : 50,
+    },
+    sections: getTemplate(template).sections.map((type) => {
+      const section = newSection(type);
+      const experience = themeExperience(template);
+      if (experience && type === "story") section.title = experience.story;
+      if (experience && type === "schedule")
+        section.title = experience.schedule;
+      return section;
+    }),
   };
 }
 
@@ -285,7 +331,7 @@ export const DEMO_WEDDING: PublicWedding = {
   address: "Galle, Sri Lanka",
   description:
     "Together with our favorite people, in a place close to our hearts. We can’t wait to celebrate with you.",
-  template: "editorial",
+  template: "classic",
   couplePhotoUrl: couplePhoto,
   venuePhotoUrl: venuePhoto,
   shareImageUrl: null,
@@ -299,9 +345,12 @@ export function sampleWedding(template: WeddingTemplate): PublicWedding {
   return {
     ...DEMO_WEDDING,
     template,
-    couplePhotoUrl: ["noir", "film", "classic"].includes(template)
-      ? celebrationPhoto
-      : DEMO_WEDDING.couplePhotoUrl,
+    hall: weddingTheme(template)
+      ? `${weddingTheme(template)!.label} Pavilion`
+      : DEMO_WEDDING.hall,
+    couplePhotoUrl: ["editorial", "quiet", "shoreline"].includes(template)
+      ? DEMO_WEDDING.couplePhotoUrl
+      : celebrationPhoto,
   };
 }
 export const DRAFT_KEY = "rovty-wed-studio-v1";

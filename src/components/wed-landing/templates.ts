@@ -1,10 +1,5 @@
-// The 14 invitation designs, as full typographic systems — transcribed from
-// the "Rovty Wed Landing B" design canvas, and matching the same 14 ids/
-// labels/descriptions as WEDDING_TEMPLATES in src/lib/wedding.ts (the actual
-// product's template list). This file adds the per-template colour/font
-// values the landing page's live builder and gallery need to render a
-// miniature of each design; src/lib/wedding.ts stays the source of truth for
-// which templates exist.
+import { WEDDING_THEMES } from "@/lib/wedding-themes";
+// Legacy typography is retained for saved invitations; the visible collection is derived below.
 import { WEDDING_TEMPLATES, type WeddingTemplate } from "@/lib/wedding";
 
 export interface WedTemplateTheme {
@@ -43,10 +38,10 @@ export interface WedTemplateTheme {
   dark?: boolean;
 }
 
-export const WED_TEMPLATES: WedTemplateTheme[] = [
+export const LEGACY_WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "classic",
-    label: "Classic",
+    label: "Rose",
     desc: "Rose & gold, soft cards, falling petals.",
     bg: "linear-gradient(180deg,#fdf9f4 0%,#f9ebe6 48%,#fcf6ec 100%)",
     swatchBg: "#fdf9f4",
@@ -125,7 +120,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "chapel",
     label: "Chapel",
-    desc: "Powder blue, arched photos.",
+    desc: "Powder blue, a calm photographic layout.",
     bg: "linear-gradient(180deg,#fafbfd,#eef2f8)",
     swatchBg: "#fafbfd",
     fg: "#2b3550",
@@ -256,7 +251,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "garden",
     label: "Garden",
-    desc: "Sage & cream, arched, italic serif.",
+    desc: "Sage & cream, generous portrait layout.",
     bg: "linear-gradient(180deg,#f7faf3,#eef4e9)",
     swatchBg: "#f7faf3",
     fg: "#2c3626",
@@ -362,7 +357,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "lotus",
     label: "Lotus",
-    desc: "Ivory & gold, falling lotus.",
+    desc: "Ivory & gold, a graceful photographic invitation.",
     bg: "linear-gradient(180deg,#fdf9f0 0%,#f6eddc 52%,#fbf5e8 100%)",
     swatchBg: "#fdf9f0",
     fg: "#2f2a22",
@@ -388,7 +383,7 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   {
     id: "bloom",
     label: "Bloom",
-    desc: "Blush & rose-gold, arched.",
+    desc: "Blush & rose-gold, intimate portrait layout.",
     bg: "linear-gradient(180deg,#fdf8f6,#f7eee9)",
     swatchBg: "#fdf8f6",
     fg: "#3f2e2b",
@@ -413,15 +408,29 @@ export const WED_TEMPLATES: WedTemplateTheme[] = [
   },
 ];
 
-// Compile-time + startup guard: every product template must have a landing
-// theme and vice versa. `satisfies` keeps the ids typed; the length check
-// catches an omission (a missing entry would otherwise just not render).
-const _landingIds = new Set(WED_TEMPLATES.map((t) => t.id));
+export const WED_TEMPLATES: WedTemplateTheme[] = WEDDING_THEMES.map((theme) => {
+  const base = LEGACY_WED_TEMPLATES.find((t) => t.id === theme.base)!;
+  const p = theme.palette;
+  return {
+    ...base,
+    id: theme.id,
+    label: theme.label,
+    desc: theme.description,
+    swatchBg: p.background,
+    bg: `linear-gradient(160deg, ${p.background}, ${p.secondary})`,
+    fg: p.text,
+    rose: p.primary,
+    gold: p.accent,
+    border: `${p.accent}44`,
+    muted: p.primary,
+    grad: `linear-gradient(135deg, ${p.primary}, ${p.accent})`,
+    dark: theme.collection === "Dark & dramatic",
+  };
+});
+
 if (
-  _landingIds.size !== WEDDING_TEMPLATES.length ||
-  WEDDING_TEMPLATES.some((t) => !_landingIds.has(t.id))
+  WED_TEMPLATES.length !== WEDDING_TEMPLATES.length ||
+  WEDDING_TEMPLATES.some((t) => !WED_TEMPLATES.some((s) => s.id === t.id))
 ) {
-  throw new Error(
-    "wed-landing/templates.ts is out of sync with WEDDING_TEMPLATES in lib/wedding.ts",
-  );
+  throw new Error("Wedding template catalogs must stay in sync");
 }

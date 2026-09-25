@@ -1,4 +1,12 @@
-import { memo, useState, type CSSProperties } from "react";
+import { themeArtworkStyle } from "@/lib/studio/theme-art";
+import { templateClasses, type SupportedTemplate } from "@/lib/wedding-themes";
+import {
+  WeddingParticles,
+  ThemeEmblem,
+  ThemeCredit,
+} from "@/components/wedding/WeddingAtmosphere";
+import { memo, useRef, useState, type CSSProperties } from "react";
+import { useWeddingMotion } from "@/components/wedding/useWeddingMotion";
 import { ArrowUpRight, Check, Heart, MapPin } from "lucide-react";
 import { Countdown } from "@/components/Countdown";
 import { InlineRsvp } from "@/components/InlineRsvp";
@@ -19,7 +27,7 @@ import {
   type DesignSection,
 } from "@/lib/studio/design";
 import { getTemplate } from "@/lib/studio/catalog";
-import { TemplateHero } from "./TemplateHero";
+import { TemplateHero, type InvitationNavigation } from "./TemplateHero";
 import couplePhoto from "@/assets/studio-couple.webp";
 import venuePhoto from "@/assets/studio-garden.webp";
 import { studioImageSources } from "@/lib/studio/images";
@@ -43,16 +51,38 @@ export function StudioWeddingSite({
 }) {
   const template = getTemplate(w.template);
   const sections = design.sections.filter((s) => s.enabled);
+  const navigation: InvitationNavigation[] = sections.flatMap((s) => {
+    const labels: Record<string, string> = {
+      schedule: "The day",
+      venue: "Venue",
+      gallery: "Gallery",
+    };
+    const label = labels[s.type];
+    return label
+      ? [{ id: `section-${s.type}`, label, visibility: s.layout?.visibility }]
+      : [];
+  });
+  const root = useRef<HTMLElement>(null);
+  useWeddingMotion(
+    root,
+    design.motion !== "none" && !onSectionSelect,
+    sections.map((s) => s.id).join(","),
+  );
   return (
     <main
-      className={`wedding-design theme-${w.template} composition-${template.composition} design-${w.template} ${w.template === "lotus" || w.template === "classic" ? "" : "collection-design"}`}
+      ref={root}
+      className={`wedding-design wedding-stationery collection-design ${templateClasses(w.template)} experience-${w.template} composition-${template.composition}`}
       data-motion={design.motion}
-      style={designVariables(design, template.palette, template.fonts)}
+      style={{
+        ...themeArtworkStyle(w.template),
+        ...designVariables(design, template.palette, template.fonts),
+      }}
     >
+      <WeddingParticles template={w.template} />
       {!preview && (
         <>
           <MusicPlayer src={w.musicUrl} />
-          <InvitationOpener wedding={w} />
+          <InvitationOpener wedding={{ ...w, design }} />
         </>
       )}
       {sections.map((s, index) => (
@@ -107,10 +137,15 @@ export function StudioWeddingSite({
               preview={preview}
               index={index}
               rsvp={sections.some((x) => x.type === "rsvp")}
+              rsvpVisibility={
+                sections.find((x) => x.type === "rsvp")?.layout?.visibility
+              }
+              navigation={navigation}
             />
           )}
         </div>
       ))}
+      <ThemeCredit template={w.template} />
     </main>
   );
 }
@@ -136,12 +171,16 @@ const WeddingSection = memo(function WeddingSection({
   preview,
   index,
   rsvp,
+  rsvpVisibility,
+  navigation,
 }: {
   section: DesignSection;
   wedding: PublicWedding;
   preview: boolean;
   index: number;
   rsvp: boolean;
+  rsvpVisibility?: "both" | "desktop" | "mobile";
+  navigation: InvitationNavigation[];
 }) {
   const image = (src: string, alt: string, className = "") => (
     <img
@@ -161,7 +200,15 @@ const WeddingSection = memo(function WeddingSection({
     `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(w.address || w.venue || "")}`;
   switch (s.type) {
     case "hero":
-      return <TemplateHero wedding={w} section={s} rsvp={rsvp} />;
+      return (
+        <TemplateHero
+          wedding={w}
+          section={s}
+          rsvp={rsvp}
+          rsvpVisibility={rsvpVisibility}
+          navigation={navigation}
+        />
+      );
     case "countdown":
       return (
         <section className="site-section site-countdown">
@@ -244,9 +291,6 @@ const WeddingSection = memo(function WeddingSection({
                   <h3>{event.title}</h3>
                   <p>{event.text}</p>
                 </div>
-                <span className="site-event-star" aria-hidden="true">
-                  ✧
-                </span>
               </article>
             ))}
           </div>
@@ -316,6 +360,7 @@ const WeddingSection = memo(function WeddingSection({
       return (
         <section className="site-section site-rsvp">
           <div className="site-rsvp-intro">
+            <ThemeEmblem template={w.template} />
             <span className="site-script">A seat with your name on it.</span>
             <SectionHeading section={s} />
             <p className="site-prose">We would love to celebrate with you.</p>
@@ -340,7 +385,10 @@ const WeddingSection = memo(function WeddingSection({
           <p>Your personal invitation will show your assigned table here.</p>
         </section>
       ) : (
-        <SeatingCta wedding={w} motif={TEMPLATE_META[w.template].motif} />
+        <SeatingCta
+          wedding={w}
+          motif={TEMPLATE_META[w.template as SupportedTemplate].motif}
+        />
       );
     case "calendar":
       return (
@@ -432,6 +480,7 @@ const WeddingSection = memo(function WeddingSection({
     case "footer":
       return (
         <footer className="site-section site-footer">
+          <ThemeEmblem template={w.template} />
           <p className="site-eyebrow">
             {s.title === "Closing note" ? "The beginning of always" : s.title}
           </p>

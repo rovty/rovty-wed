@@ -30,8 +30,8 @@ export const PAGE_SECTIONS = [
 export const FEATURES: { icon: LucideIcon; title: string; body: string }[] = [
   {
     icon: Sparkles,
-    title: "14 designed templates",
-    body: "Classic, Poruwa, Nikkah, Chapel, Noir and more, each with its own hero layout and opening animation, not just a recolour of the same page.",
+    title: "21 wedding themes",
+    body: "Rose, Lotus, Olive, Nikkah, Chapel, Noir and more, each with its own hero layout and opening animation, not just a recolour of the same page.",
   },
   {
     icon: MessageCircle,
@@ -64,7 +64,7 @@ export const STEPS = [
   {
     n: "01",
     title: "Choose a design",
-    body: "Pick from 14 templates and add your names, date, venue and photos.",
+    body: "Pick from 21 themes and add your names, date, venue and photos.",
   },
   {
     n: "02",

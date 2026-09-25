@@ -1,0 +1,2043 @@
+/* Individual theme compositions. Rose, Lotus and Candlelight keep their approved layouts. */
+.wedding-design.collection-design .theme-dedication {
+  font: 11px/1.8 var(--site-body);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin: 0 0 22px;
+  color: var(--site-primary);
+}
+.wedding-design.collection-design .theme-dedication + .site-eyebrow {
+  font-size: 15px;
+}
+/* Olive: a Mediterranean folio, with a generous title and botanical plate. */
+.wedding-design.experience-olive .themed-invitation {
+  grid-template-areas: "nav nav" "title title" "art details";
+  grid-template-columns: 1.3fr 1fr;
+  gap: 0 8%;
+  padding-bottom: 64px;
+}
+.wedding-design.experience-olive .themed-invitation .invitation-title h1 {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.18em;
+  font-size: calc(clamp(62px, 10vw, 135px) * var(--site-scale));
+}
+.wedding-design.experience-olive .themed-invitation .invitation-intro {
+  max-width: 55ch;
+}
+.wedding-design.experience-olive .themed-invitation > .wedding-atmosphere {
+  position: relative;
+  inset: auto;
+  grid-area: art;
+  height: 330px;
+  width: 100%;
+  z-index: 0;
+}
+.wedding-design.experience-olive .themed-invitation .theme-scene-image {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  mask-image: linear-gradient(90deg, #000 60%, transparent);
+  object-position: center;
+}
+.wedding-design.experience-olive .themed-invitation .invitation-details {
+  padding: 35px 0;
+  border-top: 1px solid var(--site-accent);
+}
+.wedding-design.experience-olive .site-story {
+  grid-template-columns: 0.65fr 1fr;
+  gap: 12%;
+}
+.wedding-design.experience-olive .site-story-image img {
+  height: 420px;
+}
+.wedding-design.experience-olive .site-schedule {
+  display: grid;
+  grid-template-columns: 0.75fr 1fr;
+  gap: 8%;
+  background: var(--site-secondary);
+}
+.wedding-design.experience-olive .site-rsvp {
+  border-block: 1px solid var(--site-accent);
+}
+/* Sakura: cascading blossom canopy, followed by airy, centered paper sections. */
+.wedding-design.experience-cherry-blossom .themed-invitation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 1000px;
+  padding-bottom: 74px;
+  text-align: center;
+}
+.wedding-design.experience-cherry-blossom
+  .themed-invitation
+  .invitation-masthead {
+  width: 100%;
+  margin-bottom: 215px;
+}
+.wedding-design.experience-cherry-blossom .themed-invitation .invitation-title,
+.wedding-design.experience-cherry-blossom
+  .themed-invitation
+  .invitation-details {
+  width: 100%;
+  text-align: center;
+  align-self: center;
+}
+.wedding-design.experience-cherry-blossom
+  .themed-invitation
+  .invitation-title
+  h1 {
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0 0.2em;
+  font-size: calc(clamp(55px, 8vw, 110px) * var(--site-scale));
+}
+.wedding-design.experience-cherry-blossom .themed-invitation .invitation-intro {
+  margin-inline: auto;
+}
+.wedding-design.experience-cherry-blossom
+  .themed-invitation
+  .theme-scene-image {
+  inset: 40px 0 auto;
+  width: 100%;
+  height: 320px;
+  mask-image: linear-gradient(#000 15%, transparent);
+  object-position: center 40%;
+  opacity: 0.65;
+}
+.wedding-design.experience-cherry-blossom .themed-invitation .invitation-facts {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+.wedding-design.experience-cherry-blossom
+  .themed-invitation
+  .invitation-facts
+  > div {
+  display: block;
+}
+.wedding-design.experience-cherry-blossom
+  .themed-invitation
+  .invitation-actions {
+  justify-content: center;
+}
+.wedding-design.experience-cherry-blossom .site-story {
+  display: flex;
+  flex-direction: column-reverse;
+  max-width: 1050px;
+  text-align: center;
+  gap: 45px;
+}
+.wedding-design.experience-cherry-blossom .site-story-copy .site-prose {
+  margin-inline: auto;
+}
+.wedding-design.experience-cherry-blossom .site-story-image {
+  width: 100%;
+}
+.wedding-design.experience-cherry-blossom .site-story-image img {
+  height: 440px;
+}
+.wedding-design.experience-cherry-blossom .site-gallery-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 8%;
+  align-items: start;
+}
+.wedding-design.experience-cherry-blossom
+  .site-gallery-grid
+  figure:nth-child(even) {
+  margin-top: 110px;
+}
+.wedding-design.experience-cherry-blossom .site-rsvp {
+  max-width: 850px;
+  display: block;
+  text-align: center;
+  background: var(--site-secondary);
+}
+.wedding-design.experience-cherry-blossom .site-rsvp-intro .theme-emblem {
+  margin-inline: auto;
+}
+.wedding-design.experience-cherry-blossom .site-rsvp-form {
+  max-width: 480px;
+  margin: 44px auto 0;
+  text-align: left;
+}
+/* Orchid: an asymmetric floral atelier with a tall photographic panel. */
+.wedding-design.experience-orchid .themed-invitation {
+  grid-template-columns: 1.15fr 1fr;
+  grid-template-areas: "nav nav" "art title" "art details";
+  padding-inline: 6%;
+  gap: 0 9%;
+}
+.wedding-design.experience-orchid .themed-invitation > .wedding-atmosphere {
+  position: relative;
+  inset: auto;
+  grid-area: art;
+  height: 700px;
+  z-index: 0;
+}
+.wedding-design.experience-orchid .themed-invitation .theme-scene-image {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  mask-image: none;
+  object-position: 43% center;
+}
+.wedding-design.experience-orchid .themed-invitation .invitation-title {
+  padding-top: 64px;
+}
+.wedding-design.experience-orchid .themed-invitation .invitation-title h1 {
+  font-size: calc(clamp(62px, 8vw, 110px) * var(--site-scale));
+}
+.wedding-design.experience-orchid .themed-invitation .invitation-details {
+  padding-top: 30px;
+}
+.wedding-design.experience-orchid .site-story {
+  grid-template-columns: 1.25fr 0.75fr;
+}
+.wedding-design.experience-orchid .site-story-image {
+  order: 2;
+}
+.wedding-design.experience-orchid .site-story-copy h2 {
+  font-size: calc(clamp(46px, 6vw, 80px) * var(--site-scale));
+}
+.wedding-design.experience-orchid .site-venue {
+  background: var(--site-secondary);
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  padding: 0;
+}
+.wedding-design.experience-orchid .site-venue-copy {
+  padding: 15%;
+}
+.wedding-design.experience-orchid .site-venue-image img {
+  height: 640px;
+}
+.wedding-design.experience-orchid .site-rsvp {
+  border-left: 8px solid var(--site-primary);
+  margin-block: 70px;
+}
+/* Jasmine: a ceremonial invitation surrounded by floral garlands. */
+.wedding-design.experience-jasmine .themed-invitation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-inline: 7%;
+  min-height: 1060px;
+}
+.wedding-design.experience-jasmine .themed-invitation .invitation-masthead {
+  width: 100%;
+  margin-bottom: 65px;
+}
+.wedding-design.experience-jasmine .themed-invitation .invitation-title,
+.wedding-design.experience-jasmine .themed-invitation .invitation-details {
+  align-self: center;
+  text-align: center;
+  width: min(100%, 580px);
+  background: color-mix(in srgb, var(--site-paper) 94%, transparent);
+  padding: 32px 36px 0;
+}
+.wedding-design.experience-jasmine .themed-invitation .invitation-title h1 {
+  align-items: center;
+  font-size: calc(clamp(56px, 7vw, 92px) * var(--site-scale));
+}
+.wedding-design.experience-jasmine .themed-invitation .invitation-details {
+  padding-bottom: 40px;
+}
+.wedding-design.experience-jasmine .themed-invitation .invitation-intro {
+  margin-inline: auto;
+}
+.wedding-design.experience-jasmine .themed-invitation .invitation-facts > div {
+  display: block;
+}
+.wedding-design.experience-jasmine .themed-invitation .invitation-actions {
+  justify-content: center;
+}
+.wedding-design.experience-jasmine .themed-invitation .theme-scene-image {
+  inset: 8% -8% auto auto;
+  width: 55%;
+  height: 85%;
+  opacity: 0.45;
+  mask-image: linear-gradient(90deg, transparent, #000 50%);
+}
+.wedding-design.experience-jasmine
+  .themed-invitation
+  .wedding-atmosphere::after {
+  content: "";
+  position: absolute;
+  inset: 8% auto 0 -8%;
+  width: 55%;
+  background: var(--theme-image) center/cover;
+  opacity: 0.4;
+  mask-image: linear-gradient(90deg, #000, transparent 90%);
+  transform: scaleX(-1);
+}
+.wedding-design.experience-jasmine .site-family {
+  padding-block: 70px;
+  border-block: 1px solid var(--site-accent);
+}
+.wedding-design.experience-jasmine .site-schedule {
+  max-width: 950px;
+  text-align: center;
+}
+.wedding-design.experience-jasmine .site-timeline article {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+.wedding-design.experience-jasmine .site-story {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  max-width: 900px;
+  gap: 36px;
+}
+.wedding-design.experience-jasmine .site-story-image img {
+  height: 420px;
+}
+.wedding-design.experience-jasmine .site-footer {
+  background: var(--site-secondary);
+}
+/* Palm: a tropical postcard with a separate information band. */
+.wedding-design.experience-palm .themed-invitation {
+  display: flex;
+  flex-direction: column;
+  min-height: 980px;
+  padding: 0 7%;
+  color: #fffaf0;
+}
+.wedding-design.experience-palm .themed-invitation .invitation-masthead {
+  width: 100%;
+  border-color: #fff8e94d;
+  margin-bottom: 70px;
+}
+.wedding-design.experience-palm .themed-invitation .invitation-title {
+  width: 100%;
+  text-align: center;
+}
+.wedding-design.experience-palm .themed-invitation .invitation-title h1 {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0 0.2em;
+  color: inherit;
+  font-size: calc(clamp(64px, 10vw, 136px) * var(--site-scale));
+}
+.wedding-design.experience-palm .themed-invitation .theme-dedication,
+.wedding-design.experience-palm .themed-invitation h1 em {
+  color: #f4dcac;
+}
+.wedding-design.experience-palm .themed-invitation .invitation-intro {
+  margin: 28px auto 72px;
+}
+.wedding-design.experience-palm .themed-invitation .invitation-details {
+  width: calc(100% + 16.28%);
+  margin: auto -8.14% 0;
+  padding: 45px 9%;
+  background: var(--site-paper);
+  color: var(--site-ink);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 35px;
+}
+.wedding-design.experience-palm .themed-invitation .invitation-facts {
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+.wedding-design.experience-palm .themed-invitation .invitation-actions {
+  margin: 0;
+  flex-direction: column;
+}
+.wedding-design.experience-palm .themed-invitation .theme-scene-image {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  mask-image: none;
+  opacity: 1;
+  object-position: center;
+}
+.wedding-design.experience-palm .themed-invitation .wedding-atmosphere::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(#123c2cbb, #103625a6);
+}
+.wedding-design.experience-palm .site-venue {
+  max-width: none;
+  grid-template-columns: 1.2fr 1fr;
+  padding: 0;
+  gap: 0;
+}
+.wedding-design.experience-palm .site-venue-copy {
+  padding: 13%;
+}
+.wedding-design.experience-palm .site-venue-image img {
+  height: 560px;
+}
+.wedding-design.experience-palm .site-schedule {
+  background: var(--site-secondary);
+}
+.wedding-design.experience-palm .site-timeline {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 30px;
+}
+.wedding-design.experience-palm .site-timeline article {
+  display: block;
+  padding: 35px;
+  border: 1px solid var(--site-primary);
+}
+/* Butterfly: a garden journal, with space for pictures and a playful reading order. */
+.wedding-design.experience-butterfly .themed-invitation {
+  grid-template-areas: "nav nav" "title title" "details art";
+  grid-template-columns: 0.85fr 1.25fr;
+  gap: 0 10%;
+}
+.wedding-design.experience-butterfly .themed-invitation .invitation-title {
+  text-align: center;
+}
+.wedding-design.experience-butterfly .themed-invitation .invitation-title h1 {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0 0.2em;
+  font-style: italic;
+  font-size: calc(clamp(62px, 9vw, 122px) * var(--site-scale));
+}
+.wedding-design.experience-butterfly .themed-invitation .invitation-intro {
+  margin: 20px auto 50px;
+}
+.wedding-design.experience-butterfly .themed-invitation > .wedding-atmosphere {
+  position: relative;
+  inset: auto;
+  grid-area: art;
+  height: 350px;
+  z-index: 0;
+}
+.wedding-design.experience-butterfly .themed-invitation .theme-scene-image {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-position: 78% center;
+  mask-image: radial-gradient(ellipse, #000 45%, transparent 74%);
+}
+.wedding-design.experience-butterfly .themed-invitation .invitation-details {
+  padding-top: 35px;
+}
+.wedding-design.experience-butterfly .site-gallery-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 12%;
+}
+.wedding-design.experience-butterfly .site-gallery-grid figure:nth-child(odd) {
+  margin-bottom: 100px;
+}
+.wedding-design.experience-butterfly .site-story {
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 8%;
+}
+.wedding-design.experience-butterfly .site-story-copy {
+  background: var(--site-secondary);
+  padding: 12%;
+}
+.wedding-design.experience-butterfly .site-rsvp {
+  background: linear-gradient(135deg, var(--site-secondary), var(--site-paper));
+}
+/* Moon & Stars: an invitation written across the night sky. */
+.wedding-design.experience-moon-stars .themed-invitation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 980px;
+  text-align: center;
+}
+.wedding-design.experience-moon-stars .themed-invitation .invitation-masthead {
+  width: 100%;
+  margin-bottom: 110px;
+}
+.wedding-design.experience-moon-stars .themed-invitation .invitation-title {
+  align-self: center;
+  text-align: center;
+  max-width: 850px;
+}
+.wedding-design.experience-moon-stars .themed-invitation .invitation-title h1 {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0 0.22em;
+  font-size: calc(clamp(60px, 9vw, 120px) * var(--site-scale));
+}
+.wedding-design.experience-moon-stars .themed-invitation .invitation-intro {
+  margin: 25px auto 50px;
+}
+.wedding-design.experience-moon-stars .themed-invitation .invitation-details {
+  align-self: center;
+  width: 100%;
+  border-top: 1px solid var(--site-accent);
+  padding-top: 35px;
+}
+.wedding-design.experience-moon-stars .themed-invitation .invitation-facts {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+}
+.wedding-design.experience-moon-stars .themed-invitation .invitation-actions {
+  justify-content: center;
+}
+.wedding-design.experience-moon-stars .themed-invitation .theme-scene-image {
+  top: 60px;
+  right: 2%;
+  width: 26%;
+  height: 260px;
+  opacity: 0.75;
+  mask-image: none;
+}
+.wedding-design.experience-moon-stars .theme-starlight {
+  height: 100%;
+}
+.wedding-design.experience-moon-stars .site-story {
+  max-width: 1080px;
+  grid-template-columns: 1fr 1fr;
+}
+.wedding-design.experience-moon-stars .site-story-image img {
+  height: 580px;
+}
+.wedding-design.experience-moon-stars .site-schedule {
+  max-width: 900px;
+  text-align: center;
+}
+.wedding-design.experience-moon-stars .site-timeline article {
+  grid-template-columns: 1fr;
+  gap: 10px;
+  border: 0;
+  border-left: 1px solid var(--site-accent);
+  padding: 25px 40px;
+  text-align: left;
+  margin-left: 50%;
+}
+.wedding-design.experience-moon-stars .site-timeline article:nth-child(even) {
+  margin-left: 0;
+  margin-right: 50%;
+  border-left: 0;
+  border-right: 1px solid var(--site-accent);
+  text-align: right;
+}
+.wedding-design.experience-moon-stars .site-rsvp {
+  background: var(--site-secondary);
+  margin-block: 60px;
+}
+/* Dove: a white vellum letter, airy and intentionally symmetrical. */
+.wedding-design.experience-dove .themed-invitation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 1000px;
+}
+.wedding-design.experience-dove .themed-invitation .invitation-masthead {
+  width: 100%;
+  margin-bottom: 75px;
+}
+.wedding-design.experience-dove .themed-invitation .invitation-title {
+  width: min(70%, 650px);
+  align-self: center;
+  text-align: center;
+}
+.wedding-design.experience-dove .themed-invitation .invitation-title h1 {
+  align-items: center;
+  font-size: calc(clamp(64px, 9vw, 110px) * var(--site-scale));
+}
+.wedding-design.experience-dove .themed-invitation .invitation-intro {
+  margin: 24px auto 36px;
+}
+.wedding-design.experience-dove .themed-invitation .theme-scene-image {
+  top: 18%;
+  right: -2%;
+  width: 27%;
+  height: 38%;
+  opacity: 0.65;
+}
+.wedding-design.experience-dove .themed-invitation .invitation-details {
+  align-self: center;
+  text-align: center;
+}
+.wedding-design.experience-dove .themed-invitation .invitation-facts > div {
+  display: block;
+}
+.wedding-design.experience-dove .themed-invitation .invitation-actions {
+  justify-content: center;
+}
+.wedding-design.experience-dove .site-family {
+  background: var(--site-secondary);
+  padding-block: 60px;
+}
+.wedding-design.experience-dove .site-story {
+  display: flex;
+  flex-direction: column-reverse;
+  text-align: center;
+  gap: 45px;
+  max-width: 900px;
+}
+.wedding-design.experience-dove .site-story-image {
+  width: 100%;
+}
+.wedding-design.experience-dove .site-story-image img {
+  height: 400px;
+}
+.wedding-design.experience-dove .site-gallery-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.wedding-design.experience-dove .site-gallery-grid figure img {
+  height: 400px;
+}
+.wedding-design.experience-dove .site-rsvp {
+  display: block;
+  max-width: 640px;
+  border-block: 1px solid var(--site-accent);
+  text-align: center;
+}
+.wedding-design.experience-dove .site-rsvp-form {
+  margin-top: 40px;
+  text-align: left;
+}
+.wedding-design.experience-dove .site-rsvp-intro .theme-emblem {
+  margin-inline: auto;
+}
+/* Ring: the vows take the lead, with the rings between names and celebration details. */
+.wedding-design.experience-rings .themed-invitation {
+  grid-template-columns: 1fr;
+  grid-template-areas: "nav" "title" "art" "details";
+  text-align: center;
+  min-height: 1030px;
+}
+.wedding-design.experience-rings .themed-invitation .invitation-masthead {
+  margin-bottom: 48px;
+}
+.wedding-design.experience-rings .themed-invitation .invitation-title {
+  text-align: center;
+}
+.wedding-design.experience-rings .themed-invitation .invitation-title h1 {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0 0.18em;
+  font-size: calc(clamp(62px, 10vw, 140px) * var(--site-scale));
+}
+.wedding-design.experience-rings .themed-invitation .invitation-intro {
+  margin-inline: auto;
+}
+.wedding-design.experience-rings .themed-invitation > .wedding-atmosphere {
+  position: relative;
+  inset: auto;
+  grid-area: art;
+  width: 100%;
+  height: 220px;
+  z-index: 0;
+}
+.wedding-design.experience-rings .themed-invitation .theme-scene-image {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mask-image: radial-gradient(ellipse, #000 20%, transparent 65%);
+}
+.wedding-design.experience-rings .themed-invitation .invitation-facts {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+}
+.wedding-design.experience-rings .themed-invitation .invitation-actions {
+  justify-content: center;
+}
+.wedding-design.experience-rings .site-date {
+  border-block: 1px solid var(--site-accent);
+}
+.wedding-design.experience-rings .site-story {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8%;
+}
+.wedding-design.experience-rings .site-timeline {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 50px;
+}
+.wedding-design.experience-rings .site-timeline article {
+  display: block;
+}
+.wedding-design.experience-rings .site-rsvp {
+  border: 1px solid var(--site-accent);
+  margin-block: 65px;
+  max-width: 1050px;
+}
+/* Feather: a quiet, asymmetric love letter with the feather beside its text. */
+.wedding-design.experience-feather .themed-invitation {
+  grid-template-areas: "nav nav" "art title" "art details";
+  grid-template-columns: 0.4fr 1fr;
+  gap: 0 10%;
+}
+.wedding-design.experience-feather .themed-invitation > .wedding-atmosphere {
+  position: relative;
+  inset: auto;
+  grid-area: art;
+  height: 660px;
+  z-index: 0;
+}
+.wedding-design.experience-feather .themed-invitation .theme-scene-image {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mask-image: none;
+  transform: rotate(-15deg);
+}
+.wedding-design.experience-feather .themed-invitation .invitation-title h1 {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0 0.2em;
+  align-items: baseline;
+  font-style: italic;
+  font-size: calc(clamp(60px, 8vw, 112px) * var(--site-scale));
+}
+.wedding-design.experience-feather .themed-invitation .invitation-details {
+  border-top: 1px solid var(--site-accent);
+  padding-top: 30px;
+}
+.wedding-design.experience-feather .site-story {
+  max-width: 950px;
+  grid-template-columns: 0.75fr 1fr;
+  gap: 8%;
+}
+.wedding-design.experience-feather .site-story-copy .site-prose {
+  font-family: var(--site-script);
+  font-size: 23px;
+}
+.wedding-design.experience-feather .site-schedule {
+  max-width: 850px;
+}
+.wedding-design.experience-feather .site-timeline article {
+  grid-template-columns: 100px 1fr;
+}
+.wedding-design.experience-feather .site-footer {
+  text-align: left;
+  padding-inline: 15%;
+}
+/* Eucalyptus: a modern botanical album with a broad, silvery leaf panel. */
+.wedding-design.experience-eucalyptus .themed-invitation {
+  grid-template-areas: "nav nav" "title art" "details art";
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 0 8%;
+  padding-inline: 9%;
+}
+.wedding-design.experience-eucalyptus .themed-invitation > .wedding-atmosphere {
+  position: relative;
+  inset: auto;
+  grid-area: art;
+  height: 630px;
+  z-index: 0;
+  margin-top: 50px;
+}
+.wedding-design.experience-eucalyptus .themed-invitation .theme-scene-image {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  mask-image: none;
+}
+.wedding-design.experience-eucalyptus .themed-invitation .invitation-title {
+  padding-top: 65px;
+}
+.wedding-design.experience-eucalyptus .themed-invitation .invitation-title h1 {
+  font-size: calc(clamp(56px, 7vw, 96px) * var(--site-scale));
+}
+.wedding-design.experience-eucalyptus .site-story {
+  grid-template-columns: 1.1fr 0.8fr;
+}
+.wedding-design.experience-eucalyptus .site-story-image {
+  order: 2;
+  padding: 20px;
+  background: var(--site-secondary);
+}
+.wedding-design.experience-eucalyptus .site-venue {
+  background: var(--site-secondary);
+}
+.wedding-design.experience-eucalyptus .site-gallery-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.wedding-design.experience-eucalyptus .site-gallery-grid figure img {
+  height: 460px;
+}
+.wedding-design.experience-eucalyptus .site-rsvp {
+  margin: 60px auto;
+  border: 1px solid var(--site-primary);
+}
+/* Sunflower: a joyful summer poster with a bold, sunlit nameplate. */
+.wedding-design.experience-sunflower .themed-invitation {
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "nav nav" "title title" "art details";
+  gap: 0 4%;
+  background: linear-gradient(#f5e5ab, var(--site-paper) 65%);
+  min-height: 1020px;
+}
+.wedding-design.experience-sunflower .themed-invitation .invitation-title {
+  text-align: center;
+}
+.wedding-design.experience-sunflower .themed-invitation .invitation-title h1 {
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.17em;
+  font-size: calc(clamp(70px, 11vw, 145px) * var(--site-scale));
+}
+.wedding-design.experience-sunflower .themed-invitation .invitation-intro {
+  margin: 25px auto 40px;
+}
+.wedding-design.experience-sunflower .themed-invitation > .wedding-atmosphere {
+  position: relative;
+  inset: auto;
+  grid-area: art;
+  height: 400px;
+  z-index: 0;
+}
+.wedding-design.experience-sunflower .themed-invitation .theme-scene-image {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  mask-image: radial-gradient(ellipse, #000 30%, transparent 72%);
+  object-position: 55% 40%;
+}
+.wedding-design.experience-sunflower .themed-invitation .invitation-details {
+  align-self: center;
+  padding: 30px;
+  border-top: 1px solid var(--site-accent);
+}
+.wedding-design.experience-sunflower .site-countdown {
+  max-width: none;
+  background: var(--site-secondary);
+}
+.wedding-design.experience-sunflower .site-gallery-grid {
+  gap: 20px;
+  grid-template-columns: 1fr 1fr;
+}
+.wedding-design.experience-sunflower .site-gallery-grid figure img {
+  height: 400px;
+}
+.wedding-design.experience-sunflower .site-story {
+  grid-template-columns: 1.15fr 0.85fr;
+}
+.wedding-design.experience-sunflower .site-rsvp {
+  background: #f5e5ab;
+  max-width: none;
+}
+/* Wheat: a countryside panorama, with the invitation above the harvest. */
+.wedding-design.experience-wheat .themed-invitation {
+  grid-template-areas: "nav nav" "title details" "art art";
+  grid-template-columns: 1.2fr 1fr;
+  gap: 30px 8%;
+  padding-bottom: 0;
+  min-height: 1020px;
+}
+.wedding-design.experience-wheat .themed-invitation .invitation-masthead {
+  margin-bottom: 20px;
+}
+.wedding-design.experience-wheat .themed-invitation .invitation-title h1 {
+  font-size: calc(clamp(65px, 8vw, 110px) * var(--site-scale));
+}
+.wedding-design.experience-wheat .themed-invitation .invitation-details {
+  align-self: center;
+  border-block: 1px solid var(--site-accent);
+  padding: 30px 0;
+}
+.wedding-design.experience-wheat .themed-invitation > .wedding-atmosphere {
+  position: relative;
+  inset: auto;
+  grid-area: art;
+  height: 350px;
+  z-index: 0;
+  width: 119.05%;
+  margin-left: -9.52%;
+}
+.wedding-design.experience-wheat .themed-invitation .theme-scene-image {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  mask-image: linear-gradient(transparent, #000 32%);
+  object-position: center 40%;
+}
+.wedding-design.experience-wheat .site-story {
+  grid-template-columns: 1fr 1fr;
+  gap: 6%;
+}
+.wedding-design.experience-wheat .site-story-copy {
+  padding: 12%;
+  background: var(--site-secondary);
+}
+.wedding-design.experience-wheat .site-venue {
+  padding-top: 0;
+}
+.wedding-design.experience-wheat .site-timeline {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px;
+}
+.wedding-design.experience-wheat .site-timeline article {
+  display: block;
+  padding: 32px 0;
+}
+.wedding-design.experience-wheat .site-footer {
+  background: var(--site-secondary);
+}
+/* Oil Lamp: a heritage programme with family blessings and ceremonial typography. */
+.wedding-design.experience-oil-lamp .themed-invitation {
+  grid-template-columns: 0.65fr 1fr;
+  grid-template-areas: "nav nav" "title title" "art details";
+  gap: 0 10%;
+  min-height: 1060px;
+}
+.wedding-design.experience-oil-lamp .themed-invitation .invitation-title {
+  text-align: center;
+  padding: 30px 0;
+  border-block: 1px solid var(--site-accent);
+}
+.wedding-design.experience-oil-lamp .themed-invitation .invitation-title h1 {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0 0.2em;
+  font-size: calc(clamp(50px, 7vw, 94px) * var(--site-scale));
+}
+.wedding-design.experience-oil-lamp .themed-invitation .invitation-intro {
+  margin-inline: auto;
+}
+.wedding-design.experience-oil-lamp .themed-invitation > .wedding-atmosphere {
+  position: relative;
+  inset: auto;
+  grid-area: art;
+  height: 400px;
+  z-index: 0;
+}
+.wedding-design.experience-oil-lamp .themed-invitation .theme-scene-image {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  mask-image: radial-gradient(ellipse, #000 25%, transparent 72%);
+}
+.wedding-design.experience-oil-lamp .themed-invitation .invitation-details {
+  align-self: center;
+  padding: 40px 0;
+}
+.wedding-design.experience-oil-lamp .site-family {
+  background: var(--site-secondary);
+  border-bottom: 1px solid var(--site-accent);
+}
+.wedding-design.experience-oil-lamp .site-date h2 {
+  font-size: calc(clamp(34px, 4vw, 52px) * var(--site-scale));
+}
+.wedding-design.experience-oil-lamp .site-schedule {
+  max-width: 1000px;
+  border-block: 1px solid var(--site-accent);
+}
+.wedding-design.experience-oil-lamp .site-timeline article {
+  grid-template-columns: 130px 1fr;
+  gap: 40px;
+}
+.wedding-design.experience-oil-lamp .site-rsvp {
+  display: block;
+  text-align: center;
+  max-width: 720px;
+}
+.wedding-design.experience-oil-lamp .site-rsvp-form {
+  margin: 40px auto 0;
+  max-width: 480px;
+  text-align: left;
+}
+.wedding-design.experience-oil-lamp .site-rsvp-intro .theme-emblem {
+  margin-inline: auto;
+}
+/* Peacock: jewel-toned evening stationery with a generous feather backdrop. */
+.wedding-design.experience-peacock .themed-invitation {
+  min-height: 1050px;
+  grid-template-columns: 1.2fr 0.8fr;
+  padding-inline: 10%;
+}
+.wedding-design.experience-peacock .themed-invitation .invitation-title {
+  border-left: 1px solid var(--site-accent);
+  padding: 30px 0 20px 34px;
+}
+.wedding-design.experience-peacock .themed-invitation .invitation-title h1 {
+  color: var(--site-primary);
+  font-size: calc(clamp(72px, 9vw, 122px) * var(--site-scale));
+}
+.wedding-design.experience-peacock .themed-invitation .invitation-details {
+  padding-left: 35px;
+  border-left: 1px solid var(--site-accent);
+}
+.wedding-design.experience-peacock .themed-invitation .theme-scene-image {
+  inset: 0 0 0 auto;
+  width: 75%;
+  height: 100%;
+  mask-image: linear-gradient(90deg, transparent, #000 55%);
+  opacity: 0.48;
+}
+.wedding-design.experience-peacock .site-gallery {
+  max-width: none;
+  background: var(--site-secondary);
+}
+.wedding-design.experience-peacock .site-gallery-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 4%;
+}
+.wedding-design.experience-peacock .site-gallery-grid figure img {
+  height: 550px;
+}
+.wedding-design.experience-peacock .site-story {
+  max-width: 1100px;
+  grid-template-columns: 0.8fr 1.2fr;
+}
+.wedding-design.experience-peacock .site-story-copy {
+  border-block: 1px solid var(--site-accent);
+  padding-block: 40px;
+}
+.wedding-design.experience-peacock .site-rsvp {
+  border: 1px solid var(--site-accent);
+  margin: 65px auto;
+  max-width: 1120px;
+}
+/* Ocean: a panoramic shoreline with its details along the water's edge. */
+.wedding-design.experience-ocean .themed-invitation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 1040px;
+  padding-bottom: 0;
+}
+.wedding-design.experience-ocean .themed-invitation .invitation-masthead {
+  width: 100%;
+  margin-bottom: 55px;
+}
+.wedding-design.experience-ocean .themed-invitation .invitation-title {
+  width: 100%;
+  text-align: center;
+}
+.wedding-design.experience-ocean .themed-invitation .invitation-title h1 {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0 0.2em;
+  font-size: calc(clamp(56px, 8vw, 115px) * var(--site-scale));
+}
+.wedding-design.experience-ocean .themed-invitation .invitation-intro {
+  margin-inline: auto;
+}
+.wedding-design.experience-ocean .themed-invitation .theme-scene-image {
+  inset: auto 0 0;
+  width: 100%;
+  height: 65%;
+  mask-image: linear-gradient(transparent, #000 42%);
+  object-position: center;
+}
+.wedding-design.experience-ocean .themed-invitation .invitation-details {
+  align-self: center;
+  margin: 180px 0 0;
+  background: color-mix(in srgb, var(--site-paper) 94%, transparent);
+  width: 100%;
+  padding: 35px 8%;
+  border-top: 1px solid var(--site-accent);
+}
+.wedding-design.experience-ocean .themed-invitation .invitation-facts {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+}
+.wedding-design.experience-ocean .themed-invitation .invitation-actions {
+  justify-content: center;
+}
+.wedding-design.experience-ocean .site-venue {
+  grid-template-columns: 1fr;
+  padding: 0;
+  gap: 0;
+  text-align: center;
+}
+.wedding-design.experience-ocean .site-venue-image img {
+  height: 430px;
+}
+.wedding-design.experience-ocean .site-venue-copy {
+  padding: 70px 8%;
+}
+.wedding-design.experience-ocean .site-venue-copy .site-prose {
+  margin-inline: auto;
+}
+.wedding-design.experience-ocean .site-gallery-grid {
+  grid-template-columns: 1fr;
+}
+.wedding-design.experience-ocean .site-gallery-grid figure img {
+  height: 480px;
+}
+.wedding-design.experience-ocean .site-schedule {
+  background: var(--site-secondary);
+}
+.wedding-design.experience-ocean .site-rsvp {
+  max-width: 950px;
+}
+/* Tree of Love: the tree precedes the names; families are the roots of the page. */
+.wedding-design.experience-tree-of-love .themed-invitation {
+  grid-template-columns: 1fr;
+  grid-template-areas: "nav" "art" "title" "details";
+  text-align: center;
+  min-height: 1120px;
+}
+.wedding-design.experience-tree-of-love
+  .themed-invitation
+  .invitation-masthead {
+  margin-bottom: 10px;
+}
+.wedding-design.experience-tree-of-love
+  .themed-invitation
+  > .wedding-atmosphere {
+  position: relative;
+  inset: auto;
+  grid-area: art;
+  height: 320px;
+  width: min(100%, 700px);
+  margin: auto;
+  z-index: 0;
+}
+.wedding-design.experience-tree-of-love .themed-invitation .theme-scene-image {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-position: 35% center;
+  mask-image: radial-gradient(ellipse, #000 20%, transparent 72%);
+}
+.wedding-design.experience-tree-of-love .themed-invitation .invitation-title {
+  text-align: center;
+}
+.wedding-design.experience-tree-of-love
+  .themed-invitation
+  .invitation-title
+  h1 {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0 0.2em;
+  font-size: calc(clamp(55px, 8vw, 110px) * var(--site-scale));
+}
+.wedding-design.experience-tree-of-love .themed-invitation .invitation-intro {
+  margin-inline: auto;
+}
+.wedding-design.experience-tree-of-love .themed-invitation .invitation-facts {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+.wedding-design.experience-tree-of-love .themed-invitation .invitation-actions {
+  justify-content: center;
+}
+.wedding-design.experience-tree-of-love .site-family {
+  background: var(--site-secondary);
+}
+.wedding-design.experience-tree-of-love .site-family-names {
+  padding: 25px 0;
+  border-top: 1px solid var(--site-primary);
+}
+.wedding-design.experience-tree-of-love .site-story {
+  display: flex;
+  flex-direction: column;
+  gap: 45px;
+  max-width: 1050px;
+  text-align: center;
+}
+.wedding-design.experience-tree-of-love .site-story-image {
+  width: 100%;
+}
+.wedding-design.experience-tree-of-love .site-story-image img {
+  height: 440px;
+}
+.wedding-design.experience-tree-of-love .site-story-copy .site-prose {
+  margin-inline: auto;
+}
+.wedding-design.experience-tree-of-love .site-rsvp {
+  background: var(--site-secondary);
+}
+/* Forest: a whole woodland setting, with deep-green paper and moving canopy light. */
+.wedding-design.experience-forest .themed-invitation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-inline: 8%;
+  min-height: 1100px;
+  text-align: center;
+}
+.wedding-design.experience-forest .themed-invitation .invitation-masthead {
+  width: 100%;
+  margin-bottom: 130px;
+  border-color: #e9f0d844;
+}
+.wedding-design.experience-forest .themed-invitation .invitation-title {
+  width: 100%;
+  text-align: center;
+}
+.wedding-design.experience-forest .themed-invitation .invitation-title h1 {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0 0.22em;
+  font-size: calc(clamp(70px, 11vw, 150px) * var(--site-scale));
+  color: #f6f8e8;
+  text-shadow: 0 4px 28px #081d17;
+}
+.wedding-design.experience-forest .themed-invitation .invitation-intro {
+  margin: 26px auto 55px;
+  font-size: 16px;
+}
+.wedding-design.experience-forest .themed-invitation .invitation-details {
+  align-self: center;
+  max-width: 720px;
+  width: 100%;
+  padding-top: 35px;
+  border-top: 1px solid #e9f0d855;
+}
+.wedding-design.experience-forest .themed-invitation .invitation-facts {
+  display: flex;
+  justify-content: center;
+  gap: 65px;
+}
+.wedding-design.experience-forest .themed-invitation .invitation-facts > div {
+  display: block;
+}
+.wedding-design.experience-forest .themed-invitation .invitation-actions {
+  justify-content: center;
+}
+.wedding-design.experience-forest .themed-invitation .theme-scene-image {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  mask-image: none;
+  object-position: center;
+  opacity: 0.7;
+}
+.wedding-design.experience-forest
+  .themed-invitation
+  .wedding-atmosphere::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(#0d281f88, #0c251dcc 65%, var(--site-paper));
+}
+.forest-light {
+  position: absolute;
+  inset: -20%;
+  background: linear-gradient(
+    125deg,
+    transparent 28%,
+    #f6efbd33 43%,
+    transparent 60%
+  );
+  filter: blur(35px);
+}
+.wedding-design.experience-forest .site-venue {
+  padding: 0;
+  gap: 0;
+  background: var(--site-secondary);
+  max-width: none;
+  grid-template-columns: 1.2fr 1fr;
+}
+.wedding-design.experience-forest .site-venue-copy {
+  padding: 14%;
+}
+.wedding-design.experience-forest .site-venue-image img {
+  height: 620px;
+}
+.wedding-design.experience-forest .site-story {
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 11%;
+}
+.wedding-design.experience-forest .site-story-image img {
+  height: 620px;
+}
+.wedding-design.experience-forest .site-story-copy h2 {
+  font-size: calc(clamp(44px, 5.5vw, 76px) * var(--site-scale));
+}
+.wedding-design.experience-forest .site-schedule {
+  max-width: 1050px;
+  border-block: 1px solid var(--site-accent);
+}
+.wedding-design.experience-forest .site-gallery-grid {
+  grid-template-columns: 1fr;
+  gap: 40px;
+}
+.wedding-design.experience-forest .site-gallery-grid figure img {
+  height: 540px;
+}
+.wedding-design.experience-forest .site-countdown {
+  background: var(--site-secondary);
+  max-width: none;
+}
+.wedding-design.experience-forest .site-rsvp {
+  background:
+    linear-gradient(#142c24ef, #142c24ef),
+    var(--theme-image) center/cover;
+  border: 1px solid var(--site-accent);
+  margin: 70px auto;
+  max-width: 1100px;
+}
+.wedding-design.experience-forest .site-footer {
+  background:
+    linear-gradient(#142c24dc, #142c24f5),
+    var(--theme-image) center/cover;
+  padding-block: 120px;
+}
+/* Opening covers and seating use each composition's visual language as well. */
+:is(
+    .experience-cherry-blossom,
+    .experience-jasmine,
+    .experience-moon-stars,
+    .experience-dove,
+    .experience-rings,
+    .experience-tree-of-love
+  )
+  .themed-opener-copy {
+  width: min(700px, 100%);
+  margin: auto;
+  text-align: center;
+}
+:is(
+    .experience-cherry-blossom,
+    .experience-jasmine,
+    .experience-moon-stars,
+    .experience-dove,
+    .experience-rings,
+    .experience-tree-of-love
+  )
+  .themed-opener-copy
+  h2 {
+  font-size: clamp(48px, 6vw, 85px);
+}
+:is(.experience-orchid, .experience-feather) .themed-opener-copy {
+  margin-left: auto;
+}
+:is(.experience-orchid, .experience-feather) .themed-opener .theme-scene-image {
+  right: auto;
+  left: 0;
+}
+.experience-peacock .themed-opener-copy {
+  border-left: 1px solid var(--site-accent);
+  padding-left: 35px;
+}
+.experience-palm .themed-opener,
+.experience-forest .themed-opener {
+  background:
+    linear-gradient(#112e25c9, #112e25d9),
+    var(--theme-image) center/cover;
+  color: #f6f8e8;
+}
+.experience-palm .themed-opener-copy,
+.experience-forest .themed-opener-copy {
+  width: min(750px, 100%);
+  margin: auto;
+  text-align: center;
+}
+.experience-palm .themed-opener > .wedding-atmosphere,
+.experience-forest .themed-opener > .wedding-atmosphere {
+  opacity: 0.15;
+}
+.experience-palm .themed-opener-button {
+  background: #153b2c;
+}
+.experience-forest .themed-opener-button {
+  background: #142c24;
+}
+.experience-ocean .themed-opener .theme-scene-image {
+  top: 45%;
+  width: 100%;
+  height: 55%;
+  right: 0;
+}
+.experience-ocean .themed-opener-copy {
+  width: min(680px, 100%);
+  margin: 0 auto 120px;
+  text-align: center;
+}
+.seating-page:is(.experience-olive, .experience-eucalyptus)
+  .seating-place-card {
+  outline: 0;
+  border: 0;
+  border-top: 6px solid var(--site-primary);
+  text-align: left;
+  padding: 40px;
+}
+.seating-page:is(.experience-olive, .experience-eucalyptus)
+  .seating-place-card
+  .theme-emblem {
+  margin-left: 0;
+}
+.seating-page.experience-orchid .seating-place-card {
+  outline: 0;
+  border: 0;
+  border-left: 12px solid var(--site-primary);
+  text-align: left;
+}
+.seating-page.experience-orchid .seating-table-number {
+  font-size: 150px;
+}
+.seating-page.experience-cherry-blossom .seating-place-card {
+  outline: 0;
+  background: linear-gradient(var(--site-secondary), var(--site-paper));
+  border: 0;
+}
+.seating-page.experience-jasmine .seating-place-card {
+  outline: 1px solid var(--site-accent);
+  outline-offset: -16px;
+  padding-top: 55px;
+}
+.seating-page.experience-palm {
+  background:
+    linear-gradient(#f8f5eaeb, #f8f5eaf8),
+    var(--theme-image) center/cover fixed;
+}
+.seating-page.experience-palm .seating-place-card {
+  border: 0;
+  outline: 0;
+  border-top: 12px solid var(--site-primary);
+}
+.seating-page.experience-butterfly .seating-place-card {
+  outline: 0;
+  border: 0;
+  background: var(--site-secondary);
+}
+.seating-page.experience-moon-stars .seating-place-card {
+  background: linear-gradient(140deg, var(--site-secondary), var(--site-paper));
+  border: 1px solid var(--site-accent);
+  outline: 0;
+}
+.seating-page.experience-dove .seating-place-card {
+  outline: 0;
+  border: 0;
+  background: #fff;
+  box-shadow: 0 25px 70px #42505b12;
+}
+.seating-page.experience-rings .seating-place-card {
+  border-width: 0;
+  border-block: 2px solid var(--site-accent);
+  outline: 0;
+}
+.seating-page.experience-feather .seating-place-card {
+  text-align: left;
+  outline: 0;
+  border: 0;
+  background: transparent;
+}
+.seating-page.experience-feather .seating-place-card .theme-emblem {
+  margin-left: 0;
+}
+.seating-page.experience-sunflower .seating-place-card {
+  border: 0;
+  outline: 0;
+  background: #f5e5ab;
+}
+.seating-page.experience-wheat .seating-place-card {
+  border: 0;
+  outline: 0;
+  background: var(--site-secondary);
+}
+.seating-page.experience-oil-lamp .seating-place-card {
+  border-top: 6px solid var(--site-accent);
+}
+.seating-page.experience-peacock .seating-place-card {
+  background: linear-gradient(var(--site-paper), var(--site-secondary));
+  outline-offset: -18px;
+  padding: 55px 36px;
+}
+.seating-page.experience-ocean .seating-place-card {
+  outline: 0;
+  border: 0;
+  background: linear-gradient(var(--site-paper), var(--site-secondary));
+  border-bottom: 10px solid var(--site-primary);
+}
+.seating-page.experience-tree-of-love .seating-place-card {
+  border: 0;
+  outline: 0;
+  border-top: 2px solid var(--site-primary);
+  background: var(--site-secondary);
+}
+.seating-page.experience-forest {
+  background:
+    linear-gradient(#142c24de, #142c24f9),
+    var(--theme-image) center/cover fixed;
+}
+.seating-page.experience-forest .seating-place-card {
+  background: #183329ed;
+  border: 1px solid var(--site-accent);
+  outline: 0;
+}
+.seating-page.experience-forest .seating-company {
+  background: #142c2480;
+  padding: 20px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .wedding-stationery:not([data-motion="none"]) .forest-light {
+    animation: forest-canopy-light 14s ease-in-out infinite alternate;
+  }
+}
+@keyframes forest-canopy-light {
+  from {
+    transform: translateX(-4%) rotate(-4deg);
+    opacity: 0.4;
+  }
+  to {
+    transform: translateX(6%) rotate(4deg);
+    opacity: 0.8;
+  }
+}
+/* Phone layouts retain each theme's reading order and use normal document flow. */
+@media (max-width: 650px) {
+  .wedding-design.collection-design .theme-dedication {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    margin-bottom: 18px;
+  }
+  .wedding-design:is(
+      .experience-olive,
+      .experience-orchid,
+      .experience-butterfly,
+      .experience-rings,
+      .experience-feather,
+      .experience-eucalyptus,
+      .experience-sunflower,
+      .experience-wheat,
+      .experience-oil-lamp,
+      .experience-tree-of-love
+    )
+    .themed-invitation {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    min-height: 0;
+    padding: 0 24px 50px;
+  }
+  .wedding-design:is(
+      .experience-olive,
+      .experience-butterfly,
+      .experience-rings,
+      .experience-feather,
+      .experience-sunflower,
+      .experience-oil-lamp
+    )
+    .themed-invitation {
+    grid-template-areas: "nav" "title" "art" "details";
+  }
+  .wedding-design:is(
+      .experience-orchid,
+      .experience-eucalyptus,
+      .experience-tree-of-love
+    )
+    .themed-invitation {
+    grid-template-areas: "nav" "art" "title" "details";
+  }
+  .wedding-design.experience-wheat .themed-invitation {
+    grid-template-areas: "nav" "title" "details" "art";
+    padding-bottom: 0;
+  }
+  .wedding-design:is(
+      .experience-olive,
+      .experience-orchid,
+      .experience-butterfly,
+      .experience-rings,
+      .experience-feather,
+      .experience-eucalyptus,
+      .experience-sunflower,
+      .experience-wheat,
+      .experience-oil-lamp,
+      .experience-tree-of-love
+    )
+    .themed-invitation
+    .invitation-masthead {
+    margin-bottom: 35px;
+  }
+  .wedding-design:is(
+      .experience-olive,
+      .experience-orchid,
+      .experience-butterfly,
+      .experience-rings,
+      .experience-feather,
+      .experience-eucalyptus,
+      .experience-sunflower,
+      .experience-wheat,
+      .experience-oil-lamp,
+      .experience-tree-of-love
+    )
+    .themed-invitation
+    > .wedding-atmosphere {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: 240px;
+    margin: 20px 0;
+  }
+  .wedding-design:is(
+      .experience-olive,
+      .experience-orchid,
+      .experience-butterfly,
+      .experience-rings,
+      .experience-feather,
+      .experience-eucalyptus,
+      .experience-sunflower,
+      .experience-wheat,
+      .experience-oil-lamp,
+      .experience-tree-of-love
+    )
+    .themed-invitation
+    .theme-scene-image {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+  }
+  .wedding-design:is(
+      .experience-olive,
+      .experience-orchid,
+      .experience-butterfly,
+      .experience-rings,
+      .experience-feather,
+      .experience-eucalyptus,
+      .experience-sunflower,
+      .experience-wheat,
+      .experience-oil-lamp,
+      .experience-tree-of-love
+    )
+    .themed-invitation
+    .invitation-title {
+    padding: 0;
+    width: 100%;
+    border: 0;
+  }
+  .wedding-design:is(
+      .experience-olive,
+      .experience-orchid,
+      .experience-butterfly,
+      .experience-rings,
+      .experience-feather,
+      .experience-eucalyptus,
+      .experience-sunflower,
+      .experience-wheat,
+      .experience-oil-lamp,
+      .experience-tree-of-love
+    )
+    .themed-invitation
+    .invitation-title
+    h1 {
+    font-size: calc(clamp(43px, 13vw, 62px) * var(--site-scale));
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0 0.18em;
+  }
+  .wedding-design:is(.experience-orchid, .experience-eucalyptus)
+    .themed-invitation
+    .invitation-title {
+    text-align: left;
+    padding-top: 20px;
+  }
+  .wedding-design:is(.experience-orchid, .experience-eucalyptus)
+    .themed-invitation
+    .invitation-title
+    h1 {
+    justify-content: flex-start;
+  }
+  .wedding-design:is(.experience-orchid, .experience-eucalyptus)
+    .themed-invitation
+    .invitation-details {
+    text-align: left;
+  }
+  .wedding-design:is(.experience-orchid, .experience-eucalyptus)
+    .themed-invitation
+    .invitation-facts
+    > div {
+    margin-left: 0;
+  }
+  .wedding-design:is(.experience-orchid, .experience-eucalyptus)
+    .themed-invitation
+    .invitation-actions {
+    justify-content: flex-start;
+  }
+  .wedding-design.experience-feather .themed-invitation > .wedding-atmosphere {
+    height: 170px;
+  }
+  .wedding-design.experience-cherry-blossom .themed-invitation {
+    min-height: 0;
+    padding: 0 24px 60px;
+  }
+  .wedding-design.experience-cherry-blossom
+    .themed-invitation
+    .invitation-masthead {
+    margin-bottom: 175px;
+  }
+  .wedding-design.experience-cherry-blossom
+    .themed-invitation
+    .theme-scene-image {
+    top: 45px;
+    height: 240px;
+    width: 100%;
+    right: 0;
+  }
+  .wedding-design.experience-cherry-blossom
+    .themed-invitation
+    .invitation-title
+    h1 {
+    flex-direction: column;
+    font-size: calc(13vw * var(--site-scale));
+  }
+  .wedding-design.experience-jasmine .themed-invitation {
+    min-height: 0;
+    padding: 0 20px 45px;
+  }
+  .wedding-design.experience-jasmine .themed-invitation .invitation-masthead {
+    margin-bottom: 40px;
+  }
+  .wedding-design.experience-jasmine .themed-invitation .invitation-title,
+  .wedding-design.experience-jasmine .themed-invitation .invitation-details {
+    padding: 24px 15px;
+  }
+  .wedding-design.experience-jasmine .themed-invitation .invitation-title h1 {
+    font-size: calc(14vw * var(--site-scale));
+  }
+  .wedding-design.experience-palm .themed-invitation {
+    min-height: 1000px;
+    padding-inline: 24px;
+  }
+  .wedding-design.experience-palm .themed-invitation .invitation-masthead {
+    margin-bottom: 95px;
+  }
+  .wedding-design.experience-palm .themed-invitation .invitation-title h1 {
+    flex-direction: column;
+    font-size: calc(15vw * var(--site-scale));
+  }
+  .wedding-design.experience-palm .themed-invitation .invitation-intro {
+    margin-bottom: 60px;
+  }
+  .wedding-design.experience-palm .themed-invitation .invitation-details {
+    display: block;
+    width: calc(100% + 48px);
+    margin: 0 -24px;
+    padding: 35px 24px;
+  }
+  .wedding-design.experience-palm .themed-invitation .invitation-facts {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .wedding-design.experience-palm .themed-invitation .invitation-actions {
+    margin-top: 25px;
+  }
+  .wedding-design.experience-palm .themed-invitation .theme-scene-image,
+  .wedding-design.experience-forest .themed-invitation .theme-scene-image {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    mask-image: none;
+  }
+  .wedding-design.experience-moon-stars .themed-invitation {
+    min-height: 1040px;
+    padding: 0 24px 50px;
+  }
+  .wedding-design.experience-moon-stars
+    .themed-invitation
+    .invitation-masthead {
+    margin-bottom: 190px;
+  }
+  .wedding-design.experience-moon-stars .themed-invitation .theme-scene-image {
+    top: 85px;
+    right: 25%;
+    width: 50%;
+    height: 170px;
+  }
+  .wedding-design.experience-moon-stars
+    .themed-invitation
+    .invitation-title
+    h1 {
+    font-size: calc(14vw * var(--site-scale));
+    flex-direction: column;
+  }
+  .wedding-design.experience-dove .themed-invitation {
+    min-height: 1080px;
+    padding: 0 24px 50px;
+  }
+  .wedding-design.experience-dove .themed-invitation .invitation-masthead {
+    margin-bottom: 200px;
+  }
+  .wedding-design.experience-dove .themed-invitation .invitation-title {
+    width: 100%;
+  }
+  .wedding-design.experience-dove .themed-invitation .invitation-title h1 {
+    font-size: calc(14vw * var(--site-scale));
+  }
+  .wedding-design.experience-dove .themed-invitation .theme-scene-image {
+    top: 80px;
+    right: 30%;
+    width: 40%;
+    height: 195px;
+  }
+  .wedding-design.experience-peacock .themed-invitation {
+    grid-template-columns: 1fr;
+    grid-template-areas: "nav" "title" "details";
+    padding: 0 26px 70px;
+    min-height: 1100px;
+  }
+  .wedding-design.experience-peacock .themed-invitation .invitation-masthead {
+    margin-bottom: 140px;
+  }
+  .wedding-design.experience-peacock .themed-invitation .invitation-title {
+    padding: 15px 0;
+    border-left: 0;
+    border-top: 1px solid var(--site-accent);
+  }
+  .wedding-design.experience-peacock .themed-invitation .invitation-title h1 {
+    font-size: calc(17vw * var(--site-scale));
+  }
+  .wedding-design.experience-peacock .themed-invitation .invitation-details {
+    border-left: 0;
+    padding: 25px 0;
+  }
+  .wedding-design.experience-peacock .themed-invitation .theme-scene-image {
+    inset: 0;
+    width: 100%;
+    height: 60%;
+    mask-image: linear-gradient(#000, transparent);
+    opacity: 0.3;
+  }
+  .wedding-design.experience-ocean .themed-invitation {
+    padding: 0 24px;
+    min-height: 1050px;
+  }
+  .wedding-design.experience-ocean .themed-invitation .invitation-masthead {
+    margin-bottom: 50px;
+  }
+  .wedding-design.experience-ocean .themed-invitation .invitation-title h1 {
+    font-size: calc(13vw * var(--site-scale));
+    flex-direction: column;
+  }
+  .wedding-design.experience-ocean .themed-invitation .invitation-details {
+    padding: 30px 20px;
+    margin-top: 160px;
+  }
+  .wedding-design.experience-ocean .themed-invitation .theme-scene-image {
+    inset: auto 0 0;
+    width: 100%;
+    height: 65%;
+  }
+  .wedding-design.experience-forest .themed-invitation {
+    min-height: 1120px;
+    padding: 0 24px 60px;
+  }
+  .wedding-design.experience-forest .themed-invitation .invitation-masthead {
+    margin-bottom: 130px;
+  }
+  .wedding-design.experience-forest .themed-invitation .invitation-title h1 {
+    flex-direction: column;
+    font-size: calc(17vw * var(--site-scale));
+  }
+  .wedding-design.experience-forest .themed-invitation .invitation-intro {
+    font-size: 14px;
+  }
+  .wedding-design:is(
+      .experience-cherry-blossom,
+      .experience-moon-stars,
+      .experience-rings,
+      .experience-ocean,
+      .experience-tree-of-love,
+      .experience-forest
+    )
+    .themed-invitation
+    .invitation-facts {
+    display: grid;
+    gap: 22px;
+  }
+  .wedding-design:is(
+      .experience-olive,
+      .experience-cherry-blossom,
+      .experience-orchid,
+      .experience-jasmine,
+      .experience-palm,
+      .experience-butterfly,
+      .experience-moon-stars,
+      .experience-dove,
+      .experience-rings,
+      .experience-feather,
+      .experience-eucalyptus,
+      .experience-sunflower,
+      .experience-wheat,
+      .experience-oil-lamp,
+      .experience-peacock,
+      .experience-ocean,
+      .experience-tree-of-love,
+      .experience-forest
+    )
+    :is(.site-story, .site-venue, .site-rsvp, .site-schedule) {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 55px 24px;
+  }
+  .wedding-design:is(
+      .experience-olive,
+      .experience-cherry-blossom,
+      .experience-orchid,
+      .experience-jasmine,
+      .experience-palm,
+      .experience-butterfly,
+      .experience-moon-stars,
+      .experience-dove,
+      .experience-rings,
+      .experience-feather,
+      .experience-eucalyptus,
+      .experience-sunflower,
+      .experience-wheat,
+      .experience-oil-lamp,
+      .experience-peacock,
+      .experience-ocean,
+      .experience-tree-of-love,
+      .experience-forest
+    )
+    :is(.site-story-copy, .site-venue-copy) {
+    padding: 0;
+    width: 100%;
+  }
+  .wedding-design:is(
+      .experience-olive,
+      .experience-cherry-blossom,
+      .experience-orchid,
+      .experience-jasmine,
+      .experience-palm,
+      .experience-butterfly,
+      .experience-moon-stars,
+      .experience-dove,
+      .experience-rings,
+      .experience-feather,
+      .experience-eucalyptus,
+      .experience-sunflower,
+      .experience-wheat,
+      .experience-oil-lamp,
+      .experience-peacock,
+      .experience-ocean,
+      .experience-tree-of-love,
+      .experience-forest
+    )
+    .site-story-image {
+    order: 0;
+    padding: 0;
+  }
+  .wedding-design:is(
+      .experience-olive,
+      .experience-cherry-blossom,
+      .experience-orchid,
+      .experience-jasmine,
+      .experience-palm,
+      .experience-butterfly,
+      .experience-moon-stars,
+      .experience-dove,
+      .experience-rings,
+      .experience-feather,
+      .experience-eucalyptus,
+      .experience-sunflower,
+      .experience-wheat,
+      .experience-oil-lamp,
+      .experience-peacock,
+      .experience-ocean,
+      .experience-tree-of-love,
+      .experience-forest
+    )
+    :is(.site-story-image, .site-venue-image)
+    img {
+    height: 380px;
+  }
+  .wedding-design:is(.experience-palm, .experience-rings, .experience-wheat)
+    .site-timeline {
+    grid-template-columns: 1fr;
+    width: 100%;
+    gap: 20px;
+  }
+  .wedding-design.experience-moon-stars .site-timeline article,
+  .wedding-design.experience-moon-stars .site-timeline article:nth-child(even) {
+    margin: 0;
+    border: 0;
+    border-left: 1px solid var(--site-accent);
+    text-align: left;
+    padding: 25px;
+  }
+  .wedding-design.experience-cherry-blossom
+    .site-gallery-grid
+    figure:nth-child(even),
+  .wedding-design.experience-butterfly
+    .site-gallery-grid
+    figure:nth-child(odd) {
+    margin: 0;
+  }
+  .wedding-design.experience-cherry-blossom .site-gallery-grid,
+  .wedding-design.experience-butterfly .site-gallery-grid {
+    gap: 22px;
+  }
+  .wedding-design.experience-oil-lamp .site-timeline article {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .wedding-design.experience-orchid .site-rsvp {
+    border-left-width: 5px;
+  }
+  .wedding-design.experience-forest .site-rsvp {
+    margin: 40px 16px;
+  }
+  .wedding-design.experience-peacock .site-rsvp {
+    margin: 40px 16px;
+  }
+  .wedding-design.experience-rings .site-rsvp {
+    margin: 40px 16px;
+  }
+  .themed-opener-copy {
+    max-width: 100%;
+  }
+  :is(.experience-orchid, .experience-feather)
+    .themed-opener
+    .theme-scene-image {
+    top: 0;
+    width: 100%;
+    height: 230px;
+  }
+  .experience-palm .themed-opener,
+  .experience-forest .themed-opener {
+    align-items: center;
+    padding: 60px 26px;
+  }
+  .experience-ocean .themed-opener-copy {
+    margin: 0 auto;
+  }
+  .experience-ocean .themed-opener {
+    padding-top: 80px;
+  }
+  .seating-page:is(.experience-olive, .experience-eucalyptus)
+    .seating-place-card {
+    padding: 30px 24px;
+  }
+}
+@media (max-width: 650px) {
+  .wedding-design:is(
+      .experience-forest,
+      .experience-palm,
+      .experience-moon-stars,
+      .experience-cherry-blossom
+    )
+    .themed-invitation
+    .invitation-title
+    h1 {
+    align-items: center;
+  }
+}

@@ -1,3 +1,5 @@
+import { weddingTheme, type SupportedTemplate } from "@/lib/wedding-themes";
+import { WeddingAtmosphere } from "@/components/wedding/WeddingAtmosphere";
 import { useEffect, useState } from "react";
 import { Heart, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -39,8 +41,12 @@ type Guest = {
  * If the visitor arrives via a personal link (?code=...), we greet them by name.
  */
 export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
+  const theme = weddingTheme(wedding.template);
+  const themed = !!theme && !["classic", "lotus"].includes(wedding.template);
   const decorative = isDecorativeTemplate(wedding.template);
-  const meta = TEMPLATE_META[wedding.template];
+  // Only rendered from WeddingSite.tsx's legacy-tree fallback, which the
+  // signature and Studio branches never reach — see that file's dispatch.
+  const meta = TEMPLATE_META[wedding.template as SupportedTemplate];
   const [guest, setGuest] = useState<Guest | null>(null);
   const [opening, setOpening] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -85,11 +91,17 @@ export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
       document.activeElement.blur();
     }
     setOpening(true);
+    const reducedMotion =
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      wedding.design?.motion === "none";
     // Let the animation play, then the overlay fades out fully before unmount.
-    window.setTimeout(() => {
-      document.body.style.overflow = "";
-      setDismissed(true);
-    }, dismissAfterMs);
+    window.setTimeout(
+      () => {
+        document.body.style.overflow = "";
+        setDismissed(true);
+      },
+      reducedMotion ? 0 : dismissAfterMs,
+    );
   };
 
   if (dismissed) return null;
@@ -107,6 +119,24 @@ export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
       role="dialog"
       aria-label="Wedding invitation"
     >
+      {themed && (
+        <div className={`themed-opener scene-${theme.scene}`}>
+          <WeddingAtmosphere template={wedding.template} />
+          <div className="themed-opener-copy">
+            <p className="themed-opener-kicker">Together with our families</p>
+            <h2>
+              {wedding.groom}
+              <em>&</em>
+              {wedding.bride}
+            </h2>
+            <p>A beautiful day, made brighter by you.</p>
+            <p className="themed-opener-guest">With love, to {greeting}</p>
+            <button className="themed-opener-button" onClick={() => open()}>
+              Open your invitation
+            </button>
+          </div>
+        </div>
+      )}
       {decorative && (
         <>
           <div className="invite-opener__petals">
@@ -117,7 +147,7 @@ export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
         </>
       )}
 
-      {meta.opener === "envelope" && (
+      {!themed && meta.opener === "envelope" && (
         <EnvelopeOpener
           wedding={wedding}
           greeting={greeting}
@@ -125,7 +155,7 @@ export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
           onOpen={open}
         />
       )}
-      {meta.opener === "ring" && (
+      {!themed && meta.opener === "ring" && (
         <RingOpener
           wedding={wedding}
           initials={initials}
@@ -133,7 +163,7 @@ export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
           onOpen={open}
         />
       )}
-      {meta.opener === "veil" && (
+      {!themed && meta.opener === "veil" && (
         <VeilOpener
           wedding={wedding}
           greeting={greeting}
@@ -142,7 +172,7 @@ export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
           onOpen={open}
         />
       )}
-      {meta.opener === "gate" && (
+      {!themed && meta.opener === "gate" && (
         <GateOpener
           wedding={wedding}
           initials={initials}
@@ -151,7 +181,7 @@ export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
           onOpen={open}
         />
       )}
-      {meta.opener === "curtain" && (
+      {!themed && meta.opener === "curtain" && (
         <CurtainOpener
           wedding={wedding}
           greeting={greeting}
@@ -160,7 +190,7 @@ export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
           onOpen={open}
         />
       )}
-      {meta.opener === "petals" && (
+      {!themed && meta.opener === "petals" && (
         <PetalsOpener
           wedding={wedding}
           greeting={greeting}
@@ -170,7 +200,7 @@ export function InvitationOpener({ wedding }: { wedding: PublicWedding }) {
           onOpen={open}
         />
       )}
-      {meta.opener === "lotus" && (
+      {!themed && meta.opener === "lotus" && (
         <LotusOpener
           wedding={wedding}
           greeting={greeting}
