@@ -10,6 +10,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { WedLandingPage } from "@/components/wed-landing/WedLandingPage";
 import { fontLinks } from "@/lib/wedding";
+import { WED_PUBLIC_SEO, WED_APPLICATION_SCHEMA } from "@/lib/public-seo";
 
 // This route's own font, not the shared UI_FONTS_HREF (Archivo) every other
 // admin/marketing route uses — the "Rovty Wed Home" redesign is set in
@@ -18,20 +19,19 @@ import { fontLinks } from "@/lib/wedding";
 const HOME_FONTS_HREF =
   "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap";
 
-const TITLE = "Rovty Wed | Wedding Invitations Your Guests Actually Open";
-const DESCRIPTION =
-  "A designed invitation page, guest list, WhatsApp sending, RSVPs, and seating, all in one link, styled exactly like your wedding.";
-const CANONICAL = "https://wed.rovty.com/";
+const {
+  title: TITLE,
+  description: DESCRIPTION,
+  url: CANONICAL,
+} = WED_PUBLIC_SEO;
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
-      // Explicit, not just "absence of noindex" — this is the one page on
-      // this domain that should be indexed, so it says so outright rather
-      // than relying on every other route remembering to opt out.
-      { name: "robots", content: "index, follow" },
+      // The public home and template collection explicitly opt into indexing.
+      { name: "robots", content: "index, follow, max-image-preview:large" },
       { property: "og:type", content: "website" },
       { property: "og:url", content: CANONICAL },
       { property: "og:title", content: TITLE },
@@ -42,6 +42,14 @@ export const Route = createFileRoute("/")({
       { property: "og:image", content: "https://wed.rovty.com/wed-og.png" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: "https://wed.rovty.com/wed-og.png" },
+      { name: "twitter:title", content: TITLE },
+      { name: "twitter:description", content: DESCRIPTION },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(WED_APPLICATION_SCHEMA),
+      },
     ],
     // Template previews load their own fonts when they become visible.
     links: [

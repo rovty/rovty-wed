@@ -4,11 +4,44 @@ import { fontLinks, UI_FONTS_HREF } from "@/lib/wedding";
 export const Route = createFileRoute("/templates")({
   head: () => ({
     meta: [
-      { title: "The Wedding Collection | Rovty Wed" },
+      { title: "Wedding Website Templates & Invitation Designs | Rovty Wed" },
       {
         name: "description",
         content:
-          "Discover 21 wedding themes, from Rose and Lotus to Ocean Waves. Preview, compare and personalize every detail in the Rovty Wed studio.",
+          "Browse wedding website templates and invitation designs, from Rose and Lotus to Ocean Waves. Preview and personalize your wedding in the Rovty Wed studio.",
+      },
+      { name: "robots", content: "index, follow, max-image-preview:large" },
+      { property: "og:type", content: "website" },
+      {
+        property: "og:title",
+        content: "Wedding Website Templates | Rovty Wed",
+      },
+      {
+        property: "og:description",
+        content:
+          "Find a wedding invitation design, preview it and make it yours with Rovty Wed.",
+      },
+      { property: "og:url", content: "https://wed.rovty.com/templates" },
+      { property: "og:image", content: "https://wed.rovty.com/wed-og.png" },
+      { name: "twitter:image", content: "https://wed.rovty.com/wed-og.png" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Rovty Wed wedding website templates",
+          url: "https://wed.rovty.com/templates",
+          isPartOf: { "@id": "https://wed.rovty.com/#website" },
+          about: {
+            "@type": "SoftwareApplication",
+            name: "Rovty Wed",
+            url: "https://wed.rovty.com/",
+            applicationCategory: "LifestyleApplication",
+            operatingSystem: "Web",
+          },
+        }),
       },
     ],
     links: [

@@ -79,6 +79,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
+        // Only public marketing and template routes explicitly opt into indexing.
+        { name: "robots", content: "noindex, nofollow" },
         { title: "Wedding Invitation" },
         {
           name: "description",
