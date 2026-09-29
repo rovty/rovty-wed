@@ -46,9 +46,9 @@ export const requireSupabaseAuth = createMiddleware({
       ...(!SUPABASE_URL ? ["SUPABASE_URL"] : []),
       ...(!SUPABASE_PUBLISHABLE_KEY ? ["SUPABASE_PUBLISHABLE_KEY"] : []),
     ];
-    const message = `Missing Supabase environment variable(s): ${missing.join(", ")}. Connect Supabase in Lovable Cloud.`;
+    const message = `Missing Supabase environment variable(s): ${missing.join(", ")}. See .env.example and the deployment guide.`;
     console.error(`[Supabase] ${message}`);
-    throw new Error(message);
+    throw new Error("Rovty sign-in is temporarily unavailable. Please try again later.");
   }
 
   const request = getRequest();
