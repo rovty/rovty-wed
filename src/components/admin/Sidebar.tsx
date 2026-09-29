@@ -12,12 +12,14 @@ export function Sidebar({
   active,
   onChange,
   onSignOut,
+  signingOut,
   inviteUrl,
 }: {
   wedding: Wedding;
   active: AdminSection;
   onChange: (section: AdminSection) => void;
   onSignOut: () => void;
+  signingOut: boolean;
   inviteUrl: string;
 }) {
   return (
@@ -73,10 +75,14 @@ export function Sidebar({
           </a>
         )}
         <button
+          type="button"
           onClick={onSignOut}
-          className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-[var(--admin-muted)]"
+          disabled={signingOut}
+          aria-busy={signingOut}
+          className="flex min-h-11 cursor-pointer items-center gap-2 px-3 py-2 text-xs font-semibold text-[var(--admin-ink)] transition-colors hover:bg-[var(--admin-ink)] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--admin-ink)] disabled:cursor-wait disabled:opacity-50"
         >
-          <LogOut className="h-3.5 w-3.5" /> Sign out
+          <LogOut className="h-3.5 w-3.5" aria-hidden="true" />{" "}
+          {signingOut ? "Signing out…" : "Sign out"}
         </button>
       </div>
     </aside>

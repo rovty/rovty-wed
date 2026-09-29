@@ -7,9 +7,11 @@ import { Team } from "./Team";
 export function MoreSection({
   wedding,
   onSignOut,
+  signingOut,
 }: {
   wedding: Wedding;
   onSignOut: () => void;
+  signingOut: boolean;
 }) {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
@@ -28,8 +30,15 @@ export function MoreSection({
         </PlanGate>
       </div>
       <div className="border-t-2 border-[var(--admin-ink)] px-5 py-3.5">
-        <AButton onClick={onSignOut} className="h-12 w-full">
-          <LogOut className="h-4 w-4" /> Sign out
+        <AButton
+          type="button"
+          onClick={onSignOut}
+          disabled={signingOut}
+          aria-busy={signingOut}
+          className="h-12 w-full"
+        >
+          <LogOut className="h-4 w-4" aria-hidden="true" />{" "}
+          {signingOut ? "Signing out…" : "Sign out"}
         </AButton>
       </div>
     </div>

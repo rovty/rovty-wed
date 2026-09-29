@@ -23,9 +23,11 @@ import { AButton, AInput, ALabel } from "./ui";
 export function Onboarding({
   onCreated,
   onSignOut,
+  signingOut,
 }: {
   onCreated: (w: Wedding) => void;
   onSignOut: () => void;
+  signingOut: boolean;
 }) {
   const [step, setStep] = useState(1);
   const [bride, setBride] = useState("");
@@ -344,9 +346,12 @@ export function Onboarding({
                 <AButton
                   type="button"
                   onClick={onSignOut}
+                  disabled={signingOut}
+                  aria-busy={signingOut}
                   className="flex-1 h-[52px]"
                 >
-                  <LogOut className="h-4 w-4" /> Sign out
+                  <LogOut className="h-4 w-4" aria-hidden="true" />{" "}
+                  {signingOut ? "Signing out…" : "Sign out"}
                 </AButton>
               )}
               {step < 3 ? (

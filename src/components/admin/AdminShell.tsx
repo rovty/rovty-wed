@@ -24,12 +24,14 @@ import { PlatformBar } from "./PlatformBar";
 export function AdminShell({
   wedding,
   onSignOut,
+  signingOut,
   onWeddingChange,
   section,
   onSectionChange: setSection,
 }: {
   wedding: Wedding;
   onSignOut: () => void;
+  signingOut: boolean;
   onWeddingChange: (w: Wedding) => void;
   section: AdminSection;
   onSectionChange: (section: AdminSection) => void;
@@ -112,6 +114,7 @@ export function AdminShell({
           active={section}
           onChange={setSection}
           onSignOut={onSignOut}
+          signingOut={signingOut}
           inviteUrl={inviteUrl}
         />
 
@@ -190,7 +193,11 @@ export function AdminShell({
             )}
 
             {section === "more" && (
-              <MoreSection wedding={wedding} onSignOut={onSignOut} />
+              <MoreSection
+                wedding={wedding}
+                onSignOut={onSignOut}
+                signingOut={signingOut}
+              />
             )}
           </div>
 

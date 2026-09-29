@@ -39,6 +39,7 @@ function AdminPage() {
   const { section = "home" } = Route.useSearch();
   const [ready, setReady] = useState(false);
   const [wedding, setWedding] = useState<Wedding | null>(null);
+  const [signingOut, setSigningOut] = useState(false);
   // Distinct from "wedding === null (genuinely no row — first-time owner,
   // show onboarding)": this is "the query itself failed", e.g. an RLS bug
   // that should show an error, not silently push someone into "create a
@@ -100,7 +101,15 @@ function AdminPage() {
     };
   }, [navigate, loadWedding]);
 
-  const signOut = platformSignOut;
+  const signOut = async () => {
+    if (signingOut) return;
+    setSigningOut(true);
+    try {
+      await platformSignOut();
+    } finally {
+      setSigningOut(false);
+    }
+  };
 
   if (!ready) {
     return (
@@ -139,7 +148,11 @@ function AdminPage() {
         <PlatformBar />
         <div className="min-h-0 flex-1">
           <PlanProvider>
-            <Onboarding onCreated={setWedding} onSignOut={signOut} />
+            <Onboarding
+              onCreated={setWedding}
+              onSignOut={signOut}
+              signingOut={signingOut}
+            />
           </PlanProvider>
         </div>
       </div>
@@ -151,6 +164,7 @@ function AdminPage() {
       <AdminShell
         wedding={wedding}
         onSignOut={signOut}
+        signingOut={signingOut}
         onWeddingChange={setWedding}
         section={section}
         onSectionChange={(next) =>
